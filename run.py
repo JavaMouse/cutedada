@@ -1,6 +1,7 @@
+import json
 from random import randint
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask.json import jsonify
 
 from backend.user import user
