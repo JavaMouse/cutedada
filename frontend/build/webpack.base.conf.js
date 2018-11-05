@@ -42,6 +42,14 @@ module.exports = {
     rules: [
       // ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
+        test: /\\\\\\\\.css$/,
+        loader: "style!css"
+      },
+      {
+          test: /\\\\\\\\.(eot|woff|woff2|ttf)([\\\\\\\\?]?.*)$/,
+          loader: "file"
+      },     
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig
