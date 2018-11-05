@@ -21,6 +21,7 @@
 </template>
 
 <script>
+    import axios from 'axios';
     export default {
         name: 'Logged',
         data() {
@@ -44,12 +45,29 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
+                        // alert('submit!');
+                        this.loginSubmit()
                     } else {
                         console.log('error submit!!');
                         return false;
                     }
                 });
+            },
+            async loginSubmit () {
+                // axios.post('127.0.0.1:5050/user/login', {
+                //     username : this.loginForm.username,
+                //     password: this.loginForm.password
+                // })
+                // .then(function (response) {
+                //     console.log(response);
+                // })
+                // .catch(function (error) {
+                //     console.log(error);
+                // });
+                let data = {
+                    ...this.loginForm
+                }
+                let response = await this.$axios.post('/user/login', data)
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
