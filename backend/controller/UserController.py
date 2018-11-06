@@ -15,12 +15,7 @@ user = Blueprint('user',__name__,
 
 @user.route('/login',methods=['POST'])
 def login():
-    # data = json.loads(str(request.data, encoding = "utf-8"))
-
-    data = {
-        'username':'123',
-        'password':'123'
-    }
+    data = json.loads(str(request.data, encoding = "utf-8"))
 
     username = data['username']
     password = data['password']
