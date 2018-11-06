@@ -68,6 +68,7 @@
                     ...this.loginForm
                 }
                 let response = await this.$axios.post('/login', data)
+                this.$router.push('/echarts')
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
