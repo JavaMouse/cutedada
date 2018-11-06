@@ -4,7 +4,7 @@ from flask import Flask, render_template, request
 from flask.json import jsonify
 
 from backend.controller.test import test
-from backend.controller.user import user
+from backend.controller.UserController import user
 
 app = Flask(__name__,
             static_folder = "./dist/static",
