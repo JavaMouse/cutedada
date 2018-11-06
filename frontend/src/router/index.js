@@ -15,5 +15,15 @@ export default new Router({
     path: '/main',
     name: 'Main',
     component: () => import('../views/Main'),
+    children:[{
+      path: '/baseInfo',
+      component: () => import('../views/baseInfo/index'),
+      children: [
+        {
+          path: '/echarts',
+          name: 'ECharts',
+          component: () => import('../views/baseInfo/echart')
+        }]
+    }]
   }]
 })
