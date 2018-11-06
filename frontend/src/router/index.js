@@ -1,21 +1,19 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-const routerOptions = [
-  { path: '/', component: 'Logged' },
-  { path: '/about', component: 'About' }
-]
-
-const routes = routerOptions.map(route => {
-  return {
-    ...route,
-    component: () => import(`@/components/${route.component}.vue`),
-  }
-})
-
 Vue.use(Router)
 
 export default new Router({
-  routes,
-  mode: 'history'
+  mode: 'history',
+  routes:[
+  {
+    path: '/',
+    name: 'Login',
+    component: () => import('../views/Login'),
+  },
+  {
+    path: '/main',
+    name: 'Main',
+    component: () => import('../views/Main'),
+  }]
 })
