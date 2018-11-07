@@ -1,14 +1,16 @@
 # coding=utf-8
 import pymysql
 
+from dist.DB_CONNECT_INFO import DB_CONNECT_INFO
+
 
 class DBUtils(object):
 
     def __init__(self,max_conn_num=10):
-        self.host = '127.0.0.1'
-        self.username = 'root'
-        self.passwd = '1314'
-        self.database = 'cutedada'
+        self.host = DB_CONNECT_INFO['HOST']
+        self.username = DB_CONNECT_INFO['USER']
+        self.passwd = DB_CONNECT_INFO['PASSWORD']
+        self.database = DB_CONNECT_INFO['DATABASE']
         self.db_connt_pool = []
         self.max_conn_num = max_conn_num
         self.full_pool()
