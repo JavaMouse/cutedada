@@ -67,7 +67,7 @@
                 let data = {
                     ...this.loginForm
                 }
-                let response = await this.$axios.post('/login', data)
+                let response = await this.$axios.post('user/login', data)
                 this.$router.push('/echarts')
             },
             resetForm(formName) {
