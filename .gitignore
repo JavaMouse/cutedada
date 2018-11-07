@@ -19,3 +19,6 @@ deploy_key_rsa
 *.iml
 
 dist/*
+
+
+venv
