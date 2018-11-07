@@ -6,7 +6,7 @@ def login(username,password):
     user = UserDAO.findUserByUsername(username)
     if user is None:
         return_json = {
-            'code':0,
+            'code':400,
             'data':{
                 'pass':False,
                 'info':'没有该用户'
@@ -16,7 +16,7 @@ def login(username,password):
         return return_json
     if password != user.password:
         return_json = {
-            'code':0,
+            'code':400,
             'data':{
                 'pass':False,
                 'info':'密码错误'

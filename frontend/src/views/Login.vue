@@ -54,21 +54,16 @@
                 });
             },
             async loginSubmit () {
-                // axios.post('127.0.0.1:5050/user/login', {
-                //     username : this.loginForm.username,
-                //     password: this.loginForm.password
-                // })
-                // .then(function (response) {
-                //     console.log(response);
-                // })
-                // .catch(function (error) {
-                //     console.log(error);
-                // });
                 let data = {
                     ...this.loginForm
                 }
                 let response = await this.$axios.post('user/login', data)
-                this.$router.push('/echarts')
+                if(response.code === 0){
+                    this.$router.push('/echarts')
+                } else {
+                    this.$message.warning('用户名或密码不正确!')
+                    return false
+                }
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
