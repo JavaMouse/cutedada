@@ -28,7 +28,7 @@ def login(username,password):
         'code':0,
             'data':{
                 'pass':True,
-                'info':'密码错误'
+                'info':'正确'
             },
             'message':None
     }

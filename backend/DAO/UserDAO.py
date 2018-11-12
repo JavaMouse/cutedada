@@ -10,7 +10,7 @@ class UserDAO(object):
 
     # 根据username查找用户
     @classmethod
-    def findUserByUsername(self,username):
+    def findUserByUsername(cls,username):
         db = dbutils.get_connect()
         cursor = db.cursor()
         cursor.execute('''
