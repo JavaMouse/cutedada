@@ -23,6 +23,10 @@ export default new Router({
           path: '/echarts',
           name: 'ECharts',
           component: () => import('../views/baseInfo/echart')
+        },{
+          path: '/echarts2',
+          name: 'ECharts2',
+          component: () => import('../views/baseInfo/echart2')
         }]
     }]
   }]
