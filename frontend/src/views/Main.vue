@@ -8,7 +8,7 @@
         </div>
         <MySide v-model="collapsible"></MySide>
       </el-aside>
-      <el-main style="background: #f1f1f7;padding: 0;" ref="right9">
+      <el-main style="background: #f1f1f7;padding: 0;margin:0;" ref="right9">
         <el-header class="header-crumb">
           <!-- <bread-crumb></bread-crumb> -->
           <div class="headerDiv">
@@ -90,13 +90,13 @@
     }
 
     .header-crumb {
-      padding: 0;
-      margin: 0;
-      height: 100%;
+      padding: 0!important;
+      margin: 0!important;
+      height: 50px!important;
       .headerDiv {
         padding: 0;
         margin: 0;
-        height: 100%;
+        height: 50px;
         background-color: #4B4F58;
         .headerBtn {
           background: none;
@@ -104,8 +104,8 @@
           color: #F1F1F7;
           font-weight: bold;
           float: right;
-          margin-top: 15px;
           margin-right: 20px;
+          margin-top: 10px;
           font-size: 14px;
         }
       }

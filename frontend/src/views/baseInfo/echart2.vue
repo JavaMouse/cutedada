@@ -3,94 +3,275 @@
         <el-header class="page-topic">
             数据表:
             <el-select v-model="value" size="small" placeholder="请选择数据表" @blur="blurChange">
-                    <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
-                    </el-option>
-                </el-select>
+                <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
+                </el-option>
+            </el-select>
+            <el-button @click="change">刷新</el-button>
         </el-header>
         <el-main class="main">
-            <!-- <div>
+            <div>
                 <div>
                     <div v-for="item in colItem">{{item}}</div>
                 </div>
-            </div> -->
-            <div id="box">
-                <div id="myChart" v-bind:style="styleObj"></div>
-                <div id="coor"></div>
             </div>
-            <div id="box">
-                <div id="myChart2" v-bind:style="styleObj"></div>
-                <div id="coor"></div>
+            <div class="box" v-for="item in seriesData">
+                <div class="btnContain">
+                    <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button>
+                    <el-button @click="chartCheck(item.index)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
+                    <el-button @click="chartCheck(item.index)" icon="el-icon-search" size="mini" circle></el-button>
+                </div>
+                <div v-bind:style="styleObj" :ref="item.name"></div>
             </div>
-
-
         </el-main>
-
     </el-container>
-
 </template>
-
 <script>
     import echarts from 'echarts'
-    import VueDraggableResizable from 'vue-draggable-resizable'
+    let option1 = {
+        title: {
+            text: '误报数量与在线台数环比增长关系',
+            show: false
+        },
+        tooltip: {
+            show: true,
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: {
+            bottom: 20
+        },
+        grid: {
+            left: 58,
+            top: 55,
+            right: 20,
+            bottom: 84
+        },
+        xAxis: {
+            type: 'category',
+            data: [],
+            nameTextStyle: {
+                color: '#4B4F58',
+                align: 'right'
+            },
+            nameGap: 20,
+            axisLine: {
+                lineStyle: {
+                    color: '#EAEBF0'
+                }
+            },
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                color: '#878A92'
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: '困人数',
+            nameTextStyle: {
+                color: '#4B4F58',
+                align: 'right',
+                padding: [0, 40, 10, 0]
+            },
+            nameGap: 10,
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                color: '#878A92'
+            },
+            splitLine: {
+                lineStyle: {
+                    color: '#EAEBF0'
+                }
+            }
+        },
+        color: ['#F5810F', '#3083F2', '#10C79E'],
+        series: [{
+            name: '误报数量',
+            type: 'line',
+            barWidth: 6,
+            data: ['12', '2', '3']
+        }, {
+            name: '深度学习误报数',
+            type: 'bar',
+            barWidth: 6,
+            data: ['7', '6', '1']
+        }, {
+            name: '电梯数量',
+            type: 'bar',
+            barWidth: 6,
+            data: ['2', '2', '1']
+        }]
+    }
+
+    let option2 = {
+        title: {
+            text: '困人误报率',
+            show: false
+        },
+        tooltip: {
+            show: true,
+            trigger: 'axis',
+            formatter: '{b}: {c}%'
+        },
+        grid: {
+            left: 58,
+            top: 55,
+            right: 40,
+            bottom: 84
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: [],
+            nameTextStyle: {
+                color: '#4B4F58',
+                align: 'right'
+            },
+            nameGap: 20,
+            axisLine: {
+                lineStyle: {
+                    color: '#EAEBF0'
+                }
+            },
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                color: '#878A92'
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: '误报率',
+            nameTextStyle: {
+                color: '#4B4F58',
+                align: 'right',
+                padding: [0, 40, 10, 0]
+            },
+            nameGap: 10,
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                color: '#878A92',
+                formatter(val) {
+                    return val + '%'
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: '#EAEBF0'
+                }
+            }
+        },
+        color: ['#7825FA'],
+        series: [{
+            name: '误报率',
+            type: 'line',
+            data: [80, 400, 200, 210, 180, 150, 260],
+            areaStyle: {
+                color: {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 0,
+                    y2: 1,
+                    colorStops: [{
+                        offset: 0, color: 'RGBA(120, 37, 250, 1)'
+                    }, {
+                        offset: 1, color: 'RGBA(120, 37, 250, 0)'
+                    }]
+                }
+            }
+        }]
+    }
     export default {
         name: 'Echarts2',
         components: {
-            VueDraggableResizable
         },
-        data() {
+        data () {
             return {
+                barChart: {},
+                barChartList: [],
+                // barOption: option1,
                 tableNames: [],
                 value: '',
                 colItem: [],
-                a: '',
-                isChange: false,
+                chartList: [],
                 styleObj: {
                     width: '100%',
-                    height: '100%'
+                    height: '90%'
                 },
-                tabNames: [
-                    '111',
-                    '222',
-                    '333'
-                ]
-
+                seriesData: {}
             }
         },
         watch: {
-            a: function (val, oldVal) {
-                console.log('new: %s, old: %s', val, oldVal)
-                this.drawLine()
-                let myChart = this.$echarts.init(document.getElementById('myChart'))
-                myChart.clear();
-                myChart.setOption({
-                    title: { text: 'echarts' },
-                    tooltip: {},
-                    xAxis: {
-                        data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
-                    },
-                    yAxis: {},
-                    series: [{
-                        name: '销量',
-                        type: 'bar',
-                        data: [5, 20, 36, 10, 10, 20]
-                    }]
-                });
-            }
         },
-        mounted() {
-            // this.add()
-            this.drawLine()
-            this.width = $('#box').width()
+        mounted () {
+            // this.initChart()
+            // this.renderChart()
+            window.onresize = () => {
+                // this.barChart.resize()
+                // this.lineChart.resize()
+            }
             this.getTableList()
         },
         methods: {
-            async blurChange() {
-                let response = await this.$axios.get('/table/fields/user', { tablename: this.tableNames[0] })
-                this.colItem = response.data.fields
+            change () {
+                let chartData = [{ name: 'chart1', option: option1, index: 0 }, { name: 'chart2', option: option2, index: 1 },]
+                // let seriesData = [];
+                // chartData.forEach(function (item) {
+                //     let outObj = {};
+                //     let valueKey = Object.keys(item);
+                //     outObj.name = item[valueKey[0]];
+                //     outObj.value = item[valueKey[1]];
+                //     outObj.index = item[valueKey[2]];
+                //     seriesData.push(outObj);
+                //     // this.renderChart(item)
+                // });
+                this.seriesData = chartData
+                // console.log(this.seriesData)
+
+                this.$nextTick(() => {
+                    this.initChart(this.seriesData)
+                    this.renderChart(this.seriesData)
+                })
             },
-            async getTableList() {
+            initChart (arr) {
+                arr.forEach(item => {
+                    let name = item.name
+                    // console.log(this.$refs[name][0])
+                    this.barChartList[item.index] = echarts.init(this.$refs[name][0])
+                })
+            },
+            renderChart (val) {
+                val.forEach(item => {
+                    this.barChartList[item.index].setOption(item.option)
+                })
+            },
+            chartCheck (value) {
+                console.log('you choice: ' + value)
+            },
+            async blurChange () {
+                let response = await this.$axios.get('/table/fields/user', { tablename: this.tableNames[0] })
+                if (response.code === 0) {
+                    this.colItem = response.data.fields
+                }
+            },
+            async getTableList () {
                 let response = await this.$axios.get('/table/tableNames')
-                if(response.code === 0){
+                if (response.code === 0) {
                     this.tableNames = response.data.tableNames
                     this.blurChange()
                 }
@@ -122,7 +303,6 @@
             //                 });
             //             }
             //         });
-
             //         var $box = $('#box').mousedown(function (e) {
             //             var offset = $(this).offset();
 
@@ -151,57 +331,18 @@
             //         });
             //     });
             // },
-            drawLine() {
-                let myChart = this.$echarts.init(document.getElementById('myChart'))
-                let myChart2 = this.$echarts.init(document.getElementById('myChart2'))
-                myChart.setOption({
-                    title: { text: 'echarts' },
-                    tooltip: {},
-                    xAxis: {
-                        data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
-                    },
-                    yAxis: {},
-                    series: [{
-                        name: '销量',
-                        type: 'bar',
-                        data: [5, 20, 36, 10, 10, 20]
-                    }]
-                });
-                myChart2.setOption({
-                    title: { text: 'echarts' },
-                    tooltip: {},
-                    xAxis: {
-                        data: ["aaa", "sss", "ddd", "aaa", "sss", "ddd"]
-                    },
-                    yAxis: {},
-                    series: [{
-                        name: '销量',
-                        type: 'line',
-                        data: [5, 20, 36, 10, 10, 20]
-                    }]
-                });
-                window.onresize = myChart.resize;
-                // $("#box").resize(function(){  
-                //     myChart.resize(); 
-                // })
-                // window.addEventListener("resize", () => { Echarts2.resize();});
-                // window.addEventListener("resize", () => { 
-                //     this.myChart.resize();  
-                // });
-
-            }
-
         }
     }
 </script>
 <style lang="scss" scoped>
     .main {
         width: 100%;
-        padding: 0!important;
-        margin: 0!important;
+        padding: 0 !important;
+        margin: 0 !important;
         position: relative;
     }
-    #box {
+
+    .box {
         display: inline-block;
         margin-left: 10px;
         width: 45%;
@@ -215,8 +356,16 @@
         -moz-box-shadow: 10px 10px 25px #ccc;
         box-shadow: 10px 10px 25px #ccc;
         overflow: hidden;
+        border-radius: 15px;
+
+        .btnContain {
+            text-align: right;
+            padding-right:10px;
+            padding-top:10px;
+        }
     }
-    #coor {
+
+    /* #coor {
         width: 10px;
         height: 10px;
         overflow: hidden;
@@ -225,7 +374,7 @@
         right: 0;
         bottom: 0;
         background-color: #09C;
-    }
+    } */
 
     .page-topic {
         height: 70px !important;
