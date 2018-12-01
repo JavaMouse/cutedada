@@ -15,18 +15,34 @@
                 </div>
             </div>
             <div class="box" v-for="item in seriesData">
+                <fullscreen ref="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;">
                 <div class="btnContain">
                     <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button>
                     <el-button @click="chartCheck(item.index)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
-                    <el-button @click="chartCheck(item.index)" icon="el-icon-search" size="mini" circle></el-button>
+                    <el-button @click="toggle(item.index)" icon="el-icon-search" size="mini" circle></el-button>
                 </div>
                 <div v-bind:style="styleObj" :ref="item.name"></div>
+            </fullscreen>
             </div>
+       
+            <!-- <template>
+                    <vue-draggable-resizable class="box2" v-for="item in seriesData" :w="500" :h="400" v-on:dragging="onDrag" v-on:resizing="onResize(item.index)" :parent="true">
+                            <div class="btnContain">
+                                <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button>
+                                <el-button @click="chartCheck(item.index)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
+                                <el-button @click="chartCheck(item.index)" icon="el-icon-search" size="mini" circle></el-button>
+                            </div>
+                            <div v-bind:style="styleObj" :ref="item.name"></div>
+                    </vue-draggable-resizable>
+            </template> -->
+            
         </el-main>
     </el-container>
 </template>
 <script>
     import echarts from 'echarts'
+    import VueDraggableResizable from 'vue-draggable-resizable'
+
     let option1 = {
         title: {
             text: '误报数量与在线台数环比增长关系',
@@ -50,7 +66,7 @@
         },
         xAxis: {
             type: 'category',
-            data: [],
+            data: ['1月','2月','3月','4月'],
             nameTextStyle: {
                 color: '#4B4F58',
                 align: 'right'
@@ -119,7 +135,9 @@
         tooltip: {
             show: true,
             trigger: 'axis',
-            formatter: '{b}: {c}%'
+            axisPointer:{
+                type: 'shadow'
+            }
         },
         grid: {
             left: 58,
@@ -130,7 +148,7 @@
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: [],
+            data: ['1','2','3','4','5','6','7'],
             nameTextStyle: {
                 color: '#4B4F58',
                 align: 'right'
@@ -199,12 +217,17 @@
     export default {
         name: 'Echarts2',
         components: {
+            'vue-draggable-resizable': VueDraggableResizable
         },
         data () {
             return {
+                fullscreen: false,
+                width: 0,
+                height: 0,
+                x: 0,
+                y: 0,
                 barChart: {},
                 barChartList: [],
-                // barOption: option1,
                 tableNames: [],
                 value: '',
                 colItem: [],
@@ -217,31 +240,48 @@
             }
         },
         watch: {
+            
         },
         mounted () {
-            // this.initChart()
-            // this.renderChart()
+            this.change()
             window.onresize = () => {
-                // this.barChart.resize()
-                // this.lineChart.resize()
+                this.seriesData.forEach(item=>{
+                    echarts.init(this.$refs[item.name][0]).resize()
+                })
             }
             this.getTableList()
         },
         methods: {
+            toggle (value) {
+                this.$refs['fullscreen'][value].toggle() 
+            },
+            fullscreenChange (fullscreen) {
+                console.log(fullscreen)
+                this.fullscreen = fullscreen
+
+            },
+            onResize: function (x, y, width, height) {
+                this.x = x
+                this.y = y
+                this.width = width
+                this.height = height
+            },
+            onDrag: function (x, y) {
+                this.x = x
+                this.y = y
+            },
             change () {
                 let chartData = [{ name: 'chart1', option: option1, index: 0 }, { name: 'chart2', option: option2, index: 1 },]
-                // let seriesData = [];
-                // chartData.forEach(function (item) {
-                //     let outObj = {};
-                //     let valueKey = Object.keys(item);
-                //     outObj.name = item[valueKey[0]];
-                //     outObj.value = item[valueKey[1]];
-                //     outObj.index = item[valueKey[2]];
-                //     seriesData.push(outObj);
-                //     // this.renderChart(item)
-                // });
+                let seriesData = [];
+                chartData.forEach(function (item) {
+                    let outObj = {};
+                    let valueKey = Object.keys(item);
+                    outObj.name = item[valueKey[0]];
+                    outObj.value = item[valueKey[1]];
+                    outObj.index = item[valueKey[2]];
+                    seriesData.push(outObj);
+                });
                 this.seriesData = chartData
-                // console.log(this.seriesData)
 
                 this.$nextTick(() => {
                     this.initChart(this.seriesData)
@@ -251,7 +291,6 @@
             initChart (arr) {
                 arr.forEach(item => {
                     let name = item.name
-                    // console.log(this.$refs[name][0])
                     this.barChartList[item.index] = echarts.init(this.$refs[name][0])
                 })
             },
@@ -275,62 +314,7 @@
                     this.tableNames = response.data.tableNames
                     this.blurChange()
                 }
-            },
-            // add() {
-            //     let that = this;
-            //     $(function () {
-            //         $(document).mousemove(function (e) {
-            //             if (!!this.move) {
-            //                 var posix = !document.move_target ? { 'x': 0, 'y': 0 } : document.move_target.posix,
-            //                     callback = document.call_down || function () {
-            //                         $(this.move_target).css({
-            //                             'top': e.pageY - posix.y,
-            //                             'left': e.pageX - posix.x
-            //                         });
-            //                     };
-
-            //                 callback.call(this, e, posix);
-            //             }
-            //         }).mouseup(function (e) {
-            //             if (!!this.move) {
-            //                 var callback = document.call_up || function () { };
-            //                 callback.call(this, e);
-            //                 $.extend(this, {
-            //                     'move': false,
-            //                     'move_target': null,
-            //                     'call_down': false,
-            //                     'call_up': false
-            //                 });
-            //             }
-            //         });
-            //         var $box = $('#box').mousedown(function (e) {
-            //             var offset = $(this).offset();
-
-            //             this.posix = { 'x': e.pageX - offset.left, 'y': e.pageY - offset.top };
-            //             $.extend(document, { 'move': true, 'move_target': this });
-            //         }).on('mousedown', '#coor', function (e) {
-            //             var posix = {
-            //                 'w': $box.width(),
-            //                 'h': $box.height(),
-            //                 'x': e.pageX,
-            //                 'y': e.pageY
-            //             };
-            //             that.a = posix.w + 'px'
-            //             console.log(posix)
-            //             console.log(that.a)
-
-            //             $.extend(document, {
-            //                 'move': true, 'call_down': function (e) {
-            //                     $box.css({
-            //                         'width': Math.max(30, e.pageX - posix.x + posix.w),
-            //                         'height': Math.max(30, e.pageY - posix.y + posix.h)
-            //                     });
-            //                 }
-            //             });
-            //             return false;
-            //         });
-            //     });
-            // },
+            }
         }
     }
 </script>
@@ -358,6 +342,18 @@
         overflow: hidden;
         border-radius: 15px;
 
+        .btnContain {
+            text-align: right;
+            padding-right:10px;
+            padding-top:10px;
+        }
+    }
+    .box2 {
+        background-color: #FFF;
+        float: left;
+        -webkit-box-shadow: 10px 10px 25px #ccc;
+        -moz-box-shadow: 10px 10px 25px #ccc;
+        box-shadow: 10px 10px 25px #ccc;
         .btnContain {
             text-align: right;
             padding-right:10px;
