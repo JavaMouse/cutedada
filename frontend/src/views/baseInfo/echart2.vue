@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="box" v-for="item in seriesData">
-                <fullscreen ref="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;">
+                <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;">
                 <div class="btnContain">
                     <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button>
                     <el-button @click="chartCheck(item.index)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
@@ -256,8 +256,12 @@
                 this.$refs['fullscreen'][value].toggle() 
             },
             fullscreenChange (fullscreen) {
-                console.log(fullscreen)
                 this.fullscreen = fullscreen
+                this.$nextTick(() => {
+                        this.seriesData.forEach(item=>{
+                        echarts.init(this.$refs[item.name][0]).resize()
+                    })
+                })
 
             },
             onResize: function (x, y, width, height) {
