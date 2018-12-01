@@ -18,7 +18,7 @@
                 <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;">
                 <div class="btnContain">
                     <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button>
-                    <el-button @click="chartCheck(item.index)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
+                    <el-button @click="deleteChart(item.index)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
                     <el-button @click="toggle(item.index)" icon="el-icon-search" size="mini" circle></el-button>
                 </div>
                 <div v-bind:style="styleObj" :ref="item.name"></div>
@@ -46,7 +46,7 @@
     let option1 = {
         title: {
             text: '误报数量与在线台数环比增长关系',
-            show: false
+            // show: false
         },
         tooltip: {
             show: true,
@@ -130,7 +130,7 @@
     let option2 = {
         title: {
             text: '困人误报率',
-            show: false
+            // show: false
         },
         tooltip: {
             show: true,
@@ -300,11 +300,20 @@
             },
             renderChart (val) {
                 val.forEach(item => {
-                    this.barChartList[item.index].setOption(item.option)
+                    this.barChartList[item.index].setOption(item.option,true)
                 })
             },
             chartCheck (value) {
                 console.log('you choice: ' + value)
+            },
+            deleteChart (value) {
+                console.log(value)
+                this.seriesData.splice(value,1)
+                console.log(this.seriesData)
+                this.$nextTick(() => {
+                    this.initChart(this.seriesData)
+                    this.renderChart(this.seriesData)
+                })
             },
             async blurChange () {
                 let response = await this.$axios.get('/table/fields/user', { tablename: this.tableNames[0] })
