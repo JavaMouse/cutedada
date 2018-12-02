@@ -46,7 +46,7 @@
     let option1 = {
         title: {
             text: '误报数量与在线台数环比增长关系',
-            // show: false
+            show: false
         },
         tooltip: {
             show: true,
@@ -66,7 +66,7 @@
         },
         xAxis: {
             type: 'category',
-            data: ['1月','2月','3月','4月'],
+            data: ['1月','2月','3月'],
             nameTextStyle: {
                 color: '#4B4F58',
                 align: 'right'
@@ -130,7 +130,7 @@
     let option2 = {
         title: {
             text: '困人误报率',
-            // show: false
+            show: false
         },
         tooltip: {
             show: true,
@@ -306,14 +306,30 @@
             chartCheck (value) {
                 console.log('you choice: ' + value)
             },
+            // 删除
             deleteChart (value) {
-                console.log(value)
-                this.seriesData.splice(value,1)
-                console.log(this.seriesData)
-                this.$nextTick(() => {
-                    this.initChart(this.seriesData)
-                    this.renderChart(this.seriesData)
-                })
+                this.$confirm('此操作将永久删除该图表, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then(() => {
+                    this.seriesData.splice(value,1)
+                    console.log(this.seriesData)
+                    this.$nextTick(() => {
+                        this.initChart(this.seriesData)
+                        this.renderChart(this.seriesData)
+                    })
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
             async blurChange () {
                 let response = await this.$axios.get('/table/fields/user', { tablename: this.tableNames[0] })
