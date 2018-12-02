@@ -16,6 +16,7 @@
         unique-opened
         :default-openeds="menuOpenName"
         router
+        @select="handleSelect"
       >
         <template v-for="menu in menuList">
           <el-submenu v-if="menu.children" :key="menu.menuCode" :index="menu.menuCode" class="menuItem">
@@ -121,7 +122,7 @@ export default {
       }
     }
     return {
-      menuActiveName: 'Home',
+      menuActiveName: 'echarts2',
       menuOpenName: [],
       modalChangePassword: {},
       rules: {
@@ -145,16 +146,16 @@ export default {
     menuList () {
       return [
         {
-          menuCode: "SY",
+          menuCode: "echarts2",
           menuName: "展示页面",
-          children:[{
-            menuCode: "1",
-            menuName: "1/1"
-          }]
+          // children:[{
+          //   menuCode: "1",
+          //   menuName: "1/1"
+          // }]
         },
         {
-          menuCode: "S",
-          menuName: "编辑页面"
+          menuCode: "echarts",
+          menuName: "测试页面"
         }]
     },
     appUserInfo () {
@@ -170,6 +171,10 @@ export default {
           return false
         }
       })
+    },
+    handleSelect (index,indexPath) {
+      console.log(index)
+      console.log(indexPath)
     },
     async fSubmitPassword () {
       // let response = await this.$axios.get('user/updatePassword', {
