@@ -275,7 +275,7 @@
                 this.y = y
             },
             change () {
-                let chartData = [{ name: 'chart1', option: option1, index: 0 }, { name: 'chart2', option: option2, index: 1 },]
+                let chartData = [{ name: 'chart1', option: option1, index: 0 }, { name: 'chart2', option: option2, index: 1 }, { name: 'chart3', option: option2, index: 2 }]
                 let seriesData = [];
                 chartData.forEach(function (item) {
                     let outObj = {};
@@ -353,12 +353,14 @@
         padding: 0 !important;
         margin: 0 !important;
         position: relative;
+        text-align: left;
     }
 
     .box {
         display: inline-block;
-        margin-left: 10px;
-        width: 45%;
+        margin-left: 30px;
+        margin-bottom: 20px;
+        width: 46%;
         height: 400px;
         cursor: move;
         position: relative;
