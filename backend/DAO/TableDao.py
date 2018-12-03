@@ -21,16 +21,36 @@ class TableDAO(object):
     def getTableFiledsByName(cls,tableName):
         db = dbutils.get_connect()
         cursor = db.cursor()
-        cursor.execute("desc %s" %(tableName) )
+        sql = '''
+        select
+            ORDINAL_POSITION as id, 
+            COLUMN_NAME as field,
+            DATA_TYPE as field_type,
+            COLUMN_COMMENT as memo
+        from 
+            information_schema.COLUMNS 
+        where 
+            table_name = '%s'
+        
+        '''  %(tableName)
+        print(sql)
+        cursor.execute(sql)
+
         data = cursor.fetchall()
         if data is None:
             return None
         fields = []
         for d in data:
-            fields.append(d[0])
+            r = {
+                "id":d[0],
+                "field":d[1],
+                "field_type":d[2],
+                "memo":d[3]
+            }
+            fields.append(r)
         dbutils.close(db)
         return list(fields)
 
 if __name__ == '__main__':
-    a = TableDAO.getTableFiledsByName("user")
+    a = TableDAO.getTableFiledsByName("demo_data_weather")
     print(a)
