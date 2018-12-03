@@ -52,7 +52,7 @@ ul.drag-list, ul.drag-inner-list {
 }
 
 .drag-item {
-    height: 100px;
+    margin: 5px;
     background: rgba(black, 0.4);
     transition: $ease-out;
 
