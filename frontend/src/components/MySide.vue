@@ -156,6 +156,10 @@ export default {
         {
           menuCode: "echarts",
           menuName: "测试页面"
+        },
+        {
+          menuCode: "edit",
+          menuName: "编辑页面"
         }]
     },
     appUserInfo () {

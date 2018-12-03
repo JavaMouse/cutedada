@@ -8,9 +8,10 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from './util/axios'
 import echarts from 'echarts'
 import fullscreen from 'vue-fullscreen'
+import vueKanban from 'vue-kanban'
 
+Vue.use(vueKanban)
 Vue.use(fullscreen)
-
 Vue.prototype.$echarts = echarts 
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
