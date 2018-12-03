@@ -8,14 +8,17 @@ class TableDAO(object):
 
     @classmethod
     def getTableNames(cls):
+        tableNameList = []
         db = dbutils.get_connect()
         cursor = db.cursor()
         cursor.execute("show tables;")
-        data = cursor.fetchone()
+        data = cursor.fetchall()
         if data is None:
             return None
         dbutils.close(db)
-        return list(data)
+        for d in data:
+            tableNameList.append(d[0])
+        return tableNameList
 
     @classmethod
     def getTableFiledsByName(cls,tableName):
@@ -33,7 +36,6 @@ class TableDAO(object):
             table_name = '%s'
         
         '''  %(tableName)
-        print(sql)
         cursor.execute(sql)
 
         data = cursor.fetchall()
@@ -52,5 +54,7 @@ class TableDAO(object):
         return list(fields)
 
 if __name__ == '__main__':
-    a = TableDAO.getTableFiledsByName("demo_data_weather")
-    print(a)
+    print(TableDAO.getTableNames())
+
+    # a = TableDAO.getTableFiledsByName("demo_data_weather")
+    # print(a)
