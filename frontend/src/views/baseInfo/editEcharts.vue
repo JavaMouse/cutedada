@@ -158,8 +158,16 @@
                 console.log(blockArr)
             },
             updateBlock(id, status) {
+                let count = 0
+                this.blocks.forEach(item=>{
+                    if(item.status === 'x轴'){
+                        count++
+                    }
+                })
+                console.log(count)
                 this.blocks.find(b => b.id === Number(id)).status = status;
                 console.log(id,status)
+
             },
             async blurChange () {
                 console.log(this.value)
