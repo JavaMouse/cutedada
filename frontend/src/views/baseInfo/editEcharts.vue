@@ -1,49 +1,73 @@
 <template>
     <el-container>
         <el-header class="page-topic">
-            数据表:
-            <el-select v-model="value" size="mini" placeholder="请选择数据表" @change="blurChange">
-                <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
-                </el-option>
-            </el-select>
-             图表类型:
-            <el-select v-model="chartName" size="mini" placeholder="请选择数据表">
-                <el-option v-for="item in chartTypeList" :key="item" :label="item" :value="item">
-                </el-option>
-            </el-select>
-            <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
-        </el-header>
-        <el-main class="main">
-            <!-- <div>
-                <div>
-                    <div v-for="item in colItem">{{item}}</div>
-                </div>
-            </div> -->
-            <!-- <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock"></kanban-board> -->
-            <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock">
-                <div v-for="stage in stages" :slot="stage" class="stageDiv">
-                    <h5>{{ stage }}</h5>
-                </div>
-                <div v-for="block in blocks" :slot="block.id" class="blockDiv">
-                    <!-- <div>
-                        <strong>id:</strong> {{ block.id }}
-                        </div> -->
-                        <div>
-                        {{ block.title }} ( {{block.col}} )
-                    </div>
-                </div>
-            </kanban-board>
-
-            <div style="width:100%;height:500px;">
-                    <div v-bind:style="styleObj" ref="myChart"></div>
-            </div>
             
-        </el-main>
+        </el-header>
+        <div class="content">
+            <div class="stepDiv">
+                <el-steps :active="activeNum" align-center>
+                    <el-step title="步骤1" description="这是一段很长很长很长的描述性文字"></el-step>
+                    <el-step title="步骤2" description="这是一段很长很长很长的描述性文字"></el-step>
+                    <el-step title="步骤3" description="这是一段很长很长很长的描述性文字"></el-step>
+                    <el-step title="步骤4" description="这是一段很长很长很长的描述性文字"></el-step>
+                </el-steps>
+                <el-button size="mini" style="margin-top: 12px;" @click="next">下一步</el-button>
+                <el-button size="mini" style="margin-top: 12px;" @click="pre">上一步</el-button>
+
+            </div>
+            <div class="contentDiv" v-if="activeNum===1">
+                 请选择数据表:
+                <el-select v-model="value" size="mini" placeholder="请选择数据表" @change="blurChange">
+                    <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="contentDiv" v-if="activeNum===2">
+                <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock">
+                    <div v-for="(stage,index) in stages" :key="index" :slot="stage" class="stageDiv">
+                        <h5>{{ stage }}</h5>
+                    </div>
+                    <div v-for="(block,index) in blocks" :key="index" :slot="block.id" class="blockDiv">
+                            <div>
+                            {{ block.title }} ( {{block.col}} )
+                        </div>
+                    </div>
+                </kanban-board>
+            </div>
+            <div class="contentDiv" v-if="activeNum===3">
+                图表类型:
+                <el-select v-model="chartName" size="mini" placeholder="请选择数据表" class="dropStyle">
+                    <el-option v-for="item in chartTypeList" :key="item" :label="item" :value="item">
+                    </el-option>
+                </el-select><br>
+                x轴过滤器内容:
+                <el-input class="dropStyle" size="mini" v-model="input" style="width:160px"></el-input><br>
+                x轴度量:
+                <el-select class="dropStyle" v-model="xMetric" size="mini" placeholder="请选择x轴度量">
+                    <el-option v-for="item in xMetricList" :key="item" :label="item" :value="item">
+                    </el-option>
+                </el-select><br>
+                y轴度量:
+                <el-select class="dropStyle" v-model="yMetric" size="mini" placeholder="请选择y轴度量">
+                    <el-option v-for="item in yMetricList" :key="item" :label="item" :value="item">
+                    </el-option>
+                </el-select><br>
+            </div>
+            <div class="contentDiv" v-if="activeNum===4">
+                <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
+                 <div style="width:100%;height:500px;">
+                    <div v-bind:style="styleObj" ref="myChart"></div>
+                </div>
+            </div>
+        </div>
     </el-container>
 </template>
 <script>
     import echarts from 'echarts'
     import '../../css/kanban.css'
+    // import '../../util/kanban1.js'
+    // import '../../util/kanban2.js'
+    // import '../../util/kanban3.js'
     let option = {
     color: ['#3398DB'],
     tooltip : {
@@ -89,6 +113,16 @@
         },
         data () {
             return {
+                activeNum: 1,
+                input: '',
+                xMetric: '',
+                yMetric: '',
+                xMetricList: [
+                    'avg','sum','count'
+                ],
+                yMetricList: [
+                    'avg','sum','count'
+                ],
                 styleObj: {
                     width: '100%',
                     height: '90%'
@@ -122,7 +156,10 @@
                     title: 'Test',
                     col: ''
                     },
-                ]
+                ],
+                xlist: [],
+                ylist: [],
+                slist: []
             }
         },
 
@@ -134,6 +171,16 @@
             this.test()
         },
         methods: {
+            next() {
+                if (this.activeNum < 4) {
+                    this.activeNum++
+                }
+            },
+            pre() {
+                if (this.activeNum > 1) {
+                    this.activeNum--
+                }
+            },
             drawChart () {
                 this.initChart()
                 this.renderChart()
@@ -155,19 +202,30 @@
                     })
                 });
                 this.blocks = blockArr
-                console.log(blockArr)
+                // console.log(blockArr)
             },
             updateBlock(id, status) {
-                let count = 0
-                this.blocks.forEach(item=>{
-                    if(item.status === 'x轴'){
-                        count++
-                    }
-                })
-                console.log(count)
+                this.xlist = []
+                this.ylist = []
+                this.slist = []
+                
                 this.blocks.find(b => b.id === Number(id)).status = status;
                 console.log(id,status)
 
+                this.blocks.forEach(item=>{
+                    if(item.status === 'x轴'){
+                        this.xlist.push(item.title)
+                    }
+                    else if(item.status === 'y轴'){
+                        this.ylist.push(item.title)
+                    }
+                    else if(item.status === 'series'){
+                        this.slist.push(item.title)
+                    }
+                })
+                console.log('xlist:' + this.xlist)
+                console.log('ylist:' + this.ylist)
+                console.log('slist:' + this.slist)
             },
             async blurChange () {
                 console.log(this.value)
@@ -182,18 +240,16 @@
                 if (response.code === 0) {
                     this.tableNames = response.data.tableNames
                 }
+                let province = '浙江'
+                let res = await this.$axios.get('/table/colNames/'+province)
             }
             
         }
     }
 </script>
 <style lang="scss" scoped>
-    .main {
-        width: 100%;
-        padding: 0 !important;
-        margin: 0 !important;
-        position: relative;
-        text-align: left;
+    .content{
+        height: calc(100% - 50px);
     }
     .page-topic {
         height: 70px !important;
@@ -201,6 +257,7 @@
         box-shadow: 0 -1px 0 0 #EAEBF0 inset;
         text-align: left;
         line-height: 70px;
+        overflow: hidden;
     }
     .stageDiv{
     }
@@ -211,6 +268,20 @@
     /deep/ .drag-inner-list{
         list-style-type: none;
         padding: 0;
-        background-color: #fff;
+        background-color: #ddd7d7;
+    }
+    .stepDiv{
+        width: 90%;
+        margin: 0 auto;
+        padding-top: 40px;
+        padding-bottom: 20px;
+    }
+    .contentDiv{
+        // border: 2px solid #c0c4cc;
+        width: 90%;
+        margin: 10px auto;
+    }
+    .dropStyle{
+        margin-top: 15px;
     }
 </style>
