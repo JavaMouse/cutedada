@@ -6,10 +6,10 @@
         <div class="content">
             <div class="stepDiv">
                 <el-steps :active="activeNum" align-center>
-                    <el-step title="步骤1" description="这是一段很长很长很长的描述性文字"></el-step>
-                    <el-step title="步骤2" description="这是一段很长很长很长的描述性文字"></el-step>
-                    <el-step title="步骤3" description="这是一段很长很长很长的描述性文字"></el-step>
-                    <el-step title="步骤4" description="这是一段很长很长很长的描述性文字"></el-step>
+                    <el-step title="步骤1" description="选择数据表"></el-step>
+                    <el-step title="步骤2" description="选择x轴、y轴字段"></el-step>
+                    <el-step title="步骤3" description="填写过滤器。度量内容"></el-step>
+                    <el-step title="步骤4" description="生成图表"></el-step>
                 </el-steps>
                 <el-button size="mini" style="margin-top: 12px;" @click="next">下一步</el-button>
                 <el-button size="mini" style="margin-top: 12px;" @click="pre">上一步</el-button>
