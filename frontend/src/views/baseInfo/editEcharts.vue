@@ -15,14 +15,14 @@
                 <el-button size="mini" style="margin-top: 12px;" @click="pre">上一步</el-button>
 
             </div>
-            <div class="contentDiv" v-if="activeNum===1">
+            <div class="contentDiv" v-if="activeNum===0">
                  请选择数据表:
                 <el-select v-model="value" size="mini" placeholder="请选择数据表" @change="blurChange">
                     <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
                     </el-option>
                 </el-select>
             </div>
-            <div class="contentDiv" v-if="activeNum===2">
+            <div class="contentDiv" v-if="activeNum===1">
                 <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock">
                     <div v-for="(stage,index) in stages" :key="index" :slot="stage" class="stageDiv">
                         <h5>{{ stage }}</h5>
@@ -34,7 +34,7 @@
                     </div>
                 </kanban-board>
             </div>
-            <div class="contentDiv" v-if="activeNum===3">
+            <div class="contentDiv" v-if="activeNum===2">
                 图表类型:
                 <el-select v-model="chartName" size="mini" placeholder="请选择数据表" class="dropStyle">
                     <el-option v-for="item in chartTypeList" :key="item" :label="item" :value="item">
@@ -53,7 +53,7 @@
                     </el-option>
                 </el-select><br>
             </div>
-            <div class="contentDiv" v-if="activeNum===4">
+            <div class="contentDiv" v-if="activeNum===3">
                 <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
                  <div style="width:100%;height:500px;">
                     <div v-bind:style="styleObj" ref="myChart"></div>
@@ -113,7 +113,7 @@
         },
         data () {
             return {
-                activeNum: 1,
+                activeNum: 0,
                 input: '',
                 xMetric: '',
                 yMetric: '',
@@ -177,7 +177,7 @@
                 }
             },
             pre() {
-                if (this.activeNum > 1) {
+                if (this.activeNum > 0) {
                     this.activeNum--
                 }
             },
