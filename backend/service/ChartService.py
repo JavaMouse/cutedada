@@ -29,6 +29,7 @@ def get_chart_info(chart_id):
 
     chart_info['legend'] = legend_data
     chart_info['series'] = series_info_list
+    chart_info['chart_type'] = chart.chart_type
 
     return chart_info
 
