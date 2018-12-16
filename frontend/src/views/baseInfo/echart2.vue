@@ -298,6 +298,10 @@
                     type: 'category'
                 }
                 this.option4.yAxis = { type: 'value'}
+                this.option4.legend = {
+                    bottom: 'bottom',
+                    data: res.legend
+                }
                 this.option4.series = res.series
                 this.option4.series.forEach(item=>{
                     item.type = 'line'
