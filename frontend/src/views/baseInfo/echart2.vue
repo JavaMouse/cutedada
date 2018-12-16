@@ -9,11 +9,11 @@
             <el-button @click="change">刷新</el-button>
         </el-header>
         <el-main class="main">
-            <div>
+            <!-- <div>
                 <div>
                     <div v-for="item in colItem">{{item}}</div>
                 </div>
-            </div>
+            </div> -->
             <div class="box" v-for="item in seriesData">
                 <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;">
                 <div class="btnContain">
@@ -126,6 +126,42 @@
             data: ['2', '2', '1']
         }]
     }
+    let option3 = {
+    title: {
+        text: '柱状图'
+    },
+    tooltip : {
+        trigger: 'axis',
+        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        }
+    },
+    legend: {
+        data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎','百度','谷歌','必应','其他']
+    },
+    xAxis : 
+        {
+            type : 'category',
+            data : ['周一','周二','周三','周四','周五','周六','周日']
+        },
+    yAxis : 
+        {
+            type : 'value'
+        },
+    series : [
+        {
+            name:'直接访问',
+            type:'bar',
+            //折线图：line
+            data:[320, 332, 301, 334, 390, 330, 320]
+        },
+        {
+            name:'百度',
+            type:'bar',
+            data:[620, 732, 701, 734, 1090, 1130, 1120]
+        }
+    ]
+};
 
     let option2 = {
         title: {
@@ -236,22 +272,47 @@
                     width: '100%',
                     height: '90%'
                 },
-                seriesData: {}
+                seriesData: {},
+                option4: {},
+                option5: {}
             }
         },
         watch: {
             
         },
         mounted () {
-            this.change()
             window.onresize = () => {
                 this.seriesData.forEach(item=>{
                     echarts.init(this.$refs[item.name][0]).resize()
                 })
             }
             this.getTableList()
+            this.getChart()
+            
         },
         methods: {
+            async getChart () {
+                let res = await this.$axios.get('chart/get_chart_info/chart_1')
+                this.option4.xAxis = {
+                    data: res.x_data,
+                    type: 'category'
+                }
+                this.option4.yAxis = { type: 'value'}
+                this.option4.series = res.series
+                this.option4.series.forEach(item=>{
+                    item.type = 'line'
+                })
+                let res2 = await this.$axios.get('chart/get_chart_info/chart_2')
+                this.option5.title = { text: res2.title}
+                this.option5.legend = {
+                    bottom: 'bottom',
+                    data: res2.legend
+                }
+                this.option5.series = res2.series
+
+                this.change()
+                
+            },
             toggle (value) {
                 this.$refs['fullscreen'][value].toggle() 
             },
@@ -259,7 +320,7 @@
                 this.fullscreen = fullscreen
                 this.$nextTick(() => {
                         this.seriesData.forEach(item=>{
-                        echarts.init(this.$refs[item.name][0]).resize()
+                        echarts.init(this.$refs[item.name][0],'light').resize()
                     })
                 })
 
@@ -275,7 +336,13 @@
                 this.y = y
             },
             change () {
-                let chartData = [{ name: 'chart1', option: option1, index: 0 }, { name: 'chart2', option: option2, index: 1 }, { name: 'chart3', option: option2, index: 2 }]
+                let chartData = [
+                    { name: 'chart1', option: option1, index: 0 }, 
+                    { name: 'chart2', option: option2, index: 1 }, 
+                    { name: 'chart3', option: option3, index: 2 },
+                    { name: 'chart4', option: this.option4, index: 3 },
+                    { name: 'chart5', option: this.option5, index: 4 }
+                ]
                 let seriesData = [];
                 chartData.forEach(function (item) {
                     let outObj = {};
