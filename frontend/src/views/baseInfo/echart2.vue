@@ -14,7 +14,7 @@
                     <div v-for="item in colItem">{{item}}</div>
                 </div>
             </div> -->
-            <div class="box" v-for="item in seriesData">
+            <div class="box" v-for="(item,index) in seriesData" :key="index">
                 <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;">
                 <div class="btnContain">
                     <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button>
@@ -274,7 +274,8 @@
                 },
                 seriesData: {},
                 option4: {},
-                option5: {}
+                option5: {},
+                option: []
             }
         },
         watch: {
@@ -288,34 +289,53 @@
             }
             this.getTableList()
             this.getChart()
-            
         },
         methods: {
-            async getChart () {
-                let res = await this.$axios.get('chart/get_chart_info/chart_1')
-                this.option4.xAxis = {
-                    data: res.x_data,
-                    type: 'category'
-                }
-                this.option4.yAxis = { type: 'value'}
-                this.option4.legend = {
-                    bottom: 'bottom',
-                    data: res.legend
-                }
-                this.option4.series = res.series
-                this.option4.series.forEach(item=>{
-                    item.type = 'line'
-                })
-                let res2 = await this.$axios.get('chart/get_chart_info/chart_2')
-                this.option5.title = { text: res2.title}
-                this.option5.legend = {
-                    bottom: 'bottom',
-                    data: res2.legend
-                }
-                this.option5.series = res2.series
-
-                this.change()
-                
+            async getcChartData (item,index) {
+                let res = await this.$axios.get('chart/get_chart_info/'+item)
+                    if(res.chart_type === 1) {
+                        // 柱状图
+                        this.option[index]={}
+                        this.option[index].title = { 
+                            text: res.title,
+                            x: 'center'
+                        }
+                        this.option[index].xAxis = {
+                            data: res.x_data,
+                            type: 'category'
+                        }
+                        this.option[index].yAxis = { type: 'value' }
+                        this.option[index].legend = {
+                            bottom: 'bottom',
+                            data: res.legend
+                        }
+                        this.option[index].tooltip = { trigger: 'axis' }
+                        this.option[index].series = res.series
+                        this.option[index].series.forEach(item2=>{
+                            item2.type = 'line'
+                        })
+                    } else if(res.chart_type === 2) {
+                        this.option[index]={}
+                        this.option[index].title = { 
+                            text: res.title,
+                            x: 'center'
+                        }
+                        this.option[index].legend = {
+                            bottom: 'bottom',
+                            data: res.legend
+                        }
+                        this.option[index].tooltip = { trigger: 'item' }
+                        this.option[index].series = res.series
+                    }
+            },
+            getChart () {
+                let chartmenber = ['chart_1','chart_2']
+                chartmenber.forEach((item,index) => {
+                    this.getcChartData(item,index)
+                });
+                 this.$nextTick(()=>{
+                    this.change()  
+                 })
             },
             toggle (value) {
                 this.$refs['fullscreen'][value].toggle() 
@@ -327,7 +347,6 @@
                         echarts.init(this.$refs[item.name][0],'light').resize()
                     })
                 })
-
             },
             onResize: function (x, y, width, height) {
                 this.x = x
@@ -339,16 +358,24 @@
                 this.x = x
                 this.y = y
             },
-            change () {
-                let chartData = [
-                    { name: 'chart1', option: option1, index: 0 }, 
-                    { name: 'chart2', option: option2, index: 1 }, 
-                    { name: 'chart3', option: option3, index: 2 },
-                    { name: 'chart4', option: this.option4, index: 3 },
-                    { name: 'chart5', option: this.option5, index: 4 }
-                ]
+            async change () {
+                // let getchartData = [
+                //     { name: 'chart1', option: option1, index: 0 }, 
+                //     { name: 'chart2', option: option2, index: 1 }, 
+                //     { name: 'chart3', option: option3, index: 2 },
+                //     { name: 'chart4', option: this.option4, index: 3 },
+                //     { name: 'chart5', option: this.option5, index: 4 }
+                // ]
+                let getchartData = []
+                for(let i=0;i<2;i++){
+                    getchartData[i] = {
+                        name: 'chart'+[i+1],
+                        option: this.option[i],
+                        index: i
+                    }
+                }
                 let seriesData = [];
-                chartData.forEach(function (item) {
+                getchartData.forEach(function (item) {
                     let outObj = {};
                     let valueKey = Object.keys(item);
                     outObj.name = item[valueKey[0]];
@@ -356,7 +383,7 @@
                     outObj.index = item[valueKey[2]];
                     seriesData.push(outObj);
                 });
-                this.seriesData = chartData
+                this.seriesData = getchartData
 
                 this.$nextTick(() => {
                     this.initChart(this.seriesData)
