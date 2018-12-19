@@ -12,7 +12,7 @@
         <el-header class="header-crumb">
           <!-- <bread-crumb></bread-crumb> -->
           <div class="headerDiv">
-            <el-button size="mini" class="headerBtn">退出</el-button>
+            <el-button size="mini" class="headerBtn" @click="equit">退出</el-button>
           </div>
         </el-header>
         <div class="router_div" ref="routerView">
@@ -53,7 +53,12 @@
         //   })
         // }
       }
-    }
+    },
+    methods: {
+      equit () {
+        this.$router.push('/')
+      }
+    },
   }
 </script>
 <style lang="scss" scoped>

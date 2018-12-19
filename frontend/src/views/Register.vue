@@ -2,20 +2,20 @@
     <!-- <router-view/> -->
         <div class="content">
             <div class="form">
-                    <h3 class="title">登录</h3>
-                    <el-form :label-position="labelPosition" label-width="80px" :model="loginForm" :rules="rules" ref="loginForm">
+                    <h3 class="title">注册</h3>
+                    <el-form :label-position="labelPosition" label-width="80px" :model="registerForm" :rules="rules" ref="registerForm">
                         <el-form-item label="用户名" prop="username">
-                            <el-input v-model="loginForm.username"></el-input>
+                            <el-input v-model="registerForm.username"></el-input>
                         </el-form-item>
                         <el-form-item label="密码" prop="password">
-                            <el-input v-model="loginForm.password" type="password"></el-input>
+                            <el-input v-model="registerForm.password" type="password"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="submitForm('loginForm')">登录</el-button>
-                            <el-button @click="resetForm('loginForm')">重置</el-button>
+                            <el-button type="primary" @click="submitForm('registerForm')">注册</el-button>
+                            <el-button @click="resetForm('registerForm')">重置</el-button>
                         </el-form-item>
                         <el-form-item>
-                            <p>没有账号？请<span class="clickSpan" @click="ToRegister"> 注册</span></p>
+                            <p>已有账号？请<span class="clickSpan" @click="ToLogin"> 登录</span></p>
                         </el-form-item>
                     </el-form>
             </div>
@@ -26,7 +26,7 @@
 <script>
     import axios from 'axios';
     export default {
-        name: 'Login',
+        name: 'Register',
         data() {
             return {
                 rules: {
@@ -38,7 +38,7 @@
                     ]
                 },
                 labelPosition: 'right',
-                loginForm: {
+                registerForm: {
                     username: '',
                     password: ''
                 }
@@ -58,7 +58,7 @@
             },
             async loginSubmit () {
                 let data = {
-                    ...this.loginForm
+                    ...this.registerForm
                 }
                 let response = await this.$axios.post('user/login', data)
                 if(response.code === 0){
@@ -71,8 +71,8 @@
             resetForm(formName) {
                 this.$refs[formName].resetFields();
             },
-            ToRegister () {
-                this.$router.push('/register')
+            ToLogin () {
+                this.$router.push('/')
             }
         }
     }
@@ -97,12 +97,5 @@
         left: 0;
         right: 0;
         margin: auto;
-    }
-    .clickSpan{
-        color:cornflowerblue;
-        font-weight: bold;
-    }
-    .clickSpan:hover{
-        cursor: pointer;
     }
 </style>

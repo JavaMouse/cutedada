@@ -65,9 +65,7 @@
 <script>
     import echarts from 'echarts'
     import '../../css/kanban.css'
-    // import '../../util/kanban1.js'
-    // import '../../util/kanban2.js'
-    // import '../../util/kanban3.js'
+    
     let option = {
     color: ['#3398DB'],
     tooltip : {
