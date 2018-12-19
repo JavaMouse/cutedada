@@ -10,6 +10,9 @@
                         <el-form-item label="密码" prop="password">
                             <el-input v-model="registerForm.password" type="password"></el-input>
                         </el-form-item>
+                        <el-form-item label="确认密码" prop="confirmPwd">
+                            <el-input v-model="registerForm.confirmPwd" type="password"></el-input>
+                        </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="submitForm('registerForm')">注册</el-button>
                             <el-button @click="resetForm('registerForm')">重置</el-button>
@@ -35,6 +38,9 @@
                     ],
                     password: [
                         { required: true, message: '请输入密码', trigger: 'change' }
+                    ],
+                    confirmPwd: [
+                        { required: true, message: '请再次输入密码', trigger: 'change' }
                     ]
                 },
                 labelPosition: 'right',
@@ -57,14 +63,33 @@
                 });
             },
             async loginSubmit () {
+                if(this.registerForm.confirmPwd !== this.registerForm.password){
+                    this.$message.error('密码不一致！')
+                    this.registerForm.password = ''
+                    this.registerForm.confirmPwd = ''
+                    return false
+                }
                 let data = {
                     ...this.registerForm
                 }
-                let response = await this.$axios.post('user/login', data)
+                // let response = await this.$axios.post('user/login', data)
+                let response = {}
+                response.code = 0
                 if(response.code === 0){
-                    this.$router.push('/echarts')
+                    this.$confirm('注册成功! 是否跳转到主页面?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                        }).then(() => {
+                            this.$router.push('/main')
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '已取消跳转'
+                            });          
+                        });
                 } else {
-                    this.$message.warning('用户名或密码不正确!')
+                    this.$message.error('注册失败!')
                     return false
                 }
             },
