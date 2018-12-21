@@ -100,8 +100,11 @@
         width: 80px;
         font-size: 14px;
     }
-    .el-button--primary{
-
+    .el-input__inner{
+        background-color: rgba(250, 248, 248, 0.2);
+        color: #fff;
+        font-weight: bold;
+        font-size: 14px;
     }
     .form{
         background-color: rgba(250, 248, 248, 0.2);

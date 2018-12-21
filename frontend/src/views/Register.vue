@@ -107,6 +107,7 @@
         height: 60px;
     }
     .content {
+        background-image: url(../assets/login_background.jpg);
         width: 100%;
         height: 100%;
         position: absolute;
@@ -115,7 +116,21 @@
         right: 0;
         margin: auto;
     }
+    .el-form-item__label{
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .el-button--small{
+        width: 80px;
+        font-size: 14px;
+    }
     .form{
+        background-color: rgba(250, 248, 248, 0.2);
+        color: #fff;
+        border-radius: 20px;
+        padding-right: 60px;
+        padding-left: 30px;
         width: 30%;
         position: absolute;
         top: 250px;
