@@ -359,6 +359,7 @@
                 this.y = y
             },
             async change () {
+                console.log(this.option)
                 // let getchartData = [
                 //     { name: 'chart1', option: option1, index: 0 }, 
                 //     { name: 'chart2', option: option2, index: 1 }, 
@@ -384,6 +385,9 @@
                     seriesData.push(outObj);
                 });
                 this.seriesData = getchartData
+
+                
+                console.log(getchartData)
 
                 this.$nextTick(() => {
                     this.initChart(this.seriesData)

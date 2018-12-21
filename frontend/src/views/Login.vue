@@ -2,20 +2,20 @@
     <!-- <router-view/> -->
         <div class="content">
             <div class="form">
-                    <h3 class="title">登录</h3>
-                    <el-form :label-position="labelPosition" label-width="80px" :model="loginForm" :rules="rules" ref="loginForm">
-                        <el-form-item label="用户名" prop="username">
+                    <h2 class="title">登录</h2>
+                    <el-form :label-position="labelPosition" label-width="90px" :model="loginForm" :rules="rules" ref="loginForm">
+                        <el-form-item label="用户名:" prop="username">
                             <el-input v-model="loginForm.username"></el-input>
                         </el-form-item>
-                        <el-form-item label="密码" prop="password">
+                        <el-form-item label="密码: " prop="password">
                             <el-input v-model="loginForm.password" type="password"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="submitForm('loginForm')">登录</el-button>
-                            <el-button @click="resetForm('loginForm')">重置</el-button>
+                            <el-button type="primary" size="small" @click="submitForm('loginForm')">登录</el-button>
+                            <el-button size="small" @click="resetForm('loginForm')">重置</el-button>
                         </el-form-item>
                         <el-form-item>
-                            <p>没有账号？请<span class="clickSpan" @click="ToRegister"> 注册</span></p>
+                            <p style="font-size:16px;">没有账号？请<span class="clickSpan" @click="ToRegister"> 注册</span></p>
                         </el-form-item>
                     </el-form>
             </div>
@@ -82,6 +82,7 @@
         height: 60px;
     }
     .content {
+        background-image: url(../assets/login_background.jpg);
         width: 100%;
         height: 100%;
         position: absolute;
@@ -90,7 +91,24 @@
         right: 0;
         margin: auto;
     }
+    .el-form-item__label{
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .el-button--small{
+        width: 80px;
+        font-size: 14px;
+    }
+    .el-button--primary{
+
+    }
     .form{
+        background-color: rgba(250, 248, 248, 0.2);
+        color: #fff;
+        border-radius: 20px;
+        padding-right: 60px;
+        padding-left: 30px;
         width: 30%;
         position: absolute;
         top: 250px;
@@ -99,8 +117,9 @@
         margin: auto;
     }
     .clickSpan{
-        color:cornflowerblue;
-        font-weight: bold;
+        /* color:rgb(14, 98, 182); */
+        color: #fcd692;
+        font-weight: 800;
     }
     .clickSpan:hover{
         cursor: pointer;

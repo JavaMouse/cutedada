@@ -2,8 +2,8 @@
     <!-- <router-view/> -->
         <div class="content">
             <div class="form">
-                    <h3 class="title">注册</h3>
-                    <el-form :label-position="labelPosition" label-width="80px" :model="registerForm" :rules="rules" ref="registerForm">
+                    <h2 class="title">注册</h2>
+                    <el-form :label-position="labelPosition" label-width="90px" :model="registerForm" :rules="rules" ref="registerForm">
                         <el-form-item label="用户名" prop="username">
                             <el-input v-model="registerForm.username"></el-input>
                         </el-form-item>
@@ -14,11 +14,11 @@
                             <el-input v-model="registerForm.confirmPwd" type="password"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="submitForm('registerForm')">注册</el-button>
-                            <el-button @click="resetForm('registerForm')">重置</el-button>
+                            <el-button size="small"  type="primary" @click="submitForm('registerForm')">注册</el-button>
+                            <el-button size="small"  @click="resetForm('registerForm')">重置</el-button>
                         </el-form-item>
                         <el-form-item>
-                            <p>已有账号？请<span class="clickSpan" @click="ToLogin"> 登录</span></p>
+                            <p style="font-size:16px;">已有账号？请<span class="clickSpan" @click="ToLogin"> 登录</span></p>
                         </el-form-item>
                     </el-form>
             </div>
