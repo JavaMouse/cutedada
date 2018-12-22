@@ -21,9 +21,15 @@ def login():
     password = data['password']
 
     result_json = LoginService.login(username,password)
+    resp = make_response(jsonify(result_json))
 
     if result_json['data']['pass'] is True:
         session[username]=True
-    return jsonify(result_json)
+        resp.set_cookie("username", username)
+    return resp
+    # return jsonify(result_json)
+
+
+
 
 

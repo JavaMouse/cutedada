@@ -107,6 +107,7 @@ class ChartDAO(object):
                         data_sql=data[4]
                         )
         series.data = cls.get_series_data(series.data_sql,chart_type)
+        dbutils.close(db)
         return series
 
 if __name__ == '__main__':
