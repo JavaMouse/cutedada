@@ -1,47 +1,167 @@
 # coding=utf-8
 from backend.DAO.ChartDAO import ChartDAO
+from backend.service import DimensionService, MeasuremenService, FilterService
 
 
 def get_chart_info(chart_id):
-    chart = get_chart(chart_id)
-    series_list = []
+    chart_object = ChartDAO.get_chart_by_id(chart_id)
+    # 维度
+    dimension_list = DimensionService.get_dimensions_by_chart_id(chart_id)
+    # 主维度
+    main_dimension = None
+    #可选维度
+    optional_dimension_list = []
+    for dimension in dimension_list:
+        if str(dimension.is_main_dimension) == '1':
+            main_dimension = dimension
+        else:
+            optional_dimension_list.append(dimension)
+    # 度量
+    measuremen_list = MeasuremenService.get_measuremens_by_chart_id(chart_id)
+    # 过滤器
+    filter_list = FilterService.get_filters_by_dimension_id(main_dimension.id)
 
-    for sid in chart.series_id:
-        series_list.append(get_one_series(sid, chart.chart_type))
+    # 生成SQL
+    sql_template = '''
+    select 
+        %s
+    from
+        %s
+    where
+        1 = 1
+        %s
+    group by 
+        %s
+    '''
+    # select
+    select_word = "%s as %s," % (main_dimension.dimension_sql,"main_dimension"+str(main_dimension.id))
+    for optional_dimension in optional_dimension_list:
+        tmp_word = "%s as %s," % (optional_dimension.dimension_sql,"optional_dimension"+str(optional_dimension.id))
+        select_word = select_word + tmp_word
+    for measuremen in measuremen_list:
+        tmp_word = "%s as %s," % (measuremen.measurement_sql, "measuremen" + str(measuremen.id))
+        select_word = select_word + tmp_word
+    select_word = select_word[:-1]
 
-    chart_info = {}
-    series_info_list = []
-    legend_data = []
+    # from
+    from_word = chart_object.chart_table
 
-    chart_info['title'] = chart.title
+    # where
+    where_word = ''
+    for filter in filter_list:
+        tmp_word = 'and %s ' % (filter.filter_sql)
+        where_word = where_word + tmp_word
 
-    if str(chart.chart_type) == '1':
-        chart_info['x_data'] = chart.x_data
+    # group
+    group_word = main_dimension.dimension_sql+','
+    for optional_dimension in optional_dimension_list:
+        tmp_word = '%s,'%(optional_dimension.dimension_sql)
+        group_word = group_word + tmp_word
+    group_word = group_word[:-1]
 
-    for s in series_list:
-        series_info_list.append({"name": s.series_name, "type": s.series_type, "data": s.data})
+    result_sql = sql_template % (select_word,from_word,where_word,group_word)
 
-        if str(chart.chart_type) == '1':
-            legend_data.append(s.series_name)
-        if str(chart.chart_type) == '2' or str(chart.chart_type) == '3':
-            for d in s.data:
-                legend_data.append(d['name'])
+    print(result_sql)
 
-    chart_info['legend'] = legend_data
-    chart_info['series'] = series_info_list
-    chart_info['chart_type'] = chart.chart_type
+    json_str = None
+    # 折线图:
+    if str(chart_object.chart_type)=='1':
+        json_str = process_line_chart(chart_object,
+                           main_dimension,
+                           optional_dimension_list,
+                           measuremen_list,
+                           filter_list,
+                           result_sql)
 
-    return chart_info
-
-
-def get_chart(chart_id):
-    return ChartDAO.get_chart(chart_id)
+    return json_str
 
 
-def get_one_series(serie_id, chart_type):
-    return ChartDAO.get_series(serie_id, chart_type)
+# 处理折线图
+def process_line_chart(chart_object,
+                       main_dimension,
+                       optional_dimension_list,
+                       measuremen_list,
+                       filter_list,
+                       result_sql):
+
+    legend=set([])
+    x_data=[]
+    series=[]
+
+    result_dict = {}
+
+    data = ChartDAO.get_chart_data(result_sql)
+    for d in data:
+        # 主维度值
+        main_dimension_key = None
+        # eg:化妆品_哒哒、衣服_田博浩 (各可选维度值组合键)
+        duliang_all_key = ''
+        for i in range(len(optional_dimension_list)+1):
+            if i == 0:
+                main_dimension_key = str(d[i])
+                if main_dimension_key not in result_dict.keys():
+                    result_dict[main_dimension_key] = {}
+            if i > 0 and i <= len(optional_dimension_list):
+                duliang_all_key = duliang_all_key + str(d[i]) + "_"
+
+        # 度量值
+        measuremen_value_list = []
+        for i in range(len(optional_dimension_list)+1,len(optional_dimension_list)+len(measuremen_list)+1):
+            measuremen_value_list.append(str(d[i]))
+
+        tmp_num = 0
+        for measuremen in measuremen_list:
+            key = duliang_all_key + measuremen.measurement_name
+            if key not in result_dict[main_dimension_key].keys():
+                result_dict[main_dimension_key][key] = measuremen_value_list[tmp_num]
+                tmp_num+=1
+
+
+    for key in result_dict.keys():
+        x_data.append(key)
+
+    series_dict = {}
+
+    for value_dict in result_dict.values():
+        for key in value_dict.keys():
+            legend.add(key)
+
+    for value_dict in result_dict.values():
+        for l in legend:
+            num = value_dict.get(l)
+            if l not in series_dict.keys():
+                series_dict[l]=[]
+            if num is None:
+                num = 0
+            series_dict[l].append(num)
+
+
+    for key in series_dict.keys():
+        series.append(
+            {
+                "name":key,
+                "data":series_dict[key],
+                "type":"line"
+            }
+        )
+
+    json_value = {}
+
+    json_value["legend"] = list(legend)
+    json_value["title"] = chart_object.chart_title
+    json_value['x_data'] = x_data
+    json_value['series'] = series
+
+    return json_value
+
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
-    chart_info = get_chart_info(chart_id="chart_2")
-    print(chart_info)
+    get_chart_info(1)

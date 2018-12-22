@@ -36,7 +36,16 @@ class DBUtils(object):
         return len(self.db_connt_pool)
 
     def close(self,db_coon):
-        self.db_connt_pool.append(db_coon)
+        db_coon.close()
+        self.db_connt_pool.append(
+            pymysql.connect(
+                host = self.host,
+                user = self.username,
+                password = self.passwd,
+                database = self.database,
+                charset = 'utf8'
+            )
+        )
 
 
 
