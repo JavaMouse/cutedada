@@ -15,7 +15,7 @@
                 </div>
             </div> -->
             <div class="box" v-for="(item,index) in seriesData" :key="index">
-                <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;">
+                <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;background-color:#fff;">
                 <div class="btnContain">
                     <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button>
                     <el-button @click="deleteChart(item.index)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
@@ -361,13 +361,6 @@
                 this.y = y
             },
             change () {
-                // let getchartData = [
-                //     { name: 'chart1', option: option1, index: 0 }, 
-                //     { name: 'chart2', option: option2, index: 1 }, 
-                //     { name: 'chart3', option: option3, index: 2 },
-                //     { name: 'chart4', option: this.option4, index: 3 },
-                //     { name: 'chart5', option: this.option5, index: 4 }
-                // ]
                 let getchartData = []
                 let that = this
                 this.chartmenber.forEach((item,i)=>{
@@ -387,9 +380,6 @@
                     seriesData.push(outObj);
                 });
                 this.seriesData = getchartData
-
-                
-                console.log(getchartData)
 
                 this.$nextTick(() => {
                     this.initChart(this.seriesData)
