@@ -311,7 +311,8 @@
                         this.option[index].yAxis = { type: 'value' }
                         this.option[index].legend = {
                             bottom: 'bottom',
-                            data: res.legend
+                            data: res.legend,
+                            type: 'scroll'
                         }
                         this.option[index].tooltip = { trigger: 'axis' }
                         this.option[index].series = res.series
