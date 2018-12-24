@@ -275,11 +275,15 @@
                 seriesData: {},
                 option4: {},
                 option5: {},
-                option: []
+                option: [],
+                chartmenber: []
             }
         },
         watch: {
             
+        },
+        created () {
+            this.getChart()
         },
         mounted () {
             window.onresize = () => {
@@ -288,7 +292,7 @@
                 })
             }
             this.getTableList()
-            this.getChart()
+            // this.getChart()
         },
         methods: {
             async getcChartData (item,index) {
@@ -327,15 +331,13 @@
                         this.option[index].tooltip = { trigger: 'item' }
                         this.option[index].series = res.series
                     }
+                    this.change()  
             },
             getChart () {
-                let chartmenber = ['chart_1','chart_2']
-                chartmenber.forEach((item,index) => {
+                this.chartmenber = ['1']
+                this.chartmenber.forEach((item,index) => {
                     this.getcChartData(item,index)
                 });
-                 this.$nextTick(()=>{
-                    this.change()  
-                 })
             },
             toggle (value) {
                 this.$refs['fullscreen'][value].toggle() 
@@ -358,8 +360,7 @@
                 this.x = x
                 this.y = y
             },
-            async change () {
-                console.log(this.option)
+            change () {
                 // let getchartData = [
                 //     { name: 'chart1', option: option1, index: 0 }, 
                 //     { name: 'chart2', option: option2, index: 1 }, 
@@ -368,13 +369,14 @@
                 //     { name: 'chart5', option: this.option5, index: 4 }
                 // ]
                 let getchartData = []
-                for(let i=0;i<2;i++){
+                let that = this
+                this.chartmenber.forEach((item,i)=>{
                     getchartData[i] = {
                         name: 'chart'+[i+1],
-                        option: this.option[i],
+                        option: that.option[i],
                         index: i
                     }
-                }
+                })
                 let seriesData = [];
                 getchartData.forEach(function (item) {
                     let outObj = {};
@@ -393,6 +395,7 @@
                     this.initChart(this.seriesData)
                     this.renderChart(this.seriesData)
                 })
+                this.$forceUpdate()
             },
             initChart (arr) {
                 arr.forEach(item => {
