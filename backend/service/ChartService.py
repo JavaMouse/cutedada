@@ -75,7 +75,7 @@ def get_chart_info(chart_id):
 
     # 饼图
     if str(chart_object.chart_type)=='3':
-        json_str = process_pie_chart(chart_object,
+        json_str = process_pie_chart_v2(chart_object,
                            main_dimension,
                            optional_dimension_list,
                            measuremen_list,
@@ -83,6 +83,62 @@ def get_chart_info(chart_id):
                            result_sql)
 
     return json_str
+
+# 也是处理饼图
+def process_pie_chart_v2(chart_object,
+                         main_dimension,
+                         optional_dimension_list,
+                         measuremen_list,
+                         filter_list,
+                         result_sql
+                         ):
+    series_dict = {}
+    legend_list = []
+
+    data = ChartDAO.get_chart_data(result_sql)
+    for d in data:
+        legend_word = ''
+        one_value = 0
+        # 1+len(optional_dimension_list)+1：主维度+可选维度+度量
+        for i in range(1+len(optional_dimension_list)+1):
+            # 这里是维度
+            if i < 1+len(optional_dimension_list):
+                legend_word = legend_word + str(d[i]) + "_"
+            # 这里是度量(饼图只有一个度量)
+            else:
+                one_value=d[i]
+
+        legend_word = legend_word[:-1]
+        if legend_word not in series_dict.keys():
+            series_dict[legend_word] = {}
+        series_dict[legend_word] = float(one_value)
+        legend_list.append(legend_word)
+
+    series_data = []
+
+    for k,v in series_dict.items():
+        series_data.append({
+            "name":k,
+            "value":v
+        })
+
+    series =[]
+
+    series.append(
+        {
+            "type": 'pie',
+            "data": series_data
+        }
+    )
+
+    json_value = {}
+    json_value["legend"] = legend_list
+    json_value["title"] = chart_object.chart_title
+    json_value['series'] = series
+    json_value['chart_type'] = 3
+
+    return json_value
+
 # 处理饼图
 def process_pie_chart(chart_object,
                        main_dimension,
