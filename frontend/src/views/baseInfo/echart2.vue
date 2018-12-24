@@ -335,7 +335,7 @@
                     this.change()  
             },
             getChart () {
-                this.chartmenber = ['1']
+                this.chartmenber = ['1','3']
                 this.chartmenber.forEach((item,index) => {
                     this.getcChartData(item,index)
                 });
@@ -381,12 +381,10 @@
                     seriesData.push(outObj);
                 });
                 this.seriesData = getchartData
-
                 this.$nextTick(() => {
                     this.initChart(this.seriesData)
                     this.renderChart(this.seriesData)
                 })
-                this.$forceUpdate()
             },
             initChart (arr) {
                 arr.forEach(item => {
@@ -466,39 +464,15 @@
         -webkit-box-shadow: 10px 10px 25px #ccc;
         -moz-box-shadow: 10px 10px 25px #ccc;
         box-shadow: 10px 10px 25px #ccc;
-        overflow: hidden;
         border-radius: 15px;
-
-        .btnContain {
-            text-align: right;
-            padding-right:10px;
-            padding-top:10px;
-        }
-    }
-    .box2 {
-        background-color: #FFF;
-        float: left;
-        -webkit-box-shadow: 10px 10px 25px #ccc;
-        -moz-box-shadow: 10px 10px 25px #ccc;
-        box-shadow: 10px 10px 25px #ccc;
-        .btnContain {
-            text-align: right;
-            padding-right:10px;
-            padding-top:10px;
-        }
-    }
-
-    /* #coor {
-        width: 10px;
-        height: 10px;
         overflow: hidden;
-        cursor: se-resize;
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        background-color: #09C;
-    } */
 
+        .btnContain {
+            text-align: right;
+            padding-right:10px;
+            padding-top:10px;
+        }
+    }
     .page-topic {
         height: 70px !important;
         background-color: #fff;
