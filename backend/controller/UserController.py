@@ -29,6 +29,21 @@ def login():
     return resp
     # return jsonify(result_json)
 
+@user.route('/register',methods=['POST'])
+def register():
+    data = json.loads(str(request.data, encoding="utf-8"))
+
+    username = data['username']
+    password = data['password']
+
+    result_json = LoginService.register(username, password)
+    resp = make_response(jsonify(result_json))
+    if result_json['data']['pass'] is True:
+        session[username]=True
+        # resp.set_cookie("username", username)
+    return resp
+
+
 
 
 

@@ -109,8 +109,8 @@ def process_pie_chart_v2(chart_object,
                 one_value=d[i]
 
         legend_word = legend_word[:-1]
-        if legend_word not in series_dict.keys():
-            series_dict[legend_word] = {}
+        # if legend_word not in series_dict.keys():
+        #     series_dict[legend_word] = {}
         series_dict[legend_word] = float(one_value)
         legend_list.append(legend_word)
 

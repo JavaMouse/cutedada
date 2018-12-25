@@ -33,3 +33,39 @@ def login(username,password):
             'message':None
     }
     return return_json
+
+# 注册
+def register(username,password):
+    user = UserDAO.findUserByUsername(username)
+    if user is None:
+        userInsert = UserDAO.InsertUser(username,password)
+        if userInsert == 1:
+            return_json = {
+                'code': 0,
+                'data': {
+                    'pass': True,
+                    'info': '注册成功'
+                },
+                'message': None
+            }
+            return return_json
+        else:
+            return_json = {
+                'code':400,
+                'data':{
+                    'pass':False,
+                    'info':'注册失败，请重试'
+                },
+                'message':None
+            }
+            return return_json
+    else:
+        return_json = {
+            'code': 400,
+            'data': {
+                'pass': False,
+                'info': '注册失败，该用户已存在'
+            },
+            'message': None
+        }
+    return return_json

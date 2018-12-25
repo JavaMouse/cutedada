@@ -72,9 +72,7 @@
                 let data = {
                     ...this.registerForm
                 }
-                // let response = await this.$axios.post('user/login', data)
-                let response = {}
-                response.code = 0
+                let response = await this.$axios.post('user/register', data)
                 if(response.code === 0){
                     this.$confirm('注册成功! 是否跳转到主页面?', '提示', {
                         confirmButtonText: '确定',
@@ -89,7 +87,7 @@
                             });          
                         });
                 } else {
-                    this.$message.error('注册失败!')
+                    this.$message.error(response.data.info)
                     return false
                 }
             },

@@ -8,6 +8,22 @@ class UserDAO(object):
     def __init__(self):
         pass
 
+    @classmethod
+    def InsertUser(cls,username,password):
+        db = dbutils.get_connect()
+        cursor = db.cursor()
+        status = cursor.execute('''
+        insert into user (username,password)
+        values (%s,%s)
+        ''',(username,password))
+        db.commit()
+        if status == 1:
+            insertStatus = 1
+        else:
+            insertStatus = 0
+        dbutils.close(db)
+        return insertStatus
+
     # 根据username查找用户
     @classmethod
     def findUserByUsername(cls,username):
@@ -38,4 +54,4 @@ class UserDAO(object):
 
 
 if __name__ == '__main__':
-    print(UserDAO.findUserByUsername("dada"))
+    print(UserDAO.InsertUser("chen1","123"))
