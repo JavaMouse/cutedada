@@ -62,7 +62,7 @@
                 }
                 let response = await this.$axios.post('user/login', data)
                 if(response.code === 0){
-                    this.$router.push('/echarts')
+                    this.$router.push('/echarts2')
                 } else {
                     this.$message.warning('用户名或密码不正确!')
                     return false

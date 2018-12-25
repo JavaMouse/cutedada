@@ -37,23 +37,23 @@ function IsInArray (val) {
   return arr.includes(val)
 }
 
-function checkCode (res) {
-  if (res.code === 60001002) { // user not login
-    let pathName = window.location.pathname
-    if (IsInArray(pathName)) pathName = '/logged'
-    let origin = window.location.origin
-    if (window.location.port === '') origin = origin + ':443'
-    let service = encodeURIComponent(origin + '/ywpt/redirect' + pathName)
-    window.location.href = CASHOST + '?service=' + service
-  } else if (res.code !== 0) {
-    if (/[\u4e00-\u9fa5]/.test(res.message) && res.message.length < 100) {
-      Message.error(res.message)
-    } else {
-      Message.error('操作失败，请稍后再试或联系管理员')
-    }
-  }
-  return res
-}
+// function checkCode (res) {
+//   if (res.code === 60001002) { // user not login
+//     let pathName = window.location.pathname
+//     if (IsInArray(pathName)) pathName = '/logged'
+//     let origin = window.location.origin
+//     if (window.location.port === '') origin = origin + ':443'
+//     let service = encodeURIComponent(origin + '/ywpt/redirect' + pathName)
+//     window.location.href = CASHOST + '?service=' + service
+//   } else if (res.code !== 0) {
+//     if (/[\u4e00-\u9fa5]/.test(res.message) && res.message.length < 100) {
+//       Message.error(res.message)
+//     } else {
+//       Message.error('操作失败，请稍后再试或联系管理员')
+//     }
+//   }
+//   return res
+// }
 
 export default {
   post (url, data, herders, cancel) {
@@ -76,11 +76,12 @@ export default {
       (response) => {
         return checkStatus(response)
       }
-    ).then(
-      (res) => {
-        return checkCode(res)
-      }
     )
+    // .then(
+    //   (res) => {
+    //     return checkCode(res)
+    //   }
+    // )
   },
   get (url, params, herders, cancel) {
     return axios({
@@ -102,11 +103,12 @@ export default {
       (response) => {
         return checkStatus(response)
       }
-    ).then(
-      (res) => {
-        return checkCode(res)
-      }
     )
+    // .then(
+    //   (res) => {
+    //     return checkCode(res)
+    //   }
+    // )
   },
   put (url, data, herders, cancel) {
     return axios({
@@ -126,9 +128,10 @@ export default {
       })
     }).then(response => {
       return checkStatus(response)
-    }).then(res => {
-      return checkCode(res)
     })
+    // .then(res => {
+    //   return checkCode(res)
+    // })
   },
   delete (url, params, herders, cancel) {
     return axios({
@@ -151,10 +154,11 @@ export default {
       (response) => {
         return checkStatus(response)
       }
-    ).then(
-      (res) => {
-        return checkCode(res)
-      }
     )
+    // .then(
+    //   (res) => {
+    //     return checkCode(res)
+    //   }
+    // )
   }
 }

@@ -79,7 +79,7 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                         }).then(() => {
-                            this.$router.push('/main')
+                            this.$router.push('/echarts2')
                         }).catch(() => {
                             this.$message({
                                 type: 'info',
