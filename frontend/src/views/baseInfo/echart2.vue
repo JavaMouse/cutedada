@@ -319,7 +319,7 @@
                         this.option[index].series.forEach(item2=>{
                             item2.type = 'line'
                         })
-                    } else if(res.chart_type === 2) {
+                    } else if(res.chart_type === 3) {
                         this.option[index]={}
                         this.option[index].title = { 
                             text: res.title,
@@ -327,7 +327,8 @@
                         }
                         this.option[index].legend = {
                             bottom: 'bottom',
-                            data: res.legend
+                            data: res.legend,
+                            type: 'scroll'
                         }
                         this.option[index].tooltip = { trigger: 'item' }
                         this.option[index].series = res.series
@@ -362,12 +363,12 @@
                 this.y = y
             },
             change () {
+                console.log(this.option)
                 let getchartData = []
-                let that = this
                 this.chartmenber.forEach((item,i)=>{
                     getchartData[i] = {
                         name: 'chart'+[i+1],
-                        option: that.option[i],
+                        option: this.option[i],
                         index: i
                     }
                 })
