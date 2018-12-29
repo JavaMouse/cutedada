@@ -215,7 +215,7 @@ def process_pie_chart(chart_object,
     json_value["legend"] = list(legend)
     json_value["title"] = chart_object.chart_title
     json_value['series'] = series
-    json_value['chart_type'] = 2
+    json_value['chart_type'] = 3
 
     return json_value
 
