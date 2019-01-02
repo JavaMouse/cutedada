@@ -160,6 +160,10 @@ export default {
         {
           menuCode: "edit",
           menuName: "编辑页面"
+        },
+        {
+          menuCode: "authority",
+          menuName: "权限页面"
         }]
     },
     appUserInfo () {

@@ -36,6 +36,10 @@ export default new Router({
           path: '/edit',
           name: 'EditEcharts',
           component: () => import('../views/baseInfo/editEcharts')
+        },{
+          path: '/authority',
+          name: 'Authority',
+          component: () => import('../views/baseInfo/authority')
         }]
     }]
   }]

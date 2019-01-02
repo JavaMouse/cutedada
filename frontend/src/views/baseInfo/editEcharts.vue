@@ -1,14 +1,14 @@
 <template>
     <el-container>
-        <el-header class="page-topic">
+        <!-- <el-header class="page-topic">
             
-        </el-header>
+        </el-header> -->
         <div class="content">
             <div class="stepDiv">
                 <el-steps :active="activeNum" align-center>
                     <el-step title="步骤1" description="选择数据表"></el-step>
-                    <el-step title="步骤2" description="选择x轴、y轴字段"></el-step>
-                    <el-step title="步骤3" description="填写过滤器。度量内容"></el-step>
+                    <el-step title="步骤2" description="选择图表类型"></el-step>
+                    <el-step title="步骤3" description="选择维度、度量、过滤器"></el-step>
                     <el-step title="步骤4" description="生成图表"></el-step>
                 </el-steps>
                 <el-button size="mini" style="margin-top: 12px;" @click="next">下一步</el-button>
@@ -23,6 +23,13 @@
                 </el-select>
             </div>
             <div class="contentDiv" v-if="activeNum===1">
+               图表类型:
+                <el-select v-model="chartName" size="mini" placeholder="请选择数据表" class="dropStyle">
+                    <el-option v-for="item in chartTypeList" :key="item" :label="item" :value="item">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="contentDiv" v-if="activeNum===2">
                 <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock">
                     <div v-for="(stage,index) in stages" :key="index" :slot="stage" class="stageDiv">
                         <h5>{{ stage }}</h5>
@@ -33,14 +40,7 @@
                         </div>
                     </div>
                 </kanban-board>
-            </div>
-            <div class="contentDiv" v-if="activeNum===2">
-                图表类型:
-                <el-select v-model="chartName" size="mini" placeholder="请选择数据表" class="dropStyle">
-                    <el-option v-for="item in chartTypeList" :key="item" :label="item" :value="item">
-                    </el-option>
-                </el-select><br>
-                x轴过滤器内容:
+                <!-- x轴过滤器内容:
                 <el-input class="dropStyle" size="mini" v-model="input" style="width:160px"></el-input><br>
                 x轴度量:
                 <el-select class="dropStyle" v-model="xMetric" size="mini" placeholder="请选择x轴度量">
@@ -51,7 +51,7 @@
                 <el-select class="dropStyle" v-model="yMetric" size="mini" placeholder="请选择y轴度量">
                     <el-option v-for="item in yMetricList" :key="item" :label="item" :value="item">
                     </el-option>
-                </el-select><br>
+                </el-select><br> -->
             </div>
             <div class="contentDiv" v-if="activeNum===3">
                 <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
@@ -65,8 +65,8 @@
 <script>
     import echarts from 'echarts'
     import '../../css/kanban.css'
-    
-    let option = {
+
+let option = {
     color: ['#3398DB'],
     tooltip : {
         trigger: 'axis',
@@ -146,7 +146,7 @@
                 ],
                 chartName: '',
 
-                stages: ['列名', 'x轴', 'y轴','series'],
+                stages: ['列名', '主维度', '可选维度','度量','过滤器'],
                 blocks: [
                     {
                     id: 1,
@@ -155,9 +155,10 @@
                     col: ''
                     },
                 ],
-                xlist: [],
-                ylist: [],
-                slist: []
+                mainDimense: [],
+                optionDimense: [],
+                measure: [],
+                filter: []
             }
         },
 
@@ -203,27 +204,39 @@
                 // console.log(blockArr)
             },
             updateBlock(id, status) {
-                this.xlist = []
-                this.ylist = []
-                this.slist = []
+                this.mainDimense = []
+                this.optionDimense = []
+                this.measure = []
+                this.filter = []
                 
                 this.blocks.find(b => b.id === Number(id)).status = status;
                 console.log(id,status)
 
                 this.blocks.forEach(item=>{
-                    if(item.status === 'x轴'){
-                        this.xlist.push(item.title)
+                    if(item.status === '主维度'){
+                        this.mainDimense.push(item.title)
                     }
-                    else if(item.status === 'y轴'){
-                        this.ylist.push(item.title)
+                    else if(item.status === '可选维度'){
+                        this.optionDimense.push(item.title)
                     }
-                    else if(item.status === 'series'){
-                        this.slist.push(item.title)
+                    else if(item.status === '度量'){
+                        this.measure.push(item.title)
+                    }
+                    else if(item.status === '过滤器'){
+                        this.filter.push(item.title)
                     }
                 })
-                console.log('xlist:' + this.xlist)
-                console.log('ylist:' + this.ylist)
-                console.log('slist:' + this.slist)
+                console.log('主维度:' + this.mainDimense)
+                console.log('可选维度:' + this.optionDimense)
+                console.log('度量:' + this.measure)
+                console.log('过滤器:' + this.filter)
+                if (this.mainDimense.length>1) {
+                    this.$message.error("主维度只能选择一项！")
+                    // console.log("111:"+this.mainDimense[this.mainDimense.length-1])
+                    // console.log(this.mainDimense.pop())
+                    // console.log("this.mainDimense"+this.mainDimense)
+                    // this.$forceUpdate()
+                }
             },
             async blurChange () {
                 console.log(this.value)
