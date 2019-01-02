@@ -2,13 +2,14 @@
     <el-container>
         <el-main class="main">
             <el-form :label-position="labelPosition" label-width="0px" :model="authorityForm" class="authForm">
+                <h3 class="title">修改权限</h3>
                 <el-form-item v-for="(item,index) in formList" :key="index">
                     <div>echart{{index+1}}:</div>
                     <el-checkbox label="查看" :checked="item[0]" @change="test(index,0)"></el-checkbox>
                     <el-checkbox label="编辑" :checked="item[1]" @change="test(index,1)"></el-checkbox>
                 </el-form-item>
                 <el-form-item>
-                    <el-button size="mini" @click="test">确认修改</el-button>
+                    <el-button size="mini" @click="submit">确认修改</el-button>
                 </el-form-item>
             </el-form>
         </el-main>
@@ -33,6 +34,9 @@
                 console.log(index,checkNum)
                 this.formList[index][checkNum] = !this.formList[index][checkNum]
                 console.log(this.formList)
+            },
+            submit () {
+                console.log(this.formList)
             }
             
         }
@@ -53,5 +57,8 @@
         text-align: left;
         padding-left: 20px;
         background-color: #ffffff;
+    }
+    .title{
+        padding-top: 20px;
     }
 </style>
