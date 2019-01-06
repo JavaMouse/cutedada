@@ -34,3 +34,14 @@ class FilterDAO(object):
             )
         return filter_list
 
+    @classmethod
+    def insert_filter(cls,dimension_id,filter_sql):
+        db = dbutils.get_connect()
+        cursor = db.cursor()
+        insert_sql = 'INSERT INTO `dada_filter` (`dimension_id`, `filter_sql`) VALUES (%s,%s);'
+        cursor.execute(insert_sql,(dimension_id,filter_sql))
+        db.commit()
+        dbutils.close(db)
+
+if __name__ == '__main__':
+    FilterDAO.insert_filter(22,' date="123" ')

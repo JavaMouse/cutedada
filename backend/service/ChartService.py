@@ -221,9 +221,6 @@ def process_pie_chart(chart_object,
 
 
 
-
-
-
 # 处理折线图
 def process_line_chart(chart_object,
                        main_dimension,
@@ -304,7 +301,20 @@ def process_line_chart(chart_object,
     return json_value
 
 
+def create_new_chart(chart_type,
+                     dashboard_id,
+                     chart_title,
+                     chart_desc,
+                     creator,
+                     chart_table):
 
+    chart_id = ChartDAO.create_new_chart(chart_type,
+                              dashboard_id,
+                              chart_title,
+                              chart_desc,
+                              creator,
+                              chart_table)
+    return chart_id
 
 
 

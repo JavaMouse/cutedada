@@ -48,7 +48,34 @@ class ChartDAO(object):
         dbutils.close(db)
         return data
 
-
+    @classmethod
+    def create_new_chart(cls,
+                         chart_type,
+                         dashboard_id,
+                         chart_title,
+                         chart_desc,
+                         creator,
+                         chart_table
+                         ):
+        db = dbutils.get_connect()
+        cursor = db.cursor()
+        insert_sql = '''
+        INSERT INTO `dada_chart_new` (`dashboard_id`, `chart_type`, `chart_table`, `chart_title`, `chart_desc`, `creater`)
+        VALUES
+        (%s, %s, %s, %s, %s, %s);
+        '''
+        cursor.execute(insert_sql,(dashboard_id,chart_type,chart_table,chart_title,chart_desc,creator))
+        db.commit()
+        chart_id = cursor.lastrowid
+        dbutils.close(db)
+        return chart_id
 
 if __name__ == '__main__':
-    print(ChartDAO.get_chart_by_id(1))
+    print(ChartDAO.create_new_chart(
+        chart_type=1,
+        dashboard_id=1,
+        chart_title='test insert',
+        chart_desc='dd',
+        creator='tianbohao',
+        chart_table='test'
+    ))

@@ -35,3 +35,21 @@ class DimensionsDAO(object):
                 )
             )
         return dimension_list
+
+    @classmethod
+    def insert_dimension(cls,chart_id,dimension_name,is_main_dimension,dimension_sql):
+        db = dbutils.get_connect()
+        cursor = db.cursor()
+        insert_sql = '''
+        INSERT INTO `dada_dimension` (`chart_id`, `dimension_name`, `is_main_dimension`, `dimension_sql`)
+        VALUES
+	    ( %s, %s, %s, %s);
+        '''
+        cursor.execute(insert_sql,(chart_id,dimension_name,is_main_dimension,dimension_sql))
+        db.commit()
+        dimension_id = cursor.lastrowid
+        dbutils.close(db)
+        return dimension_id
+
+if __name__ == '__main__':
+    DimensionsDAO.insert_dimension(1,"dd",1,"select..")
