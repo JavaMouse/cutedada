@@ -86,6 +86,14 @@ def get_chart_info(chart_id):
                            filter_list,
                            result_sql)
 
+    if str(chart_object.chart_type)=='2':
+        json_str = process_bar_chart(chart_object,
+                           main_dimension,
+                           optional_dimension_list,
+                           measuremen_list,
+                           filter_list,
+                           result_sql)
+
     # 饼图
     if str(chart_object.chart_type)=='3':
         json_str = process_pie_chart_v2(chart_object,
@@ -232,7 +240,84 @@ def process_pie_chart(chart_object,
 
     return json_value
 
+# 处理柱状图
+def process_bar_chart(chart_object,
+                       main_dimension,
+                       optional_dimension_list,
+                       measuremen_list,
+                       filter_list,
+                       result_sql):
 
+    legend=set([])
+    x_data=[]
+    series=[]
+
+    result_dict = {}
+
+    data = ChartDAO.get_chart_data(result_sql)
+    for d in data:
+        # 主维度值
+        main_dimension_key = None
+        # eg:化妆品_哒哒、衣服_田博浩 (各可选维度值组合键)
+        duliang_all_key = ''
+        for i in range(len(optional_dimension_list)+1):
+            if i == 0:
+                main_dimension_key = str(d[i])
+                if main_dimension_key not in result_dict.keys():
+                    result_dict[main_dimension_key] = {}
+            if i > 0 and i <= len(optional_dimension_list):
+                duliang_all_key = duliang_all_key + str(d[i]) + "_"
+
+        # 度量值
+        measuremen_value_list = []
+        for i in range(len(optional_dimension_list)+1,len(optional_dimension_list)+len(measuremen_list)+1):
+            measuremen_value_list.append(str(d[i]))
+
+        tmp_num = 0
+        for measuremen in measuremen_list:
+            key = duliang_all_key + measuremen.measurement_name
+            if key not in result_dict[main_dimension_key].keys():
+                result_dict[main_dimension_key][key] = measuremen_value_list[tmp_num]
+                tmp_num+=1
+
+
+    for key in result_dict.keys():
+        x_data.append(key)
+
+    series_dict = {}
+
+    for value_dict in result_dict.values():
+        for key in value_dict.keys():
+            legend.add(key)
+
+    for value_dict in result_dict.values():
+        for l in legend:
+            num = value_dict.get(l)
+            if l not in series_dict.keys():
+                series_dict[l]=[]
+            if num is None:
+                num = 0
+            series_dict[l].append(num)
+
+
+    for key in series_dict.keys():
+        series.append(
+            {
+                "name":key,
+                "data":series_dict[key],
+                "type":"line"
+            }
+        )
+
+    json_value = {}
+
+    json_value["legend"] = list(legend)
+    json_value["title"] = chart_object.chart_title
+    json_value['x_data'] = x_data
+    json_value['series'] = series
+    json_value['chart_type'] = 2
+
+    return json_value
 
 # 处理折线图
 def process_line_chart(chart_object,
