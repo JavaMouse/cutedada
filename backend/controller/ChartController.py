@@ -7,6 +7,10 @@ chart = Blueprint('chart',__name__,
                  static_folder = "./dist/static",
                  template_folder = "./dist")
 
+@chart.route('/get_chartId_list/<dashboard_id>',methods=['GET'])
+def get_chart_list(dashboard_id):
+    result_json = ChartService.get_chart_list(dashboard_id)
+    return jsonify(result_json)
 
 @chart.route('/get_chart_info/<chart_id>',methods=['GET'])
 def get_chart_info(chart_id):

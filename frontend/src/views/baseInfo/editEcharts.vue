@@ -54,7 +54,7 @@
                 过滤sql: <el-input v-model="editForm.filter" size="mini" class="inputStyle"></el-input>
             </div>
             <div class="contentDiv" v-if="activeNum===3">
-                <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
+                <el-button size="mini" type="primary" :disabled="chartDisabled" @click="drawChart">生成图表</el-button>
                  <div style="width:100%;height:500px;">
                     <div v-bind:style="styleObj" ref="myChart"></div>
                 </div>
@@ -111,6 +111,7 @@ let option = {
         },
         data () {
             return {
+                chartDisabled: false,
                 addColDialog: {
                     show: false
                 },
@@ -218,6 +219,7 @@ let option = {
                 this.addColDialog.show = false
             },
             async drawChart () {
+                this.chartDisabled = true
                 let optionalList = []
                 this.optionDimense.forEach((item,index) => {
                     optionalList.push({

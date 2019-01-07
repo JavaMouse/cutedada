@@ -49,6 +49,24 @@ class ChartDAO(object):
         return data
 
     @classmethod
+    def get_chart_list(cls,dashboardId):
+        db = dbutils.get_connect()
+        cursor = db.cursor()
+        query_sql = '''
+            select id 
+            from dada_chart_new 
+            where dashboard_id = %d
+        '''% (int(dashboardId))
+        cursor.execute(query_sql)
+        data = cursor.fetchall()
+        chartIdList = []
+        for item in data:
+            chartIdList.append(item[0])
+        print(chartIdList)
+        dbutils.close(db)
+        return chartIdList
+
+    @classmethod
     def create_new_chart(cls,
                          chart_type,
                          dashboard_id,
@@ -79,3 +97,4 @@ if __name__ == '__main__':
         creator='tianbohao',
         chart_table='test'
     ))
+    ChartDAO.get_chart_list(1)

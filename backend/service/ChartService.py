@@ -2,6 +2,19 @@
 from backend.DAO.ChartDAO import ChartDAO
 from backend.service import DimensionService, MeasuremenService, FilterService
 
+def get_chart_list(dashboard_id):
+
+    chartList = ChartDAO.get_chart_list(dashboard_id)
+
+    return_json = {
+        'code': 0,
+        'data': {
+            'chartList':chartList
+        },
+        'message': None
+    }
+
+    return return_json
 
 def get_chart_info(chart_id):
     chart_object = ChartDAO.get_chart_by_id(chart_id)

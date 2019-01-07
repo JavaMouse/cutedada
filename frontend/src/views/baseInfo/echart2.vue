@@ -319,7 +319,28 @@
                         this.option[index].series.forEach(item2=>{
                             item2.type = 'line'
                         })
-                    } else if(res.chart_type === 3) {
+                    } else if(res.chart_type === 2) {
+                        this.option[index]={}
+                        this.option[index].title = { 
+                            text: res.title,
+                            x: 'center'
+                        }
+                        this.option[index].xAxis = {
+                            data: res.x_data,
+                            type: 'category'
+                        }
+                        this.option[index].yAxis = { type: 'value' }
+                        this.option[index].legend = {
+                            bottom: 'bottom',
+                            data: res.legend,
+                            type: 'scroll'
+                        }
+                        this.option[index].tooltip = { trigger: 'axis' }
+                        this.option[index].series = res.series
+                        this.option[index].series.forEach(item2=>{
+                            item2.type = 'bar'
+                        })
+                    } else {
                         this.option[index]={}
                         this.option[index].title = { 
                             text: res.title,
@@ -335,8 +356,9 @@
                     }
                     this.change()  
             },
-            getChart () {
-                this.chartmenber = ['1','3']
+            async getChart () {
+                let response = await this.$axios.get('chart/get_chartId_list/'+'1')
+                this.chartmenber = response.data.chartList || []
                 this.chartmenber.forEach((item,index) => {
                     this.getcChartData(item,index)
                 });
