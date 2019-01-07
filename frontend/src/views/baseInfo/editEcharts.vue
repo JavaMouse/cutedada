@@ -153,11 +153,11 @@ let option = {
                 chartTypeList: [
                     {
                         type: 1,
-                        name: 'bar'
+                        name: 'line'
                     },
                     {
                         type: 2,
-                        name: 'line'
+                        name: 'bar'
                     },
                     {
                         type: 3,
@@ -181,7 +181,9 @@ let option = {
                 filter: [],
                 mainDimenseSql: '',
                 optionDimenseSql: [],
-                measureSql: []
+                measureSql: [],
+                option: {},
+                barChartList: []
             }
         },
 
@@ -223,6 +225,13 @@ let option = {
                         dimension_sql: this.optionDimenseSql[index],
                     })
                 })
+                let measureList = []
+                this.measure.forEach((item,index) => {
+                    measureList.push({
+                        measurement_name: this.measure[index],
+                        measurement_sql: this.measureSql[index],
+                    })
+                })
                 let data = {
                     chart_type: this.editForm.chartType || '',
                     dashboard_id: 1,
@@ -231,28 +240,91 @@ let option = {
                     creator: 'chennan',
                     chart_table: this.editForm.chartName || '',
                     main_dimension: {
-                        dimension_name: this.mainDimense || '',
-                        dimension_sql: this.mainDimenseSql || ''
+                        dimension_name: this.mainDimense[0],
+                        dimension_sql: this.mainDimenseSql
                     },
                     optional_dimension_list: optionalList,
                     filter_list: [{
-                        filter_sql: this.editForm.filter || ''
-                    }],
-                    measuremen_list: [{
-                        measurement_name: this.measure || '',
-                        measurement_sql: this.measureSql || ''
-                    }] 
+                        filter_sql: this.editForm.filter
+                    }] ,
+                    measurement_list: measureList
+                }
+                if(this.editForm.filter === '' || this.editForm.filter === null){
+                    data.filter_list = []
+                }
+                if(this.mainDimense === '' || this.mainDimense === null){
+                    data.main_dimension = {}
                 }
                 console.log(data)
                 let response = await this.$axios.post('chart/add_new_chart', data)
-                this.initChart()
-                this.renderChart()
+                let res = await this.$axios.get('chart/get_chart_info/' + response.chart_id)
+                    if(res.chart_type === 1) {
+                        // 柱状图
+                        this.option={}
+                        this.option.title = { 
+                            text: res.title,
+                            x: 'center'
+                        }
+                        this.option.xAxis = {
+                            data: res.x_data,
+                            type: 'category'
+                        }
+                        this.option.yAxis = { type: 'value' }
+                        this.option.legend = {
+                            bottom: 'bottom',
+                            data: res.legend,
+                            type: 'scroll'
+                        }
+                        this.option.tooltip = { trigger: 'axis' }
+                        this.option.series = res.series
+                        this.option.series.forEach( item2 =>{
+                            item2.type = 'line'
+                        })
+                    } else if(res.chart_type === 2) {
+                        this.option={}
+                        this.option.title = { 
+                            text: res.title,
+                            x: 'center'
+                        }
+                        this.option.xAxis = {
+                            data: res.x_data,
+                            type: 'category'
+                        }
+                        this.option.yAxis = { type: 'value' }
+                        this.option.legend = {
+                            bottom: 'bottom',
+                            data: res.legend,
+                            type: 'scroll'
+                        }
+                        this.option.tooltip = { trigger: 'axis' }
+                        this.option.series = res.series
+                        this.option.series.forEach( item2 =>{
+                            item2.type = 'bar'
+                        })
+                    }else if(res.chart_type === 3) {
+                        this.option={}
+                        this.option.title = { 
+                            text: res.title,
+                            x: 'center'
+                        }
+                        this.option.legend = {
+                            bottom: 'bottom',
+                            data: res.legend,
+                            type: 'scroll'
+                        }
+                        this.option.tooltip = { trigger: 'item' }
+                        this.option.series = res.series
+                    }
+                    this.$nextTick(() => {
+                        this.initChart()
+                        this.renderChart()
+                    })
             },
             initChart () {
                 this.myChart = echarts.init(this.$refs.myChart)
             },
             renderChart () {
-                this.myChart.setOption(option)
+                this.myChart.setOption(this.option)
             },
             test () {
                 let blockArr = []
