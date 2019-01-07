@@ -17,17 +17,19 @@
             </div>
             <div class="contentDiv" v-if="activeNum===0">
                  请选择数据表:
-                <el-select v-model="value" size="mini" placeholder="请选择数据表" @change="blurChange">
+                <el-select v-model="editForm.chartName" size="mini" placeholder="请选择数据表" @change="blurChange">
                     <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
                     </el-option>
                 </el-select>
             </div>
             <div class="contentDiv" v-if="activeNum===1">
                图表类型:
-                <el-select v-model="chartName" size="mini" placeholder="请选择数据表" class="dropStyle">
-                    <el-option v-for="item in chartTypeList" :key="item" :label="item" :value="item">
+                <el-select v-model="editForm.chartType" size="mini" placeholder="请选择图表类型" class="dropStyle">
+                    <el-option v-for="item in chartTypeList" :key="item.type" :label="item.name" :value="item.type">
                     </el-option>
-                </el-select>
+                </el-select><br>
+                图表标题: <el-input size="mini" v-model="editForm.title" class="inputStyle"></el-input><br>
+                图表描述: <el-input size="mini" v-model="editForm.chartDesc" class="inputStyle"></el-input>
             </div>
             <div class="contentDiv" v-if="activeNum===2">
                 <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock">
@@ -40,18 +42,16 @@
                         </div>
                     </div>
                 </kanban-board>
-                <!-- x轴过滤器内容:
-                <el-input class="dropStyle" size="mini" v-model="input" style="width:160px"></el-input><br>
-                x轴度量:
-                <el-select class="dropStyle" v-model="xMetric" size="mini" placeholder="请选择x轴度量">
-                    <el-option v-for="item in xMetricList" :key="item" :label="item" :value="item">
-                    </el-option>
-                </el-select><br>
-                y轴度量:
-                <el-select class="dropStyle" v-model="yMetric" size="mini" placeholder="请选择y轴度量">
-                    <el-option v-for="item in yMetricList" :key="item" :label="item" :value="item">
-                    </el-option>
-                </el-select><br> -->
+                <el-dialog title="提示" :visible.sync="addColDialog.show" width="30%" center>
+                    度量名: <el-input size="mini" v-model="addColDialog.dimenseName" style="width:80%;margin-bottom:20px;"></el-input><br>
+                    度量sql:<el-input size="mini" v-model="addColDialog.dimenseSql" style="width:80%;"></el-input>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="addColDialog.show = false" size="mini">取 消</el-button>
+                        <el-button type="primary" @click="submitAddCol" size="mini">确 定</el-button>
+                    </span>
+                </el-dialog>
+                <el-button size="mini" type="primary" @click="addCol">列名增加条件</el-button><br>
+                过滤sql: <el-input v-model="editForm.filter" size="mini" class="inputStyle"></el-input>
             </div>
             <div class="contentDiv" v-if="activeNum===3">
                 <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
@@ -111,6 +111,9 @@ let option = {
         },
         data () {
             return {
+                addColDialog: {
+                    show: false
+                },
                 activeNum: 0,
                 input: '',
                 xMetric: '',
@@ -129,7 +132,13 @@ let option = {
                 tableNames: [
                     '用户名','密码','年龄'
                 ],
-                value: '',
+                editForm: {
+                    chartName: '',
+                    title: '',
+                    chartDesc: '',
+                    chartType: '',
+                    filter: ''
+                },
                 colItem: [
                 { "field": "city", "field_type": "varchar", "id": 1, "memo": "城市" },
                 { "field": "province", "field_type": "varchar", "id": 2, "memo": "省份" },
@@ -142,7 +151,18 @@ let option = {
                 { "field": "air_quality", "field_type": "varchar", "id": 9, "memo": "空气质量" },
                 { "field": "aqi", "field_type": "int", "id": 10, "memo": "空气质量指数" }],
                 chartTypeList: [
-                    'bar','line'
+                    {
+                        type: 1,
+                        name: 'bar'
+                    },
+                    {
+                        type: 2,
+                        name: 'line'
+                    },
+                    {
+                        type: 3,
+                        name: 'pie'
+                    }
                 ],
                 chartName: '',
 
@@ -158,7 +178,10 @@ let option = {
                 mainDimense: [],
                 optionDimense: [],
                 measure: [],
-                filter: []
+                filter: [],
+                mainDimenseSql: '',
+                optionDimenseSql: [],
+                measureSql: []
             }
         },
 
@@ -180,7 +203,48 @@ let option = {
                     this.activeNum--
                 }
             },
-            drawChart () {
+            addCol () {
+                this.addColDialog.show = true
+            },
+            submitAddCol () {
+                this.blocks.push({
+                    title: this.addColDialog.dimenseName,
+                    col: this.addColDialog.dimenseSql,
+                    id: this.blocks.length + 1,
+                    status: '列名'
+                })
+                this.addColDialog.show = false
+            },
+            async drawChart () {
+                let optionalList = []
+                this.optionDimense.forEach((item,index) => {
+                    optionalList.push({
+                        dimension_name: this.optionDimense[index],
+                        dimension_sql: this.optionDimenseSql[index],
+                    })
+                })
+                let data = {
+                    chart_type: this.editForm.chartType || '',
+                    dashboard_id: 1,
+                    chart_title: this.editForm.title || '',
+                    chart_desc: this.editForm.chartDesc || '',
+                    creator: 'chennan',
+                    chart_table: this.editForm.chartName || '',
+                    main_dimension: {
+                        dimension_name: this.mainDimense || '',
+                        dimension_sql: this.mainDimenseSql || ''
+                    },
+                    optional_dimension_list: optionalList,
+                    filter_list: [{
+                        filter_sql: this.editForm.filter || ''
+                    }],
+                    measuremen_list: [{
+                        measurement_name: this.measure || '',
+                        measurement_sql: this.measureSql || ''
+                    }] 
+                }
+                console.log(data)
+                let response = await this.$axios.post('chart/add_new_chart', data)
                 this.initChart()
                 this.renderChart()
             },
@@ -201,13 +265,15 @@ let option = {
                     })
                 });
                 this.blocks = blockArr
-                // console.log(blockArr)
+                console.log(blockArr)
             },
             updateBlock(id, status) {
                 this.mainDimense = []
                 this.optionDimense = []
                 this.measure = []
                 this.filter = []
+                this.measureSql = []
+                this.optionDimenseSql = []
                 
                 this.blocks.find(b => b.id === Number(id)).status = status;
                 console.log(id,status)
@@ -215,12 +281,15 @@ let option = {
                 this.blocks.forEach(item=>{
                     if(item.status === '主维度'){
                         this.mainDimense.push(item.title)
+                        this.mainDimenseSql = item.col
                     }
                     else if(item.status === '可选维度'){
                         this.optionDimense.push(item.title)
+                        this.optionDimenseSql.push(item.col)
                     }
                     else if(item.status === '度量'){
                         this.measure.push(item.title)
+                        this.measureSql.push(item.col)
                     }
                     else if(item.status === '过滤器'){
                         this.filter.push(item.title)
@@ -232,15 +301,11 @@ let option = {
                 console.log('过滤器:' + this.filter)
                 if (this.mainDimense.length>1) {
                     this.$message.error("主维度只能选择一项！")
-                    // console.log("111:"+this.mainDimense[this.mainDimense.length-1])
-                    // console.log(this.mainDimense.pop())
-                    // console.log("this.mainDimense"+this.mainDimense)
-                    // this.$forceUpdate()
                 }
             },
             async blurChange () {
-                console.log(this.value)
-                let response = await this.$axios.get('/table/fields/' + this.value)
+                console.log(this.editForm.chartName)
+                let response = await this.$axios.get('/table/fields/' + this.editForm.chartName)
                 if (response.code === 0) {
                     this.colItem = response.data.fields
                     this.test()
@@ -294,5 +359,9 @@ let option = {
     }
     .dropStyle{
         margin-top: 15px;
+    }
+    .inputStyle{
+        width: 175px;
+        margin-top: 20px;
     }
 </style>
