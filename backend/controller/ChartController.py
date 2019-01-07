@@ -34,7 +34,7 @@ def add_new_chart():
     main_dimension = data['main_dimension']
     optional_dimension_list = data['optional_dimension_list']
     filter_list = data['filter_list']
-    measuremen_list = data['measuremen_list']
+    measurement_list = data['measurement_list']
 
     # 插入主维度
     main_dimension_id = DimensionService.create_dimension(chart_id=chart_id,
@@ -49,10 +49,10 @@ def add_new_chart():
                                           is_main_dimension=0,
                                           dimension_sql=optional_dimension['dimension_sql'])
     # 插入度量
-    for measuremen in measuremen_list:
-        MeasuremenService.create_measuremen(chart_id=chart_id,
-                                            measurement_name=measuremen['measurement_name'],
-                                            measurement_sql=measuremen['measurement_sql'])
+    for measurement in measurement_list:
+        MeasuremenService.create_measurement(chart_id=chart_id,
+                                            measurement_name=measurement['measurement_name'],
+                                            measurement_sql=measurement['measurement_sql'])
     # 插入过滤器
     for filter in filter_list:
         FilterService.create_filter(dimension_id=main_dimension_id,filter_sql=filter['filter_sql'])

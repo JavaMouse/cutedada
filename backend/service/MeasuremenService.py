@@ -7,6 +7,6 @@ from backend.DAO.MeasuremenDAO import MeasuremenDAO
 def get_measuremens_by_chart_id(chart_id):
     return MeasuremenDAO.get_measuremens_by_chart_id(chart_id)
 
-def create_measuremen(chart_id,measurement_name,measurement_sql):
-    pass
+def create_measurement(chart_id,measurement_name,measurement_sql):
+    MeasuremenDAO.insert_measurement(chart_id,measurement_name,measurement_sql)
 

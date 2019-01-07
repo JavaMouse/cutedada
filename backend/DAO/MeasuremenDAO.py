@@ -38,7 +38,7 @@ class MeasuremenDAO(object):
         return measuremen_list
 
     @classmethod
-    def insert_measuremen(cls,chart_id,measurement_name,measurement_sql):
+    def insert_measurement(cls,chart_id,measurement_name,measurement_sql):
         db = dbutils.get_connect()
         cursor = db.cursor()
         insert_sql = '''
@@ -51,5 +51,5 @@ class MeasuremenDAO(object):
         dbutils.close(db)
 
 if __name__ == '__main__':
-    MeasuremenDAO.insert_measuremen(1,"ss","ddd")
+    MeasuremenDAO.insert_measurement(1,"ss","ddd")
 
