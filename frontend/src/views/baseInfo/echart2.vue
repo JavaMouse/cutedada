@@ -317,7 +317,8 @@
                         this.option[index].tooltip = { trigger: 'axis' }
                         this.option[index].series = res.series
                         this.option[index].series.forEach(item2=>{
-                            item2.type = 'line'
+                            item2.type = 'line',
+                            item2.smooth = true
                         })
                     } else if(res.chart_type === 2) {
                         this.option[index]={}
@@ -338,7 +339,8 @@
                         this.option[index].tooltip = { trigger: 'axis' }
                         this.option[index].series = res.series
                         this.option[index].series.forEach(item2=>{
-                            item2.type = 'bar'
+                            item2.type = 'bar',
+                            item2.smooth = true
                         })
                     } else {
                         this.option[index]={}
