@@ -237,6 +237,7 @@ let option = {
                 this.addColDialog.show = false
             },
             async saveChart () {
+                this.errSQL = ''
                 this.chartDisabled = true
                 let response = await this.$axios.post('chart/add_new_chart', this.chartObj)
                 console.log(response)
