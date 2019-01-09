@@ -9,11 +9,6 @@
             <el-button @click="change">刷新</el-button>
         </el-header>
         <el-main class="main">
-            <!-- <div>
-                <div>
-                    <div v-for="item in colItem">{{item}}</div>
-                </div>
-            </div> -->
             <div class="box" v-for="(item,index) in seriesData" :key="index">
                 <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;background-color:#fff;">
                 <div class="btnContain">
@@ -24,18 +19,6 @@
                 <div v-bind:style="styleObj" :ref="item.name"></div>
             </fullscreen>
             </div>
-       
-            <!-- <template>
-                    <vue-draggable-resizable class="box2" v-for="item in seriesData" :w="500" :h="400" v-on:dragging="onDrag" v-on:resizing="onResize(item.index)" :parent="true">
-                            <div class="btnContain">
-                                <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button>
-                                <el-button @click="chartCheck(item.index)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
-                                <el-button @click="chartCheck(item.index)" icon="el-icon-search" size="mini" circle></el-button>
-                            </div>
-                            <div v-bind:style="styleObj" :ref="item.name"></div>
-                    </vue-draggable-resizable>
-            </template> -->
-            
         </el-main>
     </el-container>
 </template>

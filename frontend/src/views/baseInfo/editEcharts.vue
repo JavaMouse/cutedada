@@ -54,8 +54,13 @@
                 过滤sql: <el-input v-model="editForm.filter" size="mini" class="inputStyle"></el-input>
             </div>
             <div class="contentDiv" v-if="activeNum===3">
-                <el-button size="mini" type="primary" :disabled="chartDisabled" @click="drawChart">生成图表</el-button>
-                 <div style="width:100%;height:500px;">
+                <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
+                <el-button size="mini" :disabled="chartDisabled" @click="saveChart">保存图表</el-button>
+                 <div style="width:100%;height:500px;" v-if="errSQL!==''">
+                    <div>当前sql出错，请重试！</div>
+                    <div>sql: {{this.errSQL}}</div>
+                </div>
+                 <div style="width:100%;height:500px;" v-else>
                     <div v-bind:style="styleObj" ref="myChart"></div>
                 </div>
             </div>
@@ -184,7 +189,9 @@ let option = {
                 optionDimenseSql: [],
                 measureSql: [],
                 option: {},
-                barChartList: []
+                barChartList: [],
+                chartObj: {},
+                errSQL: ''
             }
         },
 
@@ -198,10 +205,21 @@ let option = {
         methods: {
             next() {
                 if (this.activeNum < 4) {
-                    this.activeNum++
+                    if(this.activeNum === 2){
+                        if(this.measure.length === 0){
+                            this.$message.error('度量不能为空！')
+                        } else if(this.mainDimense.length === 0){
+                            this.$message.error('主维度不能为空！')
+                        } else {
+                            this.activeNum++
+                        }
+                    } else {
+                        this.activeNum++
+                    }
                 }
             },
             pre() {
+                this.chartDisabled = false
                 if (this.activeNum > 0) {
                     this.activeNum--
                 }
@@ -218,8 +236,12 @@ let option = {
                 })
                 this.addColDialog.show = false
             },
-            async drawChart () {
+            async saveChart () {
                 this.chartDisabled = true
+                let response = await this.$axios.post('chart/add_new_chart', this.chartObj)
+                console.log(response)
+            },
+            async drawChart () {
                 let optionalList = []
                 this.optionDimense.forEach((item,index) => {
                     optionalList.push({
@@ -257,9 +279,14 @@ let option = {
                 if(this.mainDimense === '' || this.mainDimense === null){
                     data.main_dimension = {}
                 }
-                console.log(data)
-                let response = await this.$axios.post('chart/add_new_chart', data)
-                let res = await this.$axios.get('chart/get_chart_info/' + response.chart_id)
+                this.chartObj = data
+                let res = await this.$axios.post('chart/preview_chart', data)
+                console.log(res)
+                if(res.success === false){
+                    this.errSQL = res.sql
+                } else if(res === null) {
+                    this.errSQL = 'error！请重试'
+                }else {
                     if(res.chart_type === 1) {
                         // 柱状图
                         this.option={}
@@ -321,6 +348,7 @@ let option = {
                         this.initChart()
                         this.renderChart()
                     })
+                }
             },
             initChart () {
                 this.myChart = echarts.init(this.$refs.myChart)
@@ -400,6 +428,7 @@ let option = {
 <style lang="scss" scoped>
     .content{
         height: calc(100% - 50px);
+        background-image: none;
     }
     .page-topic {
         height: 70px !important;
