@@ -242,6 +242,7 @@ let option = {
                 console.log(response)
             },
             async drawChart () {
+                this.errSQL = ''
                 let optionalList = []
                 this.optionDimense.forEach((item,index) => {
                     optionalList.push({
