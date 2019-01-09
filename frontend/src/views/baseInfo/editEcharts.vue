@@ -241,6 +241,7 @@ let option = {
                 this.chartDisabled = true
                 let response = await this.$axios.post('chart/add_new_chart', this.chartObj)
                 console.log(response)
+                this.$message.success('保存成功！')
             },
             async drawChart () {
                 this.errSQL = ''
