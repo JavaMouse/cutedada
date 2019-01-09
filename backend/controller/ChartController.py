@@ -7,16 +7,18 @@ chart = Blueprint('chart',__name__,
                  static_folder = "./dist/static",
                  template_folder = "./dist")
 
+# 返回chart_id
 @chart.route('/get_chartId_list/<dashboard_id>',methods=['GET'])
 def get_chart_list(dashboard_id):
     result_json = ChartService.get_chart_list(dashboard_id)
     return jsonify(result_json)
-
+# 根据图表id获取chart数据
 @chart.route('/get_chart_info/<chart_id>',methods=['GET'])
 def get_chart_info(chart_id):
     result_json = ChartService.get_chart_info(chart_id)
     return jsonify(result_json)
 
+# 添加新图表
 @chart.route('/add_new_chart',methods=['POST'])
 def add_new_chart():
     data = json.loads(str(request.data, encoding="utf-8"))
@@ -65,3 +67,25 @@ def add_new_chart():
         "chart_id":chart_id
     })
 
+# 预览图表
+@chart.route('/preview_chart',methods=['POST'])
+def preview_chart():
+    data = json.loads(str(request.data, encoding="utf-8"))
+    chart_type = data['chart_type']
+    chart_title = data['chart_title']
+    chart_table = data['chart_table']
+
+    main_dimension = data['main_dimension']
+    optional_dimension_list = data['optional_dimension_list']
+    filter_list = data['filter_list']
+    measurement_list = data['measurement_list']
+
+    result_json = ChartService.preview_chart(chart_type,
+                               chart_title,
+                               chart_table,
+                               main_dimension,
+                               optional_dimension_list,
+                               filter_list,
+                               measurement_list)
+
+    return jsonify(result_json)
