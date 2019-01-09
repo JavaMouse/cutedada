@@ -54,8 +54,6 @@ def get_sql_and_process_chart(main_dimension,
                               measuremen_list,
                               filter_list,
                               chart_object):
-
-
     sql_template = '''
     select 
         %s
@@ -98,32 +96,35 @@ def get_sql_and_process_chart(main_dimension,
     print(result_sql)
 
     json_str = None
-    # 折线图:
-    if str(chart_object.chart_type)=='1':
-        json_str = process_line_chart(chart_object,
-                           main_dimension,
-                           optional_dimension_list,
-                           measuremen_list,
-                           filter_list,
-                           result_sql)
 
-    if str(chart_object.chart_type)=='2':
-        json_str = process_bar_chart(chart_object,
-                           main_dimension,
-                           optional_dimension_list,
-                           measuremen_list,
-                           filter_list,
-                           result_sql)
+    try:
+        # 折线图:
+        if str(chart_object.chart_type)=='1':
+            json_str = process_line_chart(chart_object,
+                               main_dimension,
+                               optional_dimension_list,
+                               measuremen_list,
+                               filter_list,
+                               result_sql)
 
-    # 饼图
-    if str(chart_object.chart_type)=='3':
-        json_str = process_pie_chart_v2(chart_object,
-                           main_dimension,
-                           optional_dimension_list,
-                           measuremen_list,
-                           filter_list,
-                           result_sql)
+        if str(chart_object.chart_type)=='2':
+            json_str = process_bar_chart(chart_object,
+                               main_dimension,
+                               optional_dimension_list,
+                               measuremen_list,
+                               filter_list,
+                               result_sql)
 
+        # 饼图
+        if str(chart_object.chart_type)=='3':
+            json_str = process_pie_chart_v2(chart_object,
+                               main_dimension,
+                               optional_dimension_list,
+                               measuremen_list,
+                               filter_list,
+                               result_sql)
+    except:
+        raise Exception("%s" % result_sql )
     return json_str
 
 # 也是处理饼图
@@ -481,12 +482,16 @@ def preview_chart(chart_type,
                        measurement_sql=measurement['measurement_sql'])
         )
 
-
-    json_str = get_sql_and_process_chart(preview_main_dimension,
+    json_str = ""
+    try:
+        json_str = get_sql_and_process_chart(preview_main_dimension,
                                          preview_optional_dimension_list,
                                          preview_measurement_list,
                                          preview_filter_list,
                                          chart_object)
+    except Exception as e:
+        sql = e.args[0]
+        json_str = {"success":False,"sql":sql}
     return json_str
 
 
@@ -498,7 +503,7 @@ if __name__ == '__main__':
         chart_type=1,
         chart_title='test',
         chart_table='demo_goods',
-        main_dimension={"dimension_name":"日期","dimension_sql":"date(`date_create`)"},
+        main_dimension={"dimension_name":"日期","dimension_sql":"date(`dae_create`)"},
         optional_dimension_list=[{"dimension_name":"商品类型","dimension_sql":"`goods_type`"},
                                  {"dimension_name":"买家","dimension_sql":"`buyer`"}],
         filter_list=[{"filter_sql":"date(date_create)>='2018-01-01'"}],
