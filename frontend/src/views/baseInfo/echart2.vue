@@ -1,11 +1,11 @@
 <template>
     <el-container>
         <el-header class="page-topic">
-            数据表:
+            <!-- 数据表:
             <el-select v-model="value" size="small" placeholder="请选择数据表" @blur="blurChange">
                 <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
                 </el-option>
-            </el-select>
+            </el-select> -->
             <el-button @click="change">刷新</el-button>
         </el-header>
         <el-main class="main">
@@ -17,6 +17,7 @@
                     <el-button @click="toggle(item.index)" icon="el-icon-search" size="mini" circle></el-button>
                 </div>
                 <div v-bind:style="styleObj" :ref="item.name"></div>
+                备注: <span></span>
             </fullscreen>
             </div>
         </el-main>

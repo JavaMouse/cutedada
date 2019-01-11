@@ -5,9 +5,9 @@
                 <div class="layoutJSON">
                     Displayed as <code>[x, y, w, h]</code>:
                     <div class="columns">
-                        <div class="layoutItem" v-for="item in layout">
+                        <!-- <div class="layoutItem" v-for="item in layout">
                             <b>{{item.i}}</b>: [{{item.x}}, {{item.y}}, {{item.w}}, {{item.h}}]
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div ref="eventsDiv" class="eventsJSON">
@@ -21,7 +21,7 @@
                 <!--<button @click="decreaseWidth">Decrease Width</button>
                 <button @click="increaseWidth">Increase Width</button>
                 <button @click="addItem">Add an item</button>-->
-                <grid-layout :layout="layout"
+                <!-- <grid-layout :layout="layout"
                              :col-num="12"
                              :row-height="30"
                              :is-draggable="true"
@@ -41,10 +41,10 @@
                                @resized="resizedEvent"
                                @moved="movedEvent"
                     >
-                        <!-- <span class="text">{{item.i}}</span> -->
+                        <span class="text">{{item.i}}</span>
                         <div id="myChart" :style="{width: '80%', height: '80%'}"></div>
                     </grid-item>
-                </grid-layout>
+                </grid-layout> -->
             </div>
             <!--<pre>{{eventLog | json}}</pre>-->
     

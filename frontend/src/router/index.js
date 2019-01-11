@@ -40,6 +40,10 @@ export default new Router({
           path: '/authority',
           name: 'Authority',
           component: () => import('../views/baseInfo/authority')
+        },{
+          path: '/actionList',
+          name: 'ActionList',
+          component: () => import('../views/baseInfo/actionList')
         }]
     }]
   }]

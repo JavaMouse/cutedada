@@ -152,18 +152,18 @@ export default {
           //   menuCode: "1",
           //   menuName: "1/1"
           // }]
-        },
-        {
+        },{
           menuCode: "echarts",
           menuName: "测试页面"
-        },
-        {
+        },{
           menuCode: "edit",
           menuName: "编辑页面"
-        },
-        {
+        },{
           menuCode: "authority",
           menuName: "权限页面"
+        },{
+          menuCode: "actionList",
+          menuName: "操作集合页面"
         }]
     },
     appUserInfo () {
