@@ -35,7 +35,7 @@
           <el-table-column prop="actionTime" label="操作时间"></el-table-column>
           <el-table-column label="操作">
               <template slot-scope="scope">
-                  <el-button type="danger" size="mini">撤销</el-button>
+                  <el-button type="danger" size="mini" @click="goBack">撤销</el-button>
               </template>
           </el-table-column>
         </el-table>
@@ -104,6 +104,23 @@ export default {
     }
   },
   methods: {
+    goBack () {
+      this.$confirm('确认撤销该条操作, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '撤销成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消撤销'
+          });          
+        });
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
             return 'background:#3083F2;color:#fff;font-size:14px;'

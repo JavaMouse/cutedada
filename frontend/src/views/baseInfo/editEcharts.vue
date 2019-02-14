@@ -3,68 +3,68 @@
         <!-- <el-header class="page-topic">
             
         </el-header> -->
-        <div class="content">
-            <div class="stepDiv">
-                <el-steps :active="activeNum" align-center>
-                    <el-step title="步骤1" description="选择数据表"></el-step>
-                    <el-step title="步骤2" description="选择图表类型"></el-step>
-                    <el-step title="步骤3" description="选择维度、度量、过滤器"></el-step>
-                    <el-step title="步骤4" description="生成图表"></el-step>
-                </el-steps>
-                <el-button size="mini" style="margin-top: 12px;" @click="next">下一步</el-button>
-                <el-button size="mini" style="margin-top: 12px;" @click="pre">上一步</el-button>
+        <el-main class="main">
+                <div class="stepDiv">
+                    <el-steps :active="activeNum" align-center>
+                        <el-step title="步骤1" description="选择数据表"></el-step>
+                        <el-step title="步骤2" description="选择图表类型"></el-step>
+                        <el-step title="步骤3" description="选择维度、度量、过滤器"></el-step>
+                        <el-step title="步骤4" description="生成图表"></el-step>
+                    </el-steps>
+                    <el-button size="mini" style="margin-top: 12px;" @click="next">下一步</el-button>
+                    <el-button size="mini" style="margin-top: 12px;" @click="pre">上一步</el-button>
 
-            </div>
-            <div class="contentDiv" v-if="activeNum===0">
-                 请选择数据表:
-                <el-select v-model="editForm.chartName" size="mini" placeholder="请选择数据表" @change="blurChange">
-                    <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
-                    </el-option>
-                </el-select>
-            </div>
-            <div class="contentDiv" v-if="activeNum===1">
-               图表类型:
-                <el-select v-model="editForm.chartType" size="mini" placeholder="请选择图表类型" class="dropStyle">
-                    <el-option v-for="item in chartTypeList" :key="item.type" :label="item.name" :value="item.type">
-                    </el-option>
-                </el-select><br>
-                图表标题: <el-input size="mini" v-model="editForm.title" class="inputStyle"></el-input><br>
-                图表描述: <el-input size="mini" v-model="editForm.chartDesc" class="inputStyle"></el-input>
-            </div>
-            <div class="contentDiv" v-if="activeNum===2">
-                <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock">
-                    <div v-for="(stage,index) in stages" :key="index" :slot="stage" class="stageDiv">
-                        <h5>{{ stage }}</h5>
-                    </div>
-                    <div v-for="(block,index) in blocks" :key="index" :slot="block.id" class="blockDiv">
-                            <div>
-                            {{ block.title }} ( {{block.col}} )
+                </div>
+                <div class="contentDiv" v-if="activeNum===0">
+                    请选择数据表:
+                    <el-select v-model="editForm.chartName" size="mini" placeholder="请选择数据表" @change="blurChange">
+                        <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                </div>
+                <div class="contentDiv" v-if="activeNum===1">
+                图表类型:
+                    <el-select v-model="editForm.chartType" size="mini" placeholder="请选择图表类型" class="dropStyle">
+                        <el-option v-for="item in chartTypeList" :key="item.type" :label="item.name" :value="item.type">
+                        </el-option>
+                    </el-select><br>
+                    图表标题: <el-input size="mini" v-model="editForm.title" class="inputStyle"></el-input><br>
+                    图表描述: <el-input size="mini" v-model="editForm.chartDesc" class="inputStyle"></el-input>
+                </div>
+                <div class="contentDiv" v-if="activeNum===2">
+                    <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock">
+                        <div v-for="(stage,index) in stages" :key="index" :slot="stage" class="stageDiv">
+                            <h5>{{ stage }}</h5>
                         </div>
+                        <div v-for="(block,index) in blocks" :key="index" :slot="block.id" class="blockDiv">
+                                <div>
+                                {{ block.title }} ( {{block.col}} )
+                            </div>
+                        </div>
+                    </kanban-board>
+                    <el-dialog title="提示" :visible.sync="addColDialog.show" width="30%" center>
+                        度量名: <el-input size="mini" v-model="addColDialog.dimenseName" style="width:80%;margin-bottom:20px;"></el-input><br>
+                        度量sql:<el-input size="mini" v-model="addColDialog.dimenseSql" style="width:80%;"></el-input>
+                        <span slot="footer" class="dialog-footer">
+                            <el-button @click="addColDialog.show = false" size="mini">取 消</el-button>
+                            <el-button type="primary" @click="submitAddCol" size="mini">确 定</el-button>
+                        </span>
+                    </el-dialog>
+                    <el-button size="mini" type="primary" @click="addCol">列名增加条件</el-button><br>
+                    过滤sql: <el-input v-model="editForm.filter" size="mini" class="inputStyle"></el-input>
+                </div>
+                <div class="contentDiv" v-if="activeNum===3">
+                    <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
+                    <el-button size="mini" :disabled="chartDisabled" @click="saveChart">保存图表</el-button>
+                    <div style="width:100%;height:500px;" v-if="errSQL!==''">
+                        <div>当前sql出错，请重试！</div>
+                        <div>sql: {{this.errSQL}}</div>
                     </div>
-                </kanban-board>
-                <el-dialog title="提示" :visible.sync="addColDialog.show" width="30%" center>
-                    度量名: <el-input size="mini" v-model="addColDialog.dimenseName" style="width:80%;margin-bottom:20px;"></el-input><br>
-                    度量sql:<el-input size="mini" v-model="addColDialog.dimenseSql" style="width:80%;"></el-input>
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="addColDialog.show = false" size="mini">取 消</el-button>
-                        <el-button type="primary" @click="submitAddCol" size="mini">确 定</el-button>
-                    </span>
-                </el-dialog>
-                <el-button size="mini" type="primary" @click="addCol">列名增加条件</el-button><br>
-                过滤sql: <el-input v-model="editForm.filter" size="mini" class="inputStyle"></el-input>
-            </div>
-            <div class="contentDiv" v-if="activeNum===3">
-                <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
-                <el-button size="mini" :disabled="chartDisabled" @click="saveChart">保存图表</el-button>
-                 <div style="width:100%;height:500px;" v-if="errSQL!==''">
-                    <div>当前sql出错，请重试！</div>
-                    <div>sql: {{this.errSQL}}</div>
+                    <div style="width:100%;height:500px;" v-else>
+                        <div v-bind:style="styleObj" ref="myChart"></div>
+                    </div>
                 </div>
-                 <div style="width:100%;height:500px;" v-else>
-                    <div v-bind:style="styleObj" ref="myChart"></div>
-                </div>
-            </div>
-        </div>
+        </el-main>
     </el-container>
 </template>
 <script>
@@ -429,8 +429,8 @@ let option = {
     }
 </script>
 <style lang="scss" scoped>
-    .content{
-        height: calc(100% - 50px);
+    .main{
+        width: 100%;
         background-image: none;
     }
     .page-topic {

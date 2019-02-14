@@ -279,6 +279,7 @@ export default {
   height: calc(100% - 165px);
 }
 .normal {
+  background: #fff;
   transition: all 2s;
   height: calc(100% - 50px);
   .avatar {
