@@ -28,7 +28,8 @@ def login(username,password):
         'code':0,
             'data':{
                 'pass':True,
-                'info':'正确'
+                'info':'正确',
+                'group_id':user.group_id
             },
             'message':None
     }

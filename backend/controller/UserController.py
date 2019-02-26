@@ -26,6 +26,7 @@ def login():
     if result_json['data']['pass'] is True:
         session[username]=True
         resp.set_cookie("username", username)
+        resp.set_cookie("group_id", str(result_json['data']['group_id']))
     return resp
     # return jsonify(result_json)
 
@@ -40,7 +41,8 @@ def register():
     resp = make_response(jsonify(result_json))
     if result_json['data']['pass'] is True:
         session[username]=True
-        # resp.set_cookie("username", username)
+        resp.set_cookie("username", username)
+
     return resp
 
 
