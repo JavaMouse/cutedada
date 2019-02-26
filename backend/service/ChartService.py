@@ -4,7 +4,9 @@ from backend.object.Chart import Chart
 from backend.object.Dimension import Dimension
 from backend.object.Filter import Filter
 from backend.object.Measuremen import Measuremen
-from backend.service import DimensionService, MeasuremenService, FilterService
+from backend.service import DimensionService, MeasuremenService, FilterService, JurisdictionService, \
+    JurisdictionAndGroupService
+
 
 # 根据dashboard_id获取chart_id
 def get_chart_list(dashboard_id):
@@ -280,7 +282,7 @@ def process_bar_chart(chart_object,
     for d in data:
         # 主维度值
         main_dimension_key = None
-        # eg:化妆品_哒哒、衣服_田博浩 (各可选维度值组合键)
+        # eg:化妆品_哒哒、衣服_哒哒 (各可选维度值组合键)
         duliang_all_key = ''
         for i in range(len(optional_dimension_list)+1):
             if i == 0:
@@ -426,7 +428,15 @@ def create_new_chart(chart_type,
                      chart_title,
                      chart_desc,
                      creator,
-                     chart_table):
+                     chart_table,
+                     group_id,
+                     access_group_ids):
+
+    # 查看当前用户组是否有权限在该dashboard下创建图表
+    jurisdiction_code = 'CREATE_CHART_UNDER_DASHBOARD_%d' % (dashboard_id)
+    result_dict = JurisdictionAndGroupService.get_record_by_group_id_and_jurisdiction_code(group_id, jurisdiction_code)
+    if result_dict is None:
+        raise Exception("你没有权限在该dashboard下创建图表!")
 
     chart_id = ChartDAO.create_new_chart(chart_type,
                               dashboard_id,
@@ -434,6 +444,28 @@ def create_new_chart(chart_type,
                               chart_desc,
                               creator,
                               chart_table)
+
+    # 新建权限code
+    JurisdictionService.create_new_jurisdiction(jurisdiction_desc="chart_%d_查看" % (chart_id) ,
+                                                jurisdiction_code="READ_CHART_%d" % (chart_id))
+
+    JurisdictionService.create_new_jurisdiction(jurisdiction_desc="chart_%d_编辑" % (chart_id) ,
+                                                jurisdiction_code="MODIFY_CHART_%d" % (chart_id))
+
+    JurisdictionService.create_new_jurisdiction(jurisdiction_desc="chart_%d_删除" % (chart_id) ,
+                                                jurisdiction_code="DELETE_CHART_%d" % (chart_id))
+    # 给选定组添加查看权限
+    for access_group_id in access_group_ids:
+        JurisdictionAndGroupService.create_new(access_group_id,jurisdiction_code="READ_CHART_%d" % (chart_id))
+
+    # 给管理员(id=1)添加删除和修改权限
+    JurisdictionAndGroupService.create_new(1, jurisdiction_code="MODIFY_CHART_%d" % (chart_id))
+    JurisdictionAndGroupService.create_new(1, jurisdiction_code="DELETE_CHART_%d" % (chart_id))
+    # 给本组添加删除和修改权限
+    if group_id!=1:
+        JurisdictionAndGroupService.create_new(group_id, jurisdiction_code="MODIFY_CHART_%d" % (chart_id))
+        JurisdictionAndGroupService.create_new(group_id, jurisdiction_code="DELETE_CHART_%d" % (chart_id))
+
     return chart_id
 
 # 预览图表

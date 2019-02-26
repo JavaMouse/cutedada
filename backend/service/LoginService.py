@@ -69,3 +69,6 @@ def register(username,password):
             'message': None
         }
     return return_json
+
+if __name__ == '__main__':
+    print(register("chendd","123"))

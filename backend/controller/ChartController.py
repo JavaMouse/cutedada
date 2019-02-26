@@ -3,23 +3,27 @@ from flask import Blueprint, jsonify, request, json
 
 from backend.service import ChartService, DimensionService, MeasuremenService, FilterService
 
-chart = Blueprint('chart',__name__,
-                 static_folder = "./dist/static",
-                 template_folder = "./dist")
+chart = Blueprint('chart', __name__,
+                  static_folder="./dist/static",
+                  template_folder="./dist")
+
 
 # 返回chart_id
-@chart.route('/get_chartId_list/<dashboard_id>',methods=['GET'])
+@chart.route('/get_chartId_list/<dashboard_id>', methods=['GET'])
 def get_chart_list(dashboard_id):
     result_json = ChartService.get_chart_list(dashboard_id)
     return jsonify(result_json)
+
+
 # 根据图表id获取chart数据
-@chart.route('/get_chart_info/<chart_id>',methods=['GET'])
+@chart.route('/get_chart_info/<chart_id>', methods=['GET'])
 def get_chart_info(chart_id):
     result_json = ChartService.get_chart_info(chart_id)
     return jsonify(result_json)
 
+
 # 添加新图表
-@chart.route('/add_new_chart',methods=['POST'])
+@chart.route('/add_new_chart', methods=['POST'])
 def add_new_chart():
     data = json.loads(str(request.data, encoding="utf-8"))
     chart_type = data['chart_type']
@@ -29,13 +33,33 @@ def add_new_chart():
     creator = data['creator']
     chart_table = data['chart_table']
 
-    # 创建chart
-    chart_id = ChartService.create_new_chart(chart_type,
-                                  dashboard_id,
-                                  chart_title,
-                                  chart_desc,
-                                  creator,
-                                  chart_table)
+    # TODO  access_group_ids = data['access_group_ids']
+
+    access_group_ids = None
+
+    # 1是管理员id
+    if access_group_ids is None or len(access_group_ids) == 0:
+        access_group_ids = [1]
+
+    # 获取当前用户权限组id
+    pass
+    group_id = 1
+
+    try:
+        # 创建chart
+        chart_id = ChartService.create_new_chart(chart_type,
+                                                 dashboard_id,
+                                                 chart_title,
+                                                 chart_desc,
+                                                 creator,
+                                                 chart_table,
+                                                 group_id,
+                                                 access_group_ids)
+    except Exception as e:
+        return jsonify({
+            "error": e.__str__()
+        })
+
 
     main_dimension = data['main_dimension']
     optional_dimension_list = data['optional_dimension_list']
@@ -44,9 +68,9 @@ def add_new_chart():
 
     # 插入主维度
     main_dimension_id = DimensionService.create_dimension(chart_id=chart_id,
-                                      dimension_name=main_dimension['dimension_name'],
-                                      is_main_dimension=1,
-                                      dimension_sql=main_dimension['dimension_sql'])
+                                                          dimension_name=main_dimension['dimension_name'],
+                                                          is_main_dimension=1,
+                                                          dimension_sql=main_dimension['dimension_sql'])
 
     # 插入可选维度
     for optional_dimension in optional_dimension_list:
@@ -57,18 +81,19 @@ def add_new_chart():
     # 插入度量
     for measurement in measurement_list:
         MeasuremenService.create_measurement(chart_id=chart_id,
-                                            measurement_name=measurement['measurement_name'],
-                                            measurement_sql=measurement['measurement_sql'])
+                                             measurement_name=measurement['measurement_name'],
+                                             measurement_sql=measurement['measurement_sql'])
     # 插入过滤器
     for filter in filter_list:
-        FilterService.create_filter(dimension_id=main_dimension_id,filter_sql=filter['filter_sql'])
+        FilterService.create_filter(dimension_id=main_dimension_id, filter_sql=filter['filter_sql'])
 
     return jsonify({
-        "chart_id":chart_id
+        "chart_id": chart_id
     })
 
+
 # 预览图表
-@chart.route('/preview_chart',methods=['POST'])
+@chart.route('/preview_chart', methods=['POST'])
 def preview_chart():
     data = json.loads(str(request.data, encoding="utf-8"))
     chart_type = data['chart_type']
@@ -81,11 +106,11 @@ def preview_chart():
     measurement_list = data['measurement_list']
 
     result_json = ChartService.preview_chart(chart_type,
-                               chart_title,
-                               chart_table,
-                               main_dimension,
-                               optional_dimension_list,
-                               filter_list,
-                               measurement_list)
+                                             chart_title,
+                                             chart_table,
+                                             main_dimension,
+                                             optional_dimension_list,
+                                             filter_list,
+                                             measurement_list)
 
     return jsonify(result_json)

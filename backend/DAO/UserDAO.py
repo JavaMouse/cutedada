@@ -13,7 +13,7 @@ class UserDAO(object):
         db = dbutils.get_connect()
         cursor = db.cursor()
         status = cursor.execute('''
-        insert into user (username,password)
+        insert into dada_user (username,password)
         values (%s,%s)
         ''',(username,password))
         db.commit()
@@ -34,9 +34,10 @@ class UserDAO(object):
             username,
             password,
             nickname,
-            is_admin 
+            group_id,
+            avatar
         from 
-            user 
+            dada_user 
         where 
             username=%s
         ''' ,(username)
@@ -47,11 +48,12 @@ class UserDAO(object):
         user = User(username=data[0],
                     password=data[1],
                     nickname=data[2],
-                    is_admin=int(data[3])
+                    group_id=int(data[3]),
+                    avatar=data[4]
                     )
         dbutils.close(db)
         return user
 
 
 if __name__ == '__main__':
-    print(UserDAO.InsertUser("chen1","123"))
+    print(UserDAO.findUserByUsername("tianbohao"))
