@@ -172,7 +172,7 @@ let option = {
                 ],
                 chartName: '',
 
-                stages: ['列名', '主维度', '可选维度','度量','过滤器'],
+                stages: ['列名', '主维度', '可选维度','度量'],
                 blocks: [
                     {
                     id: 1,
@@ -210,6 +210,18 @@ let option = {
                             this.$message.error('度量不能为空！')
                         } else if(this.mainDimense.length === 0){
                             this.$message.error('主维度不能为空！')
+                        } else {
+                            this.activeNum++
+                        }
+                    } else if (this.activeNum === 1) {
+                        if(!this.editForm.chartType){
+                            this.$message.error('请选择图表类型！')
+                        } else {
+                            this.activeNum++
+                        }
+                    } else if (this.activeNum === 0) {
+                        if(!this.editForm.chartName){
+                            this.$message.error('请选择数据表！')
                         } else {
                             this.activeNum++
                         }
