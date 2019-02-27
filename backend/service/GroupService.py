@@ -21,3 +21,6 @@ def getGroupInfo():
         'message': None
     }
     return return_json
+
+if __name__ == '__main__':
+    print(getGroupInfo())

@@ -9,7 +9,7 @@ group = Blueprint('group',__name__,
 @group.route('/getGroupList',methods=['GET'])
 def getGroupList():
     result_json = GroupService.getGroupInfo()
-    return  jsonify(result_json)
+    return jsonify(result_json)
 
 if __name__ == '__main__':
-    print(())getGroupList
+    pass
