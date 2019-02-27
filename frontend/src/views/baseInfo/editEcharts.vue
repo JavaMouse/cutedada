@@ -20,7 +20,13 @@
                     <el-select v-model="editForm.chartName" size="mini" placeholder="请选择数据表" @change="blurChange">
                         <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
                         </el-option>
-                    </el-select>
+                    </el-select><br><br>
+                        请选择可以查看本图表的人:<br>
+                        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+                        <div style="margin: 15px 0;"></div>
+                        <el-checkbox-group v-model="editForm.auth" @change="handleCheckedCitiesChange">
+                            <el-checkbox v-for="authority in authoritys" :label="authority" :key="authority">{{authority}}</el-checkbox>
+                        </el-checkbox-group>
                 </div>
                 <div class="contentDiv" v-if="activeNum===1">
                 图表类型:
@@ -116,6 +122,9 @@ let option = {
         },
         data () {
             return {
+                checkAll: false,
+                isIndeterminate: true,
+                authoritys: ['测试人员','开发人员','管理员'],
                 chartDisabled: false,
                 addColDialog: {
                     show: false
@@ -143,7 +152,8 @@ let option = {
                     title: '',
                     chartDesc: '',
                     chartType: '',
-                    filter: ''
+                    filter: '',
+                    auth: []
                 },
                 colItem: [
                 { "field": "city", "field_type": "varchar", "id": 1, "memo": "城市" },
@@ -201,8 +211,50 @@ let option = {
         mounted () {
             this.getTableList()
             this.test()
+            this.getCookieVal()
+            this.getAuthGroup()
         },
         methods: {
+            getCookie(cookie_name) {
+                var allcookies = document.cookie;
+                var cookie_pos = allcookies.indexOf(cookie_name);
+                if (cookie_pos != -1) {
+                    // 把cookie_pos放在值的开始，只要给值加1即可
+                    //计算取cookie值得开始索引，加的1为“=”
+                    cookie_pos = cookie_pos + cookie_name.length + 1; 
+                    //计算取cookie值得结束索引
+                    var cookie_end = allcookies.indexOf(";", cookie_pos);
+                    if (cookie_end == -1) {
+                        cookie_end = allcookies.length;
+                    }
+                    //得到想要的cookie的值
+                    var value = unescape(allcookies.substring(cookie_pos, cookie_end)); 
+                }
+                return value;
+            },
+            getCookieVal () {
+                let cookie_name = 'username'
+                // 调用
+                let cookie_value = this.getCookie(cookie_name)
+                console.log(cookie_value)
+            },
+            //获取分组信息
+            async getAuthGroup () {
+                let response = await this.$axios.get('/group/getGroupList')
+                console.log(response.data)
+                // this.authoritys = response.data
+
+            },
+            handleCheckAllChange(val) {
+                console.log(val)
+                this.editForm.auth = val ? this.authoritys : [];
+                this.isIndeterminate = false;
+            },
+            handleCheckedCitiesChange (value) {
+                let checkedCount = value.length;
+                this.checkAll = checkedCount === this.authoritys.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.authoritys.length;
+            },
             next() {
                 if (this.activeNum < 4) {
                     if(this.activeNum === 2){
