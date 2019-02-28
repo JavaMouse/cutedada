@@ -22,10 +22,9 @@
                         </el-option>
                     </el-select><br><br>
                         请选择可以查看本图表的人:<br>
-                        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
                         <div style="margin: 15px 0;"></div>
                         <el-checkbox-group v-model="editForm.auth" @change="handleCheckedCitiesChange">
-                            <el-checkbox v-for="authority in authoritys" :label="authority" :key="authority">{{authority}}</el-checkbox>
+                            <el-checkbox v-for="authority in authoritys" :label="authority.desc" :key="authority.id">{{authority.desc}}</el-checkbox>
                         </el-checkbox-group>
                 </div>
                 <div class="contentDiv" v-if="activeNum===1">
@@ -122,8 +121,6 @@ let option = {
         },
         data () {
             return {
-                checkAll: false,
-                isIndeterminate: true,
                 authoritys: ['测试人员','开发人员','管理员'],
                 chartDisabled: false,
                 addColDialog: {
@@ -201,7 +198,8 @@ let option = {
                 option: {},
                 barChartList: [],
                 chartObj: {},
-                errSQL: ''
+                errSQL: '',
+                group_id: 1
             }
         },
 
@@ -220,7 +218,6 @@ let option = {
                 var cookie_pos = allcookies.indexOf(cookie_name);
                 if (cookie_pos != -1) {
                     // 把cookie_pos放在值的开始，只要给值加1即可
-                    //计算取cookie值得开始索引，加的1为“=”
                     cookie_pos = cookie_pos + cookie_name.length + 1; 
                     //计算取cookie值得结束索引
                     var cookie_end = allcookies.indexOf(";", cookie_pos);
@@ -234,26 +231,27 @@ let option = {
             },
             getCookieVal () {
                 let cookie_name = 'username'
-                // 调用
+                let group_id = 'group_id'
                 let cookie_value = this.getCookie(cookie_name)
-                console.log(cookie_value)
+                let group_value = this.getCookie(group_id)
+                this.group_id = group_value
+                this.editForm.auth = ['管理员']
+                this.authoritys.forEach((item,index)=>{
+                    if(group_value === index+1 && group_value !== '1') {
+                        this.editForm.auth.append(item)
+                    }
+                })
             },
             //获取分组信息
             async getAuthGroup () {
                 let response = await this.$axios.get('/group/getGroupList')
-                console.log(response.data)
-                // this.authoritys = response.data
-
-            },
-            handleCheckAllChange(val) {
-                console.log(val)
-                this.editForm.auth = val ? this.authoritys : [];
-                this.isIndeterminate = false;
+                if(response.code === 0) {
+                    let groupList = response.data.field
+                    this.authoritys = groupList
+                }
             },
             handleCheckedCitiesChange (value) {
-                let checkedCount = value.length;
-                this.checkAll = checkedCount === this.authoritys.length;
-                this.isIndeterminate = checkedCount > 0 && checkedCount < this.authoritys.length;
+                console.log(this.editForm.auth)
             },
             next() {
                 if (this.activeNum < 4) {
