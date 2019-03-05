@@ -3,14 +3,24 @@
         <el-main class="main">
             <el-form :label-position="labelPosition" label-width="0px" :model="authorityForm" class="authForm">
                 <h3 class="title">修改权限</h3>
-                <el-form-item v-for="(item,index) in formList" :key="index">
-                    <div>echart{{index+1}}:</div>
-                    <el-checkbox label="查看" :checked="item[0]" @change="test(index,0)"></el-checkbox>
-                    <el-checkbox label="编辑" :checked="item[1]" @change="test(index,1)"></el-checkbox>
-                </el-form-item>
-                <el-form-item>
-                    <el-button size="mini" @click="submit">确认修改</el-button>
-                </el-form-item>
+                <el-select v-model="authorityForm.authValue" placeholder="请选择权限组" style="margin-bottom:40px;">
+                    <el-option
+                        v-for="item in authOptions"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                    </el-option>
+                </el-select>
+                <template v-if="authorityForm.authValue !== ''">
+                    <el-form-item v-for="(item,index) in authorityForm.formList" :key="index">
+                        <div>{{ item.chart_name }}:</div>
+                        <el-checkbox label="查看" :checked="item.read" @change="test(index,0)"></el-checkbox>
+                        <el-checkbox label="编辑" :checked="item.modify" @change="test(index,1)"></el-checkbox>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button size="mini" @click="submit">确认修改</el-button>
+                    </el-form-item>
+                </template>
             </el-form>
         </el-main>
     </el-container>
@@ -22,9 +32,34 @@
         name: 'Authority',
         data () {
             return {
-                authorityForm: {},
+                authorityForm: {
+                    authValue: '',
+                    formList: [
+                    {
+                        'chart_id':1,
+                        'chart_name': 'dadadadada',
+                        'group_id':1,
+                        'read': true,
+                        'modify': false
+                    },
+                    {
+                        'chart_id':2,
+                        'chart_name': 'aaaa',
+                        'group_id':1,
+                        'read': true,
+                        'modify': true
+                    },
+                    {
+                        'chart_id':3,
+                        'chart_name': 'scxcd',
+                        'group_id':1,
+                        'read': false,
+                        'modify': false
+                    }
+                ],
+                },
                 labelPosition: 'left',
-                formList: [[false,true],[true,false],[true,false]]
+                authOptions: ['1','2','3']
             }
         },
         mounted () {
@@ -32,11 +67,15 @@
         methods: {
             test (index,checkNum) {
                 console.log(index,checkNum)
-                this.formList[index][checkNum] = !this.formList[index][checkNum]
-                console.log(this.formList)
+                if (checkNum === 0) {
+                    this.authorityForm.formList[index].read = !this.authorityForm.formList[index].read
+                } else {
+                    this.authorityForm.formList[index].modify = !this.authorityForm.formList[index].modify
+                }
+                console.log(this.authorityForm.formList)
             },
             submit () {
-                console.log(this.formList)
+                console.log(this.authorityForm.formList)
             }
             
         }
