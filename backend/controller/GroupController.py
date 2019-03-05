@@ -11,5 +11,11 @@ def getGroupList():
     result_json = GroupService.getGroupInfo()
     return jsonify(result_json)
 
+@group.route('/get_table_jurisdiction/<group_id>',methods=['GET'])
+def getTableJurisdictionByCroupId(group_id):
+    result_json = GroupService.getTableJurisdictionByCroupId(group_id)
+    return jsonify(result_json)
+
+
 if __name__ == '__main__':
     pass

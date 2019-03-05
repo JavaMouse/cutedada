@@ -199,7 +199,7 @@ def process_pie_chart(chart_object,
     for d in data:
         # 主维度值
         main_dimension_key = None
-        # eg:化妆品_哒哒、衣服_田博浩 (各可选维度值组合键)
+        # eg:化妆品_哒哒、衣服_哒哒 (各可选维度值组合键)
         duliang_all_key = ''
         for i in range(len(optional_dimension_list) + 1):
             if i == 0:
@@ -361,7 +361,7 @@ def process_line_chart(chart_object,
     for d in data:
         # 主维度值
         main_dimension_key = None
-        # eg:化妆品_哒哒、衣服_田博浩 (各可选维度值组合键)
+        # eg:化妆品_哒哒、衣服_哒哒 (各可选维度值组合键)
         duliang_all_key = ''
         for i in range(len(optional_dimension_list)+1):
             if i == 0:

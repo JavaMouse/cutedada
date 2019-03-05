@@ -2,7 +2,7 @@
   "name": "dada",
   "version": "1.0.0",
   "description": "dada",
-  "author": "田博浩 <tianbohao1995@hotmail.com>",
+  "author": "陈楠 <chennan@zailingtech.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
