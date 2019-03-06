@@ -74,8 +74,8 @@ class GroupDAO(object):
                 "chart_id": d[0],
                 "chart_title": d[1],
                 "group_id": d[2],
-                "is_read": d[3],
-                "is_modify": d[4]
+                "is_read": d[3] == 1,
+                "is_modify": d[4] == 1
             }
             fields.append(g)
         dbutils.close(db)
@@ -83,4 +83,4 @@ class GroupDAO(object):
 
 
 if __name__ == '__main__':
-    print(GroupDAO.getTableJurisdictionByCroupId(1))
+    print(GroupDAO.getTableJurisdictionByCroupId(4))
