@@ -6,9 +6,9 @@
                 <el-select v-model="authorityForm.authValue" placeholder="请选择权限组" style="margin-bottom:40px;">
                     <el-option
                         v-for="item in authOptions"
-                        :key="item"
-                        :label="item"
-                        :value="item">
+                        :key="item.id"
+                        :label="item.desc"
+                        :value="item.id">
                     </el-option>
                 </el-select>
                 <template v-if="authorityForm.authValue !== ''">
@@ -63,8 +63,18 @@
             }
         },
         mounted () {
+            this.getGroupList()
         },
         methods: {
+            async getGroupList () {
+                let response = await this.$axios.get('/group/getGroupList')
+                if(response.code === 0) {
+                    // this.authOptions = response.data.field.map(item => {
+                    //     return item.desc
+                    // })
+                    this.authOptions = response.data.field
+                }
+            },
             test (index,checkNum) {
                 console.log(index,checkNum)
                 if (checkNum === 0) {
@@ -75,7 +85,7 @@
                 console.log(this.authorityForm.formList)
             },
             submit () {
-                console.log(this.authorityForm.formList)
+                console.log(this.authorityForm)
             }
             
         }
