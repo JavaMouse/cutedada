@@ -1,3 +1,9 @@
+
+# 查看5000端口占用情况:
+lsof -i tcp:5000
+然后：kill PID
+
+
 # cutedada
 
 ### 数据库相关

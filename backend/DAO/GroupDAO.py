@@ -61,10 +61,10 @@ class GroupDAO(object):
             from
                 dada_jurisdiction_and_group
             where
-                group_id = 1
+                group_id = %s
                 and date_delete is null
         ) t3 on CONCAT("MODIFY_CHART_",t1.id) = t3.jurisdiction_code
-        ''', (group_id, group_id))
+        ''', (group_id, group_id, group_id))
         data = cursor.fetchall()
         if data is None:
             return None
