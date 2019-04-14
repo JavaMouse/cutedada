@@ -15,7 +15,7 @@
                             <el-button size="small" @click="resetForm('loginForm')">重置</el-button>
                         </el-form-item>
                         <el-form-item>
-                            <p style="font-size:16px;">没有账号？请<span class="clickSpan" @click="ToRegister"> 注册</span></p>
+                            <p style="font-size:16px;">没有账号？请<span class="clickSpan" @click="ToRegister" @keyup.enter.native="ToRegister"> 注册</span></p>
                         </el-form-item>
                     </el-form>
             </div>
@@ -77,7 +77,13 @@
         }
     }
 </script>
-<style>
+<style lang="scss" scoped>
+    /deep/ .el-input__inner{
+        background-color: rgba(250, 248, 248, 0.2);
+        color: #fff;
+        font-weight: bold;
+        font-size: 14px;
+    }
     .title{
         height: 60px;
     }
@@ -91,19 +97,13 @@
         right: 0;
         margin: auto;
     }
-    .el-form-item__label{
+    /deep/ .el-form-item__label{
         color: #fff;
         font-size: 16px;
         font-weight: bold;
     }
-    .el-button--small{
+    /deep/ .el-button--small{
         width: 80px;
-        font-size: 14px;
-    }
-    .el-input__inner{
-        background-color: rgba(250, 248, 248, 0.2);
-        color: #fff;
-        font-weight: bold;
         font-size: 14px;
     }
     .form{
