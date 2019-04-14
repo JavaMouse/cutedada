@@ -17,8 +17,8 @@
                 <template v-if="authorityForm.authValue !== ''">
                     <el-form-item v-for="(item,index) in authorityForm.formList" :key="index">
                         <div>{{ item.chart_title }}:</div>
-                        <el-checkbox label="查看" v-model="item.is_read" @change="test(index,0)"></el-checkbox>
-                        <el-checkbox label="编辑" v-model="item.is_modify" @change="test(index,1)"></el-checkbox>
+                        <el-checkbox label="查看" v-model="item.is_read" @change="changeCheck(index,0)"></el-checkbox>
+                        <el-checkbox label="编辑" v-model="item.is_modify" @change="changeCheck(index,1)"></el-checkbox>
                     </el-form-item>
                     <el-form-item>
                         <el-button size="mini" @click="submit">确认修改</el-button>
@@ -48,7 +48,9 @@
                 ],
                 },
                 labelPosition: 'left',
-                authOptions: ['1','2','3']
+                authOptions: ['1','2','3'],
+                oldformList: [],
+                groupId: 1
             }
         },
         mounted () {
@@ -65,25 +67,40 @@
                 }
             },
             selectChanege (val) {
+                this.groupId = val
                 this.getJurisdiction(val)
             },
             async getJurisdiction (groupId) {
                 let response = await this.$axios.get('/group/get_table_jurisdiction/' + groupId)
                 if (response.code === 0) {
                     this.authorityForm.formList = response.data.field
+                    this.oldformList = JSON.parse(JSON.stringify(response.data.field))
                 }
             },
-            test (index,checkNum) {
-                console.log(index,checkNum)
-                if (checkNum === 0) {
-                    this.authorityForm.formList[index].read = !this.authorityForm.formList[index].read
-                } else {
-                    this.authorityForm.formList[index].modify = !this.authorityForm.formList[index].modify
-                }
-                console.log(this.authorityForm.formList)
+            changeCheck (index,checkNum) {
+                // console.log(index,checkNum)
             },
             submit () {
-                console.log(this.authorityForm)
+                let changeArr = []
+                this.oldformList.forEach((el1, index1) => {
+                    this.authorityForm.formList.forEach((el2, index2) => {
+                        if (index1 === index2) {
+                            if (el1.is_modify != el2.is_modify) {
+                                changeArr.push({
+                                    chart_id: el1.chart_id,
+                                    is_modify: el1.is_modify
+                                })
+                            } else if (el1.is_read != el2.is_read) {
+                                changeArr.push({
+                                    chart_id: el1.chart_id,
+                                    is_read: el1.is_read
+                                })
+                            }
+                        }
+                    })
+                })
+                console.log(changeArr)
+
             }
             
         }
