@@ -1,8 +1,8 @@
 <template>
     <el-container>
-        <!-- <el-header class="page-topic">
-            
-        </el-header> -->
+        <el-header class="page-topic">
+            <p>编辑页面</p>
+        </el-header>
         <el-main class="main">
                 <div class="stepDiv">
                     <el-steps :active="activeNum" align-center>
@@ -496,12 +496,13 @@ let option = {
         background-image: none;
     }
     .page-topic {
-        height: 70px !important;
         background-color: #fff;
         box-shadow: 0 -1px 0 0 #EAEBF0 inset;
         text-align: left;
-        line-height: 70px;
-        overflow: hidden;
+        p {
+            font-size: 16px;
+            font-weight: bold;
+        }
     }
     .stageDiv{
     }

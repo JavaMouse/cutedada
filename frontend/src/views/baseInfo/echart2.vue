@@ -1,12 +1,7 @@
 <template>
     <el-container>
         <el-header class="page-topic">
-            <!-- 数据表:
-            <el-select v-model="value" size="small" placeholder="请选择数据表" @blur="blurChange">
-                <el-option v-for="item in tableNames" :key="item" :label="item" :value="item">
-                </el-option>
-            </el-select> -->
-            <el-button @click="change">刷新</el-button>
+            <p>展示页面</p>
         </el-header>
         <el-main class="main">
             <div class="box" v-for="(item,index) in seriesData" :key="index">
@@ -483,10 +478,12 @@
         }
     }
     .page-topic {
-        height: 70px !important;
         background-color: #fff;
         box-shadow: 0 -1px 0 0 #EAEBF0 inset;
         text-align: left;
-        line-height: 70px;
+        p {
+            font-size: 16px;
+            font-weight: bold;
+        }
     }
 </style>

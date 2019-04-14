@@ -1,5 +1,8 @@
 <template>
     <el-container>
+        <el-header class="page-topic">
+            <p>权限页面</p>
+        </el-header>
         <el-main class="main">
             <el-form :label-position="labelPosition" label-width="0px" :model="authorityForm" class="authForm">
                 <h3 class="title">修改权限</h3>
@@ -91,7 +94,7 @@
         }
     }
 </script>
-<style>
+<style lang="scss" scoped>
     .content {
         width: 100%;
         height: 100%;
@@ -101,13 +104,27 @@
         right: 0;
         margin: auto;
     }
+    .main {
+        height: 100%;
+    }
     .authForm {
+        height: 100%;
         width: calc(100%-20px);
         text-align: left;
         padding-left: 20px;
         background-color: #ffffff;
+        .title{
+            display: inline-block;
+            margin-top: 20px;
+        }
     }
-    .title{
-        padding-top: 20px;
+    .page-topic {
+        background-color: #fff;
+        box-shadow: 0 -1px 0 0 #EAEBF0 inset;
+        text-align: left;
+        p {
+            font-size: 16px;
+            font-weight: bold;
+        }
     }
 </style>
