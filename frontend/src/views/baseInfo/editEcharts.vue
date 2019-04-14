@@ -471,7 +471,6 @@ let option = {
                 }
             },
             async blurChange () {
-                console.log(this.editForm.chartName)
                 let response = await this.$axios.get('/table/fields/' + this.editForm.chartName)
                 if (response.code === 0) {
                     this.colItem = response.data.fields
@@ -483,8 +482,6 @@ let option = {
                 if (response.code === 0) {
                     this.tableNames = response.data.tableNames
                 }
-                let province = '浙江'
-                let res = await this.$axios.get('/table/colNames/'+province)
             }
             
         }

@@ -243,9 +243,7 @@
                 y: 0,
                 barChart: {},
                 barChartList: [],
-                tableNames: [],
                 value: '',
-                colItem: [],
                 chartList: [],
                 styleObj: {
                     width: '100%',
@@ -428,19 +426,6 @@
                         message: '已取消删除'
                     });
                 });
-            },
-            async blurChange () {
-                let response = await this.$axios.get('/table/fields/user', { tablename: this.tableNames[0] })
-                if (response.code === 0) {
-                    this.colItem = response.data.fields
-                }
-            },
-            async getTableList () {
-                let response = await this.$axios.get('/table/tableNames')
-                if (response.code === 0) {
-                    this.tableNames = response.data.tableNames
-                    this.blurChange()
-                }
             }
         }
     }
