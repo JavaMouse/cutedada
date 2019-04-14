@@ -17,8 +17,8 @@
                 <template v-if="authorityForm.authValue !== ''">
                     <el-form-item v-for="(item,index) in authorityForm.formList" :key="index">
                         <div>{{ item.chart_title }}:</div>
-                        <el-checkbox label="查看" :checked="item.read" @change="test(index,0)"></el-checkbox>
-                        <el-checkbox label="编辑" :checked="item.modify" @change="test(index,1)"></el-checkbox>
+                        <el-checkbox label="查看" :checked="item.is_read" @change="test(index,0)"></el-checkbox>
+                        <el-checkbox label="编辑" :checked="item.is_modify" @change="test(index,1)"></el-checkbox>
                     </el-form-item>
                     <el-form-item>
                         <el-button size="mini" @click="submit">确认修改</el-button>
