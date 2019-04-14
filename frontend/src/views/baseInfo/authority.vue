@@ -6,7 +6,7 @@
         <el-main class="main">
             <el-form :label-position="labelPosition" label-width="0px" :model="authorityForm" class="authForm">
                 <h3 class="title">修改权限</h3>
-                <el-select v-model="authorityForm.authValue" placeholder="请选择权限组" style="margin-bottom:40px;">
+                <el-select v-model="authorityForm.authValue" @change="selectChanege" placeholder="请选择权限组" style="margin-bottom:40px;">
                     <el-option
                         v-for="item in authOptions"
                         :key="item.id"
@@ -16,7 +16,7 @@
                 </el-select>
                 <template v-if="authorityForm.authValue !== ''">
                     <el-form-item v-for="(item,index) in authorityForm.formList" :key="index">
-                        <div>{{ item.chart_name }}:</div>
+                        <div>{{ item.chart_title }}:</div>
                         <el-checkbox label="查看" :checked="item.read" @change="test(index,0)"></el-checkbox>
                         <el-checkbox label="编辑" :checked="item.modify" @change="test(index,1)"></el-checkbox>
                     </el-form-item>
@@ -76,6 +76,15 @@
                     //     return item.desc
                     // })
                     this.authOptions = response.data.field
+                }
+            },
+            selectChanege (val) {
+                this.getJurisdiction(val)
+            },
+            async getJurisdiction (groupId) {
+                let response = await this.$axios.get('/group/get_table_jurisdiction/' + groupId)
+                if (response.code === 0) {
+                    this.authorityForm.formList = response.data.field
                 }
             },
             test (index,checkNum) {
