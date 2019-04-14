@@ -7,6 +7,56 @@ class GroupDAO(object):
         pass
 
     @classmethod
+    def modifyJurisdictionByGroupId(cls, group_id, form_list):
+        db = dbutils.get_connect()
+        cursor = db.cursor()
+
+        for item in form_list:
+            print('MODIFY_CHART_'+str(item['chart_id']))
+            if item['is_modify'] == 'true':
+                sql = '''
+                        insert into 
+                            dada_jurisdiction_and_group (group_id, jurisdiction_code)
+                        values
+                            (%s, 'MODIFY_CHART_'+str(item['chart_id']))
+                        ''' %(group_id)
+
+            elif item['is_modify'] == 'false':
+                sql = '''
+                        delete from 
+                            dada_jurisdiction_and_group 
+                        where 
+                            group_id = %s
+                        and 
+                            jurisdiction_code = "'MODIFY_CHART_'+str(item['chart_id'])"
+                        ''' %(group_id)
+
+            elif item['is_read'] == 'true':
+                sql = '''
+                        insert into 
+                            dada_jurisdiction_and_group (group_id, jurisdiction_code)
+                        values 
+                            (%s, CONCAT("READ_CHART_",item['chart_id']))
+                        ''' %(group_id)
+
+            elif item['is_read'] == 'false':
+                sql = '''
+                        delete from 
+                            dada_jurisdiction_and_group 
+                        where 
+                            group_id = %s
+                        and 
+                            jurisdiction_code = "'READ_CHART_'+str(item['chart_id'])"
+                        ''' %(group_id)
+            print(sql)
+            cursor.execute(sql)
+            db.commit()
+
+        dbutils.close(db)
+
+
+
+    @classmethod
     def getGroup(cls):
         db = dbutils.get_connect()
         cursor = db.cursor()
@@ -83,4 +133,4 @@ class GroupDAO(object):
 
 
 if __name__ == '__main__':
-    print(GroupDAO.getTableJurisdictionByCroupId(4))
+    print(GroupDAO.modifyJurisdictionByGroupId(2, [{"chart_id": 8,"is_modify": 'true'}]))

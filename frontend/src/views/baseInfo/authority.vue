@@ -72,6 +72,42 @@
             },
             async getJurisdiction (groupId) {
                 let response = await this.$axios.get('/group/get_table_jurisdiction/' + groupId)
+                // let response = {
+                //         "code": 0, 
+                //         "data": {
+                //             "field": [
+                //             {
+                //                 "chart_id": 8, 
+                //                 "chart_title": "每天都花了多少钱", 
+                //                 "group_id": "1", 
+                //                 "is_modify": true, 
+                //                 "is_read": true
+                //             }, 
+                //             {
+                //                 "chart_id": 9, 
+                //                 "chart_title": "各省份数据量", 
+                //                 "group_id": "1", 
+                //                 "is_modify": true, 
+                //                 "is_read": true
+                //             }, 
+                //             {
+                //                 "chart_id": 10, 
+                //                 "chart_title": "每个人每天花多少钱", 
+                //                 "group_id": "1", 
+                //                 "is_modify": true, 
+                //                 "is_read": true
+                //             }, 
+                //             {
+                //                 "chart_id": 11, 
+                //                 "chart_title": "oj系统2010年~2018年平均通过率", 
+                //                 "group_id": "1", 
+                //                 "is_modify": true, 
+                //                 "is_read": true
+                //             }
+                //             ]
+                //         }, 
+                //         "message": null
+                //         }
                 if (response.code === 0) {
                     this.authorityForm.formList = response.data.field
                     this.oldformList = JSON.parse(JSON.stringify(response.data.field))
@@ -80,26 +116,31 @@
             changeCheck (index,checkNum) {
                 // console.log(index,checkNum)
             },
-            submit () {
+            async submit () {
                 let changeArr = []
                 this.oldformList.forEach((el1, index1) => {
                     this.authorityForm.formList.forEach((el2, index2) => {
                         if (index1 === index2) {
                             if (el1.is_modify != el2.is_modify) {
                                 changeArr.push({
-                                    chart_id: el1.chart_id,
-                                    is_modify: el1.is_modify
+                                    chart_id: el2.chart_id,
+                                    is_modify: el2.is_modify
                                 })
                             } else if (el1.is_read != el2.is_read) {
                                 changeArr.push({
-                                    chart_id: el1.chart_id,
-                                    is_read: el1.is_read
+                                    chart_id: el2.chart_id,
+                                    is_read: el2.is_read
                                 })
                             }
                         }
                     })
                 })
                 console.log(changeArr)
+                let data = {
+                    authValue: this.groupId,
+                    formList: changeArr
+                }
+                let res = await this.$axios.post('/group/modify_table_jurisdiction', data)
 
             }
             
