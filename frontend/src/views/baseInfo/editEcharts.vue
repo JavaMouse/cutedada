@@ -489,8 +489,10 @@ let option = {
 </script>
 <style lang="scss" scoped>
     .main{
-        width: 100%;
-        background-image: none;
+        width: calc(100% - 40px);
+        height: 100%;
+        background-color: #ffffff;
+        margin: 20px;
     }
     .page-topic {
         background-color: #fff;
