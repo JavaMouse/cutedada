@@ -69,42 +69,6 @@
             },
             async getJurisdiction (groupId) {
                 let response = await this.$axios.get('/group/get_table_jurisdiction/' + groupId)
-                // let response = {
-                //         "code": 0, 
-                //         "data": {
-                //             "field": [
-                //             {
-                //                 "chart_id": 8, 
-                //                 "chart_title": "每天都花了多少钱", 
-                //                 "group_id": "1", 
-                //                 "is_modify": true, 
-                //                 "is_read": true
-                //             }, 
-                //             {
-                //                 "chart_id": 9, 
-                //                 "chart_title": "各省份数据量", 
-                //                 "group_id": "1", 
-                //                 "is_modify": true, 
-                //                 "is_read": true
-                //             }, 
-                //             {
-                //                 "chart_id": 10, 
-                //                 "chart_title": "每个人每天花多少钱", 
-                //                 "group_id": "1", 
-                //                 "is_modify": true, 
-                //                 "is_read": true
-                //             }, 
-                //             {
-                //                 "chart_id": 11, 
-                //                 "chart_title": "oj系统2010年~2018年平均通过率", 
-                //                 "group_id": "1", 
-                //                 "is_modify": true, 
-                //                 "is_read": true
-                //             }
-                //             ]
-                //         }, 
-                //         "message": null
-                //         }
                 if (response.code === 0) {
                     this.authorityForm.formList = response.data.field
                     this.oldformList = JSON.parse(JSON.stringify(response.data.field))
