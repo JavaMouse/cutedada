@@ -181,6 +181,7 @@ def process_pie_chart_v2(chart_object,
     json_value["title"] = chart_object.chart_title
     json_value['series'] = series
     json_value['chart_type'] = 3
+    json_value['desc'] = chart_object.chart_desc
 
     return json_value
 
@@ -261,6 +262,7 @@ def process_pie_chart(chart_object,
     json_value["title"] = chart_object.chart_title
     json_value['series'] = series
     json_value['chart_type'] = 3
+    json_value['desc'] = chart_object.chart_desc
 
     return json_value
 
@@ -340,6 +342,7 @@ def process_bar_chart(chart_object,
     json_value['x_data'] = x_data
     json_value['series'] = series
     json_value['chart_type'] = 2
+    json_value['desc'] = chart_object.chart_desc
 
     return json_value
 
@@ -419,6 +422,7 @@ def process_line_chart(chart_object,
     json_value['x_data'] = x_data
     json_value['series'] = series
     json_value['chart_type'] = 1
+    json_value['desc'] = chart_object.chart_desc
 
     return json_value
 
@@ -531,13 +535,4 @@ def preview_chart(chart_type,
 
 
 if __name__ == '__main__':
-    print(preview_chart(
-        chart_type=1,
-        chart_title='test',
-        chart_table='demo_goods',
-        main_dimension={"dimension_name":"日期","dimension_sql":"date(`dae_create`)"},
-        optional_dimension_list=[{"dimension_name":"商品类型","dimension_sql":"`goods_type`"},
-                                 {"dimension_name":"买家","dimension_sql":"`buyer`"}],
-        filter_list=[{"filter_sql":"date(date_create)>='2018-01-01'"}],
-        measurement_list=[{"measurement_name":"总消费","measurement_sql":"sum(money)"}]
-    ))
+    print(get_chart_info(8))

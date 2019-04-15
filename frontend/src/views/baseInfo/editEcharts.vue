@@ -47,7 +47,7 @@
                             </div>
                         </div>
                     </kanban-board>
-                    <el-dialog title="提示" :visible.sync="addColDialog.show" width="30%" center>
+                    <el-dialog title="提示" :visible.sync="addColDialog.show" @close="closeDialog" width="30%" center>
                         度量名: <el-input size="mini" v-model="addColDialog.dimenseName" style="width:80%;margin-bottom:20px;"></el-input><br>
                         度量sql:<el-input size="mini" v-model="addColDialog.dimenseSql" style="width:80%;"></el-input>
                         <span slot="footer" class="dialog-footer">
@@ -61,12 +61,13 @@
                 <div class="contentDiv" v-if="activeNum===3">
                     <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
                     <el-button size="mini" :disabled="chartDisabled" @click="saveChart">保存图表</el-button>
-                    <div style="width:100%;height:500px;" v-if="errSQL!==''">
+                    <div style="width:100%;height:500px;margin-top:30px;" v-if="errSQL!==''">
                         <div>当前sql出错，请重试！</div>
-                        <div>sql: {{this.errSQL}}</div>
+                        <div>sql: {{errSQL}}</div>
                     </div>
-                    <div style="width:100%;height:500px;" v-else>
+                    <div style="width:100%;height:500px;margin-top:30px;" v-else>
                         <div v-bind:style="styleObj" ref="myChart"></div>
+                        <div>图表描述：{{editForm.chartDesc}}</div>
                     </div>
                 </div>
         </el-main>
@@ -213,6 +214,13 @@ let option = {
             this.getAuthGroup()
         },
         methods: {
+            closeDialog () {
+                this.addColDialog = {
+                    show: false,
+                    dimenseName: '',
+                    dimenseSql: ''
+                }
+            },
             getCookie(cookie_name) {
                 var allcookies = document.cookie;
                 var cookie_pos = allcookies.indexOf(cookie_name);
@@ -284,6 +292,9 @@ let option = {
                 this.chartDisabled = false
                 if (this.activeNum > 0) {
                     this.activeNum--
+                }
+                if (this.activeNum === 3) {
+                    this.errSQL = ''
                 }
             },
             addCol () {
