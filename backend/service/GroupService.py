@@ -58,6 +58,17 @@ def modify_jurisdiction(group_id, form_list):
 
     result_dict = GroupDAO.modifyJurisdictionByGroupId(group_id, form_list)
 
+    print(result_dict)
+    if result_dict != True:
+        return_json = {
+            'code': 200,
+            'data': {
+                'info': result_dict
+            },
+            'message': None
+        }
+        return return_json
+
     return_json = {
         'code': 0,
         'data': {

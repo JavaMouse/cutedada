@@ -60,9 +60,6 @@
             async getGroupList () {
                 let response = await this.$axios.get('/group/getGroupList')
                 if(response.code === 0) {
-                    // this.authOptions = response.data.field.map(item => {
-                    //     return item.desc
-                    // })
                     this.authOptions = response.data.field
                 }
             },
@@ -135,13 +132,19 @@
                         }
                     })
                 })
-                console.log(changeArr)
+                if (changeArr.length === 0) {
+                    this.$message.warning('权限未修改！')
+                    return
+                }
                 let data = {
                     authValue: this.groupId,
                     formList: changeArr
                 }
                 let res = await this.$axios.post('/group/modify_table_jurisdiction', data)
-
+                if (res.code === 0) {
+                    this.$message.success('权限修改成功！')
+                    this.getJurisdiction(this.groupId)
+                }
             }
             
         }

@@ -12,47 +12,47 @@ class GroupDAO(object):
         cursor = db.cursor()
 
         for item in form_list:
-            print('MODIFY_CHART_'+str(item['chart_id']))
-            if item['is_modify'] == 'true':
-                sql = '''
-                        insert into 
-                            dada_jurisdiction_and_group (group_id, jurisdiction_code)
-                        values
-                            (%s, 'MODIFY_CHART_'+str(item['chart_id']))
-                        ''' %(group_id)
+            if 'is_modify' in item:
+                if item['is_modify'] == True:
+                    sql = '''
+                            insert into 
+                                dada_jurisdiction_and_group (group_id, jurisdiction_code)
+                            values
+                                (%s, CONCAT("MODIFY_CHART_", %d))
+                            ''' %(group_id, item['chart_id'])
 
-            elif item['is_modify'] == 'false':
-                sql = '''
-                        delete from 
-                            dada_jurisdiction_and_group 
-                        where 
-                            group_id = %s
-                        and 
-                            jurisdiction_code = "'MODIFY_CHART_'+str(item['chart_id'])"
-                        ''' %(group_id)
+                elif item['is_modify'] == False:
+                    sql = '''
+                            delete from 
+                                dada_jurisdiction_and_group 
+                            where 
+                                group_id = %s
+                            and 
+                                jurisdiction_code = CONCAT("MODIFY_CHART_", %d)
+                            ''' %(group_id, item['chart_id'])
 
-            elif item['is_read'] == 'true':
-                sql = '''
-                        insert into 
-                            dada_jurisdiction_and_group (group_id, jurisdiction_code)
-                        values 
-                            (%s, CONCAT("READ_CHART_",item['chart_id']))
-                        ''' %(group_id)
+            if 'is_read' in item:
+                if item['is_read'] == True:
+                    sql = '''
+                            insert into 
+                                dada_jurisdiction_and_group (group_id, jurisdiction_code)
+                            values 
+                                (%s, CONCAT("READ_CHART_", %d))
+                            ''' %(group_id, item['chart_id'])
 
-            elif item['is_read'] == 'false':
-                sql = '''
-                        delete from 
-                            dada_jurisdiction_and_group 
-                        where 
-                            group_id = %s
-                        and 
-                            jurisdiction_code = "'READ_CHART_'+str(item['chart_id'])"
-                        ''' %(group_id)
-            print(sql)
+                elif item['is_read'] == False:
+                    sql = '''
+                            delete from 
+                                dada_jurisdiction_and_group 
+                            where 
+                                group_id = %s
+                            and 
+                                jurisdiction_code = CONCAT("READ_CHART_", %d)
+                            ''' %(group_id, item['chart_id'])
             cursor.execute(sql)
             db.commit()
-
         dbutils.close(db)
+        return True
 
 
 
@@ -133,4 +133,4 @@ class GroupDAO(object):
 
 
 if __name__ == '__main__':
-    print(GroupDAO.modifyJurisdictionByGroupId(2, [{"chart_id": 8,"is_modify": 'true'}]))
+    print(GroupDAO.modifyJurisdictionByGroupId(2, [{"chart_id": 8,"is_modify": True}]))
