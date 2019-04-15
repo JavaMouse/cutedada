@@ -12,7 +12,7 @@
                     <el-button @click="toggle(item.index)" icon="el-icon-search" size="mini" circle></el-button>
                 </div>
                 <div v-bind:style="styleObj" :ref="item.name"></div>
-                <span class="descSpan">备注:  {{item.option.desc || '无'}}</span>
+                <span class="descSpan" v-if="item.option">备注:  {{item.option.desc || '无'}}</span>
             </fullscreen>
             </div>
         </el-main>
@@ -266,7 +266,6 @@
                     echarts.init(this.$refs[item.name][0]).resize()
                 })
             }
-            this.getTableList()
             // this.getChart()
         },
         methods: {

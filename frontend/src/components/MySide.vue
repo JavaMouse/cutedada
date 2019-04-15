@@ -139,25 +139,13 @@ export default {
           { required: true, message: '请再次输入新密码', trigger: 'blur' },
           { validator: validateConfirmPassword, trigger: 'blur' }
         ]
-      }
-    }
-  },
-  computed: {
-    menuList () {
-      return [
+      },
+      group_id: '',
+      menuList: [
         {
           menuCode: "echarts2",
-          menuName: "展示页面",
-          // children:[{
-          //   menuCode: "1",
-          //   menuName: "1/1"
-          // }]
-        },
-        // {
-        //   menuCode: "echarts",
-        //   menuName: "测试页面"
-        // }
-        {
+          menuName: "展示页面"
+        },{
           menuCode: "edit",
           menuName: "编辑页面"
         },{
@@ -167,12 +155,63 @@ export default {
           menuCode: "actionList",
           menuName: "操作集合页面"
         }]
-    },
+    }
+  },
+  computed: {
     appUserInfo () {
       return '系统管理员'
     }
   },
+  mounted () {
+    this.getCookieVal()
+  },
   methods: {
+    getCookie(cookie_name) {
+        var allcookies = document.cookie;
+        var cookie_pos = allcookies.indexOf(cookie_name);
+        if (cookie_pos != -1) {
+            // 把cookie_pos放在值的开始，只要给值加1即可
+            cookie_pos = cookie_pos + cookie_name.length + 1; 
+            //计算取cookie值得结束索引
+            var cookie_end = allcookies.indexOf(";", cookie_pos);
+            if (cookie_end == -1) {
+                cookie_end = allcookies.length;
+            }
+            //得到想要的cookie的值
+            var value = unescape(allcookies.substring(cookie_pos, cookie_end)); 
+        }
+        return value;
+    },
+    getCookieVal () {
+        let group_id = 'group_id'
+        let group_value = this.getCookie(group_id)
+        this.group_id = group_value
+        if (this.group_id === '1') {
+          this.menuList = [
+          {
+            menuCode: "echarts2",
+            menuName: "展示页面"
+          },{
+            menuCode: "edit",
+            menuName: "编辑页面"
+          },{
+            menuCode: "authority",
+            menuName: "权限页面"
+          },{
+            menuCode: "actionList",
+            menuName: "操作集合页面"
+          }
+        ]
+        } else {
+          this.menuList = [{
+            menuCode: "echarts2",
+            menuName: "展示页面"
+          },{
+            menuCode: "edit",
+            menuName: "编辑页面"
+          }]
+        }
+    },
     async fUpdatePassword () {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
