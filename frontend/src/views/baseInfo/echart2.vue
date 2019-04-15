@@ -12,7 +12,7 @@
                     <el-button @click="toggle(item.index)" icon="el-icon-search" size="mini" circle></el-button>
                 </div>
                 <div v-bind:style="styleObj" :ref="item.name"></div>
-                备注: <span></span>
+                <span class="descSpan">备注:  {{item.option.desc || '无'}}</span>
             </fullscreen>
             </div>
         </el-main>
@@ -247,11 +247,9 @@
                 chartList: [],
                 styleObj: {
                     width: '100%',
-                    height: '90%'
+                    height: '80%'
                 },
                 seriesData: {},
-                option4: {},
-                option5: {},
                 option: [],
                 chartmenber: []
             }
@@ -281,6 +279,7 @@
                             text: res.title,
                             x: 'center'
                         }
+                        this.option[index].desc = res.desc
                         this.option[index].xAxis = {
                             data: res.x_data,
                             type: 'category'
@@ -303,6 +302,7 @@
                             text: res.title,
                             x: 'center'
                         }
+                        this.option[index].desc = res.desc
                         this.option[index].xAxis = {
                             data: res.x_data,
                             type: 'category'
@@ -321,6 +321,7 @@
                         })
                     } else {
                         this.option[index]={}
+                        this.option[index].desc = res.desc
                         this.option[index].title = { 
                             text: res.title,
                             x: 'center'
@@ -364,7 +365,6 @@
                 this.y = y
             },
             change () {
-                console.log(this.option)
                 let getchartData = []
                 this.chartmenber.forEach((item,i)=>{
                     getchartData[i] = {
@@ -411,7 +411,6 @@
                     center: true
                 }).then(() => {
                     this.seriesData.splice(value,1)
-                    console.log(this.seriesData)
                     this.$nextTick(() => {
                         this.initChart(this.seriesData)
                         this.renderChart(this.seriesData)
@@ -444,7 +443,7 @@
         margin-left: 30px;
         margin-bottom: 20px;
         width: 46%;
-        height: 400px;
+        height: 430px;
         cursor: move;
         position: relative;
         top: 30px;
@@ -470,5 +469,12 @@
             font-size: 16px;
             font-weight: bold;
         }
+    }
+    .descSpan {
+        width: 100%;
+        font-size: 14px;
+        display: inline-block;
+        margin-top: 8px;
+        text-align: center;
     }
 </style>
