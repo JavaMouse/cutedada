@@ -11,9 +11,8 @@
                         <el-step title="步骤3" description="选择维度、度量、过滤器"></el-step>
                         <el-step title="步骤4" description="生成图表"></el-step>
                     </el-steps>
-                    <el-button size="mini" style="margin-top: 12px;" @click="next">下一步</el-button>
-                    <el-button size="mini" style="margin-top: 12px;" @click="pre">上一步</el-button>
-
+                    <el-button size="mini" class="stepBtn" style="margin-top: 12px;background-color: #5997ea;color:#fff;" @click="pre">上一步</el-button>
+                    <el-button size="mini" class="stepBtn" style="margin-top: 12px;" @click="next">下一步</el-button>
                 </div>
                 <div class="contentDiv" v-if="activeNum===0">
                     请选择数据表:
@@ -33,10 +32,15 @@
                         <el-option v-for="item in chartTypeList" :key="item.type" :label="item.name" :value="item.type">
                         </el-option>
                     </el-select><br>
-                    图表标题: <el-input size="mini" v-model="editForm.title" class="inputStyle"></el-input><br>
-                    图表描述: <el-input size="mini" v-model="editForm.chartDesc" class="inputStyle"></el-input>
+                    图表标题: <el-input size="mini" v-model="editForm.title" class="inputStyle2"></el-input><br>
+                    图表描述: <el-input size="mini" v-model="editForm.chartDesc" class="inputStyle2"></el-input>
                 </div>
                 <div class="contentDiv" v-if="activeNum===2">
+                    <div class="sqlDiv">
+                        <el-button size="samll" type="primary" @click="addCol" class="addColBtn">列名增加条件</el-button>
+                        <span class="sqlSpan">请填写过滤器sql: </span>
+                        <el-input v-model="editForm.filter" size="mini" class="inputStyle"></el-input>
+                    </div>
                     <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock">
                         <div v-for="(stage,index) in stages" :key="index" :slot="stage" class="stageDiv">
                             <h5>{{ stage }}</h5>
@@ -55,9 +59,6 @@
                             <el-button type="primary" @click="submitAddCol" size="mini">确 定</el-button>
                         </span>
                     </el-dialog>
-                    <el-button size="samll" type="primary" @click="addCol" class="addColBtn">列名增加条件</el-button><br>
-                    <span class="sqlSpan">过滤sql: </span>
-                    <el-input v-model="editForm.filter" size="mini" class="inputStyle"></el-input>
                 </div>
                 <div class="contentDiv" v-if="activeNum===3">
                     <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
@@ -519,20 +520,20 @@ let option = {
         border-radius: 10px!important;
         margin: 8px!important;
     }
-    /deep/ .drag-item .is-moving .gu-transit {
+    /* /deep/ .drag-item .is-moving .gu-transit {
         background-color: #2e69a7!important;
         color: #fff!important;
         font-weight: bold!important;
         padding: 5px 5px!important;
         border-radius: 10px!important;
         margin: 8px!important;
-    }
+    } */
     .main{
         width: calc(100% - 40px);
         height: 100%;
         background-color: #ffffff;
         margin: 20px;
-        font-family:PingFangSC-Regular;
+        font-family:PingFangSC-Regular!important;
     }
     .page-topic {
         background-color: #fff;
@@ -561,29 +562,48 @@ let option = {
         padding-bottom: 20px;
     }
     .contentDiv{
-        // border: 2px solid #c0c4cc;
         width: 90%;
         margin: 10px auto;
+        font-family:PingFangSC-Regular!important;
+        .sqlDiv {
+            width: 100%;
+            position: relative;
+            .inputStyle{
+                width: 175px;
+                margin-top: 20px;
+                position: absolute;
+                right: 120px;
+                top: -23px;
+                /deep/ .el-input__inner {
+                    border: 0;
+                    border-bottom: 1px solid #ccc; 
+                }
+            }
+            .addColBtn {
+                background-color:#ee9e3f;
+                border: #ee9e3f;
+                border-radius: 10px;
+                color: #fff;
+                font-weight: bold;
+            }
+            .sqlSpan {
+                font-weight: 600;
+                margin-left: 30px;
+                color: #58636d;
+                position: absolute;
+                right: 300px;
+            }
+        }
     }
     .dropStyle{
         margin-top: 15px;
     }
-    .inputStyle{
+    .inputStyle2{
         width: 175px;
         margin-top: 20px;
-        /deep/ .el-input__inner {
-            border: 0;
-            border-bottom: 1px solid #ccc; 
-        }
     }
-    .addColBtn {
-        background-color:#ee9e3f;
-        border: #ee9e3f;
+    .stepBtn {
+        width: 100px;
         border-radius: 10px;
-        color: #fff;
-        font-weight: bold;
-    }
-    .sqlSpan {
-        font-weight: 400;
     }
 </style>
