@@ -55,8 +55,9 @@
                             <el-button type="primary" @click="submitAddCol" size="mini">确 定</el-button>
                         </span>
                     </el-dialog>
-                    <el-button size="mini" type="primary" @click="addCol">列名增加条件</el-button><br>
-                    过滤sql: <el-input v-model="editForm.filter" size="mini" class="inputStyle"></el-input>
+                    <el-button size="samll" type="primary" @click="addCol" class="addColBtn">列名增加条件</el-button><br>
+                    <span class="sqlSpan">过滤sql: </span>
+                    <el-input v-model="editForm.filter" size="mini" class="inputStyle"></el-input>
                 </div>
                 <div class="contentDiv" v-if="activeNum===3">
                     <el-button size="mini" type="primary" @click="drawChart">生成图表</el-button>
@@ -507,11 +508,31 @@ let option = {
     }
 </script>
 <style lang="scss" scoped>
+    /deep/ .drag-inner-list {
+        background-color: #d1e7fd!important;
+    }
+    /deep/ .blockDiv, /deep/ .gu-transit {
+        background-color: #2e69a7!important;
+        color: #fff!important;
+        font-weight: bold!important;
+        padding: 5px 5px!important;
+        border-radius: 10px!important;
+        margin: 8px!important;
+    }
+    /deep/ .drag-item .is-moving .gu-transit {
+        background-color: #2e69a7!important;
+        color: #fff!important;
+        font-weight: bold!important;
+        padding: 5px 5px!important;
+        border-radius: 10px!important;
+        margin: 8px!important;
+    }
     .main{
         width: calc(100% - 40px);
         height: 100%;
         background-color: #ffffff;
         margin: 20px;
+        font-family:PingFangSC-Regular;
     }
     .page-topic {
         background-color: #fff;
@@ -550,5 +571,19 @@ let option = {
     .inputStyle{
         width: 175px;
         margin-top: 20px;
+        /deep/ .el-input__inner {
+            border: 0;
+            border-bottom: 1px solid #ccc; 
+        }
+    }
+    .addColBtn {
+        background-color:#ee9e3f;
+        border: #ee9e3f;
+        border-radius: 10px;
+        color: #fff;
+        font-weight: bold;
+    }
+    .sqlSpan {
+        font-weight: 400;
     }
 </style>
