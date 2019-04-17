@@ -8,7 +8,7 @@
                 <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;background-color:#fff;">
                 <div class="btnContain">
                     <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button>
-                    <el-button @click="deleteChart(item.index)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
+                    <el-button @click="deleteChart(item)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
                     <el-button @click="toggle(item.index)" icon="el-icon-search" size="mini" circle></el-button>
                 </div>
                 <div v-bind:style="styleObj" :ref="item.name"></div>
@@ -251,7 +251,8 @@
                 },
                 seriesData: {},
                 option: [],
-                chartmenber: []
+                chartmenber: [],
+                creator: ''
             }
         },
         watch: {
@@ -266,7 +267,7 @@
                     echarts.init(this.$refs[item.name][0]).resize()
                 })
             }
-            // this.getChart()
+            this.getCookieVal()
         },
         methods: {
             async getcChartData (item,index) {
@@ -333,7 +334,7 @@
                         this.option[index].tooltip = { trigger: 'item' }
                         this.option[index].series = res.series
                     }
-                    this.change()  
+                    this.change(item)  
             },
             async getChart () {
                 let response = await this.$axios.get('chart/get_chartId_list/'+'1')
@@ -363,7 +364,7 @@
                 this.x = x
                 this.y = y
             },
-            change () {
+            change (val) {
                 let getchartData = []
                 this.chartmenber.forEach((item,i)=>{
                     getchartData[i] = {
@@ -409,22 +410,51 @@
                     type: 'warning',
                     center: true
                 }).then(() => {
-                    this.seriesData.splice(value,1)
-                    this.$nextTick(() => {
-                        this.initChart(this.seriesData)
-                        this.renderChart(this.seriesData)
-                    })
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
-                    });
+                    this.delete(value)
                 }).catch(() => {
                     this.$message({
                         type: 'info',
                         message: '已取消删除'
                     });
                 });
-            }
+            },
+            async delete (value) {
+                console.log("dele_id"+this.chartmenber[value.index])
+                let res = await this.$axios.post('chart/delete_chart', {chart_id: this.chartmenber[value.index]})
+                let data = {
+                    chart_title: value.option.title.text || '',
+                    creator: this.creator,
+                    operate_type: 2
+                }
+                let response2 = await this.$axios.post('chart/add_operate', data)
+                if(res.code === 0 && response2.code === 0) {
+                    this.$message.success('删除成功！')
+                    this.getChart()
+                } else {
+                    this.$message.success('删除失败请重试！')
+                }
+            },
+            getCookie(cookie_name) {
+                var allcookies = document.cookie;
+                var cookie_pos = allcookies.indexOf(cookie_name);
+                if (cookie_pos != -1) {
+                    // 把cookie_pos放在值的开始，只要给值加1即可
+                    cookie_pos = cookie_pos + cookie_name.length + 1; 
+                    //计算取cookie值得结束索引
+                    var cookie_end = allcookies.indexOf(";", cookie_pos);
+                    if (cookie_end == -1) {
+                        cookie_end = allcookies.length;
+                    }
+                    //得到想要的cookie的值
+                    var value = unescape(allcookies.substring(cookie_pos, cookie_end)); 
+                }
+                return value;
+            },
+            getCookieVal () {
+                let cookie_name = 'username'
+                let cookie_value = this.getCookie(cookie_name)
+                this.creator = cookie_value
+            },
         }
     }
 </script>

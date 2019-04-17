@@ -441,6 +441,15 @@ def add_operate_record(chart_title, creator, operate_type):
 
     return return_json
 
+#delete
+def delete_chart_byid(chart_id):
+    result = ChartDAO.deleteChartById(chart_id)
+    return_json = {
+        'code': 0,
+        'data': result,
+        'message': None
+    }
+    return return_json
 
 # 新创建图表
 def create_new_chart(chart_type,
@@ -551,4 +560,4 @@ def preview_chart(chart_type,
 
 
 if __name__ == '__main__':
-    print(get_chart_info(8))
+    print(delete_chart_byid(8))

@@ -14,6 +14,13 @@ def get_chart_list(dashboard_id):
     result_json = ChartService.get_chart_list(dashboard_id)
     return jsonify(result_json)
 
+# 删除chart
+@chart.route('/delete_chart', methods=['POST'])
+def delete_chart():
+    data = json.loads(str(request.data, encoding="utf-8"))
+    chart_id = data['chart_id']
+    result = ChartService.delete_chart_byid(chart_id)
+    return jsonify(result)
 
 # 根据图表id获取chart数据
 @chart.route('/get_chart_info/<chart_id>', methods=['GET'])

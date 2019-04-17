@@ -1,4 +1,7 @@
 # coding=utf-8
+import datetime
+import time
+
 from backend.object.Chart import Chart
 from backend.utils.DBUtils import dbutils
 
@@ -28,6 +31,7 @@ class ChartDAO(object):
         ''' % (str(id))
         cursor.execute(sql)
         data = cursor.fetchone()
+        print(data)
         dbutils.close(db)
         return Chart(
             id=data[0],
@@ -62,6 +66,22 @@ class ChartDAO(object):
         dbutils.close(db)
         return True
 
+    @classmethod
+    def deleteChartById(cls,chart_id):
+        del_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        db = dbutils.get_connect()
+        cursor = db.cursor()
+        delSql = '''
+                    update `dada_chart_new` 
+                    set 
+                        date_delete = %s
+                    where 
+                        id = %s
+                    '''
+        cursor.execute(delSql, (str(del_time), str(chart_id)))
+        db.commit()
+        dbutils.close(db)
+        return True
 
     @classmethod
     def get_chart_list(cls,dashboardId):
@@ -71,6 +91,7 @@ class ChartDAO(object):
             select id 
             from dada_chart_new 
             where dashboard_id = %d
+            and date_delete is null 
         '''% (int(dashboardId))
         cursor.execute(query_sql)
         data = cursor.fetchall()
@@ -104,12 +125,7 @@ class ChartDAO(object):
         return chart_id
 
 if __name__ == '__main__':
-    print(ChartDAO.create_new_chart(
-        chart_type=1,
-        dashboard_id=1,
-        chart_title='test insert',
-        chart_desc='dd',
-        creator='tianbohao',
-        chart_table='test'
-    ))
-    ChartDAO.get_chart_list(1)
+    a = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+    print(a
+)
