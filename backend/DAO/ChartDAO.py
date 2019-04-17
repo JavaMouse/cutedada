@@ -49,6 +49,21 @@ class ChartDAO(object):
         return data
 
     @classmethod
+    def addOperateRecord(cls,chart_title, creator, operate_type):
+        db = dbutils.get_connect()
+        cursor = db.cursor()
+        insert_sql2 = '''
+                        INSERT INTO `dada_operate` (`creater`, `operate_type`, `chart_title`)
+                        VALUES
+                        (%s, %s, %s);
+                        '''
+        cursor.execute(insert_sql2, (creator, 1, chart_title))
+        db.commit()
+        dbutils.close(db)
+        return True
+
+
+    @classmethod
     def get_chart_list(cls,dashboardId):
         db = dbutils.get_connect()
         cursor = db.cursor()

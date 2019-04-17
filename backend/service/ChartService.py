@@ -426,6 +426,22 @@ def process_line_chart(chart_object,
 
     return json_value
 
+
+# 操作记录
+def add_operate_record(chart_title, creator, operate_type):
+    result = ChartDAO.addOperateRecord(chart_title, creator, operate_type)
+
+    return_json = {
+        'code': 0,
+        'data': {
+            'tableNames': result
+        },
+        'message': None
+    }
+
+    return return_json
+
+
 # 新创建图表
 def create_new_chart(chart_type,
                      dashboard_id,

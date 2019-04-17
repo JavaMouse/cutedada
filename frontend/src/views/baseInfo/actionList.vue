@@ -136,6 +136,7 @@ export default {
         pageSize: this.pageInfo.size
       }
       this.pageInfo.total = 100
+      console.log(data)
     //   let res = await this.$axios.post('fire/v1/deviceInfo/queryFireDeviceStatus', data)
     //   if (res.code === 0) {
     //     this.tableData = res.data.list

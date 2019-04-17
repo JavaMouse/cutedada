@@ -21,6 +21,16 @@ def get_chart_info(chart_id):
     result_json = ChartService.get_chart_info(chart_id)
     return jsonify(result_json)
 
+# 添加记录
+@chart.route('/add_operate', methods=['POST'])
+def add_operate():
+    data = json.loads(str(request.data, encoding="utf-8"))
+    chart_title = data['chart_title']
+    creator = data['creator']
+    operate_type = data['operate_type']
+    result = ChartService.add_operate_record(chart_title, creator, operate_type)
+    return jsonify(result)
+
 
 # 添加新图表
 @chart.route('/add_new_chart', methods=['POST'])
@@ -114,3 +124,7 @@ def preview_chart():
                                              measurement_list)
 
     return jsonify(result_json)
+
+
+if __name__ == '__main__':
+    print(add_operate("123","aaa",1))
