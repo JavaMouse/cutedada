@@ -137,6 +137,7 @@ export default {
         pageSize: this.pageInfo.size
       }
       let res = await this.$axios.post('chart/query_operate_list', data)
+      let count = 0
       if (res.code === 0 && res.data.operateList) {
          res.data.operateList.forEach(item => {
           if (item.operate_type === 1) {
@@ -145,8 +146,9 @@ export default {
             item.operateType = '修改'
           }
           this.tableData.push(item)
+          count ++
         })
-        this.pageInfo.total = this.tableData.legnth
+        this.pageInfo.total = count
       }
       this.loading = false
     },
