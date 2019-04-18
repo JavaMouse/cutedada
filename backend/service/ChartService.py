@@ -426,6 +426,20 @@ def process_line_chart(chart_object,
 
     return json_value
 
+#操作集合查询
+def query_operate(operator, actionType, actionTime, pageIndex, pageSize):
+    result = ChartDAO.queryOperate(operator, actionType, actionTime, pageIndex, pageSize)
+    print(result)
+
+    return_json = {
+        'code': 0,
+        'data': {
+            'operateList': result
+        },
+        'message': None
+    }
+
+    return return_json
 
 # 操作记录
 def add_operate_record(chart_title, creator, operate_type):
@@ -560,4 +574,4 @@ def preview_chart(chart_type,
 
 
 if __name__ == '__main__':
-    print(delete_chart_byid(8))
+    print(query_operate('chennan','1','2019-04-01',1,20))

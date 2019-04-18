@@ -14,6 +14,18 @@ def get_chart_list(dashboard_id):
     result_json = ChartService.get_chart_list(dashboard_id)
     return jsonify(result_json)
 
+# 查询操作集合
+@chart.route('/query_operate_list', methods=['POST'])
+def query_operate_list():
+    data = json.loads(str(request.data, encoding="utf-8"))
+    operator = data['operator']
+    actionType = data['actionType']
+    actionTime = data['actionTime']
+    pageIndex = data['pageIndex']
+    pageSize = data['pageSize']
+    result = ChartService.query_operate(operator, actionType, actionTime, pageIndex, pageSize)
+    return jsonify(result)
+
 # 删除chart
 @chart.route('/delete_chart', methods=['POST'])
 def delete_chart():
@@ -134,4 +146,4 @@ def preview_chart():
 
 
 if __name__ == '__main__':
-    print(add_operate("123","aaa",1))
+    print(query_operate_list('chennan','1','2019-04-01',1,20))

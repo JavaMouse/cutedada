@@ -84,6 +84,56 @@ class ChartDAO(object):
         return True
 
     @classmethod
+    def queryOperate(cls,operator, actionType, actionTime, pageIndex, pageSize):
+        db = dbutils.get_connect()
+        cursor = db.cursor()
+        print(actionTime)
+        # query_sql = "select * from dada_operate where operate_type = %s and date > %s and creater = '%s'" % (actionType, actionTime, operator)
+        # query_sql = "select * from dada_operate where operate_type = %s and date > %s and creater = %s" %(str(actionType), str(actionTime), str(operator))
+        if operator == '' and actionType != '' and actionTime != '':
+            query_sql = "select * from dada_operate where operate_type = %s and date > %s" % (actionType, actionTime)
+        elif operator != '' and actionType == '' and actionTime != '':
+            query_sql = "select * from dada_operate where creater = '%s' and date > %s" % (operator, actionTime)
+        elif operator != '' and actionType != '' and actionTime == '':
+            query_sql = "select * from dada_operate where creater = '%s' and operate_type = %s" % (operator, actionType)
+        elif operator == '' and actionType == '' and actionTime != '':
+            query_sql = "select * from dada_operate where date > %s" % (actionTime)
+        elif operator != '' and actionType == '' and actionTime == '':
+            query_sql = "select * from dada_operate where creater = '%s'" % (operator)
+        elif operator == '' and actionType != '' and actionTime == '':
+            query_sql = "select * from dada_operate where operate_type = %s" % (actionType)
+        elif operator == '' and actionType == '' and actionTime == '':
+            query_sql = "select * from dada_operate"
+        elif operator != '' and actionType != '' and actionTime != '':
+            query_sql = "select * from dada_operate where operate_type = %s and date > %s and creater = '%s'" % (actionType, actionTime, operator)
+        print(query_sql)
+        cursor.execute(query_sql)
+        data = cursor.fetchall()
+        operateList = []
+        for d in data:
+            r = {
+                "creater":d[1],
+                "operate_type":d[2],
+                "date":d[3],
+            }
+            operateList.append(r)
+        print(operateList)
+
+        # cursor2 = db.cursor()
+        # query_count = '''
+        #                 select count(id) from dada_operate
+        #                 where creater = %s
+        #                 and operate_type = %s
+        #                 and date > %s
+        #             ''' % (str(operator),str(actionType),str(actionTime))
+        # cursor2.execute(query_count)
+        # count = cursor2.fetchall()
+        # print(count)
+        dbutils.close(db)
+
+        return list(operateList)
+
+    @classmethod
     def get_chart_list(cls,dashboardId):
         db = dbutils.get_connect()
         cursor = db.cursor()

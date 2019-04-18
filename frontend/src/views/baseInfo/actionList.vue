@@ -3,7 +3,7 @@
     <!-- <el-header class="page-topic">
     </el-header> -->
     <el-main style="height:100%;padding:0;">
-      <search-drop @on-search="fSearch" @on-reset="fReset" class="searchDrop">
+      <search-drop @on-search="getList" @on-reset="fReset" class="searchDrop">
         <!-- 操作人员: -->
         <el-input
             class="condition"
@@ -24,16 +24,17 @@
          <el-date-picker
             class="condition"
             v-model="condition.actionTime"
+            value-format="yyyy-MM-dd" 
             type="datetime"
             placeholder="选择日操作时间">
             </el-date-picker>
       </search-drop>
       <div class="table_box" ref="tableBox">
         <el-table :data="tableData" height="100%" size="mini" style="font-size:14px;" v-loading="loading" stripe border :highlight-current-row="true" :header-cell-style="getRowClass">
-          <el-table-column prop="operator" label="操作人员"></el-table-column>
-          <el-table-column prop="actionType" label="操作类型"></el-table-column>
-          <el-table-column prop="actionTime" label="操作时间"></el-table-column>
-          <el-table-column label="操作">
+          <el-table-column prop="creater" label="操作人员"></el-table-column>
+          <el-table-column prop="operateType" label="操作类型"></el-table-column>
+          <el-table-column prop="date" label="操作时间"></el-table-column>
+          <el-table-column label="操作" width="100">
               <template slot-scope="scope">
                   <el-button type="danger" size="mini" @click="goBack">撤销</el-button>
               </template>
@@ -82,15 +83,12 @@ export default {
           label: '删除'
         }
         ],
-      condition: {},
-      searchData: {},
-      tableData: [
-          {operator: 'chen',actionType:'新增',actionTime:'2019-01-08 00:00:00'},
-          {operator: 'chen',actionType:'新增',actionTime:'2019-01-08 00:00:00'},
-          {operator: 'chen',actionType:'新增',actionTime:'2019-01-08 00:00:00'},
-          {operator: 'chen',actionType:'新增',actionTime:'2019-01-08 00:00:00'},
-          {operator: 'chen',actionType:'新增',actionTime:'22019-01-08 00:00:00'}
-      ],
+      condition: {
+        operator: '',
+        actionType: '',
+        actionTime: ''
+      },
+      tableData: [],
       pageInfo: {
         total: 0,
         size: 20,
@@ -130,62 +128,38 @@ export default {
     },
     async getList () {
       this.loading = true
+      this.tableData = []
       let data = {
-        ...this.searchData,
+        operator: this.condition.operator,
+        actionType: this.condition.actionType,
+        actionTime: this.condition.actionTime,
         pageIndex: this.pageInfo.current,
         pageSize: this.pageInfo.size
       }
-      this.pageInfo.total = 100
-      console.log(data)
-    //   let res = await this.$axios.post('fire/v1/deviceInfo/queryFireDeviceStatus', data)
-    //   if (res.code === 0) {
-    //     this.tableData = res.data.list
-    //     this.pageInfo.total = res.data.total
-    //   }
-      this.loading = false
-    },
-    fSearch () {
-      this.searchData = {
-        ...this.condition
+      let res = await this.$axios.post('chart/query_operate_list', data)
+      if (res.code === 0 && res.data.operateList) {
+         res.data.operateList.forEach(item => {
+          if (item.operate_type === 1) {
+            item.operateType = '新增'
+          } else {
+            item.operateType = '修改'
+          }
+          this.tableData.push(item)
+        })
+        this.pageInfo.total = this.tableData.legnth
       }
-      this.pageInfo.current = 1
-      this.getList()
+      this.loading = false
     },
     fChangePageSize (num) {
       this.pageInfo.size = num
-      this.fSearch()
+      this.getList()
     },
     fReset () {
       for (let key in this.condition) {
         this.condition[key] = ''
       }
       this.pageInfo.current = 1
-      this.fSearch()
-    },
-    handleFocus (key) {
-      this.status[key] = true
-    },
-    // 失去焦点时校验
-    handleBlurStart (key) {
-      this.status[key] = false
-      if (this.condition.endCollectTime && this.condition.endCollectTime < this.condition.startCollectTime) {
-        this.condition.startCollectTime = this.condition.endCollectTime
-      }
-    },
-    handleBlurEnd (key) {
-      this.status[key] = false
-      if (this.condition.startCollectTime && this.condition.endCollectTime < this.condition.startCollectTime) {
-        this.condition.endCollectTime = this.condition.startCollectTime
-      }
-    },
-    async fGetDeviceTypeList () {
-    //   let response = await this.$axios.get('bp/getDictItemListByDictTypeCode/XFSB')
-    //   this.deviceTypeList = response.data.map(status => {
-    //     return {
-    //       value: status.dictItemCode,
-    //       label: status.dictItemName
-    //     }
-    //   })
+      this.getList()
     }
   }
 
