@@ -98,7 +98,7 @@ class ChartDAO(object):
 
         cursor2 = db.cursor()
         sql2 = '''
-                    insert into `dada_operate` 
+                    update `dada_operate` 
                     set 
                         is_revort = 1
                     where 

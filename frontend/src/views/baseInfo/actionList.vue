@@ -112,7 +112,6 @@ export default {
           type: 'warning'
         }).then(() => {
           this.revort(row.chartId)
-          this.getList()
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -125,6 +124,7 @@ export default {
       if(res.code === 0) {
         this.$message.success('撤销成功')
       }
+      this.getList()
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
