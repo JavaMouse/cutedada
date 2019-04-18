@@ -87,9 +87,6 @@ class ChartDAO(object):
     def queryOperate(cls,operator, actionType, actionTime, pageIndex, pageSize):
         db = dbutils.get_connect()
         cursor = db.cursor()
-        print(actionTime)
-        # query_sql = "select * from dada_operate where operate_type = %s and date > %s and creater = '%s'" % (actionType, actionTime, operator)
-        # query_sql = "select * from dada_operate where operate_type = %s and date > %s and creater = %s" %(str(actionType), str(actionTime), str(operator))
         if operator == '' and actionType != '' and actionTime != '':
             query_sql = "select * from dada_operate where operate_type = %s and date > %s" % (actionType, actionTime)
         elif operator != '' and actionType == '' and actionTime != '':
@@ -106,7 +103,6 @@ class ChartDAO(object):
             query_sql = "select * from dada_operate"
         elif operator != '' and actionType != '' and actionTime != '':
             query_sql = "select * from dada_operate where operate_type = %s and date > %s and creater = '%s'" % (actionType, actionTime, operator)
-        print(query_sql)
         cursor.execute(query_sql)
         data = cursor.fetchall()
         operateList = []
@@ -117,20 +113,7 @@ class ChartDAO(object):
                 "date":d[3],
             }
             operateList.append(r)
-        print(operateList)
-
-        # cursor2 = db.cursor()
-        # query_count = '''
-        #                 select count(id) from dada_operate
-        #                 where creater = %s
-        #                 and operate_type = %s
-        #                 and date > %s
-        #             ''' % (str(operator),str(actionType),str(actionTime))
-        # cursor2.execute(query_count)
-        # count = cursor2.fetchall()
-        # print(count)
         dbutils.close(db)
-
         return list(operateList)
 
     @classmethod

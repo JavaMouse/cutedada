@@ -30,7 +30,7 @@
             </el-date-picker>
       </search-drop>
       <div class="table_box" ref="tableBox">
-        <el-table :data="tableData" height="100%" size="mini" style="font-size:14px;" v-loading="loading" stripe border :highlight-current-row="true" :header-cell-style="getRowClass">
+        <el-table v-loading="loading" :data="tableData" height="100%" size="mini" style="font-size:14px;" stripe border :highlight-current-row="true" :header-cell-style="getRowClass">
           <el-table-column prop="creater" label="操作人员"></el-table-column>
           <el-table-column prop="operateType" label="操作类型"></el-table-column>
           <el-table-column prop="date" label="操作时间"></el-table-column>
@@ -53,6 +53,7 @@ import { DatePicker } from 'element-ui'
 import SearchDrop from '@/components/SearchDrop'
 import SearchDropForm from '@/components/SearchDropForm'
 import BasePagination from '@/components/BasePagination'
+
 
 export default {
   name: 'ActionList',
