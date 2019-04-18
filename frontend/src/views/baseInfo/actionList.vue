@@ -32,11 +32,12 @@
       <div class="table_box" ref="tableBox">
         <el-table v-loading="loading" :data="tableData" height="100%" size="mini" style="font-size:14px;" stripe border :highlight-current-row="true" :header-cell-style="getRowClass">
           <el-table-column prop="creater" label="操作人员"></el-table-column>
+          <el-table-column prop="chartId" label="图表id"></el-table-column>
           <el-table-column prop="operateType" label="操作类型"></el-table-column>
           <el-table-column prop="date" label="操作时间"></el-table-column>
           <el-table-column label="操作" width="100">
               <template slot-scope="scope">
-                  <el-button type="danger" size="mini" @click="goBack">撤销</el-button>
+                  <el-button v-if="scope.row.operate_type === 2" :disabled="scope.row.is_revort === 1" type="danger" size="mini" @click="goBack(scope.row)">撤销</el-button>
               </template>
           </el-table-column>
         </el-table>
@@ -103,22 +104,27 @@ export default {
     }
   },
   methods: {
-    goBack () {
+    goBack (row) {
+      console.log(row)
       this.$confirm('确认撤销该条操作, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '撤销成功!'
-          });
+          this.revort(row.chartId)
+          this.getList()
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消撤销'
           });          
         });
+    },
+    async revort (val) {
+      let res = await this.$axios.post('chart/revoke_operate', {chart_id: val})
+      if(res.code === 0) {
+        this.$message.success('撤销成功')
+      }
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -144,7 +150,7 @@ export default {
           if (item.operate_type === 1) {
             item.operateType = '新增'
           } else {
-            item.operateType = '修改'
+            item.operateType = '删除'
           }
           this.tableData.push(item)
           count ++

@@ -424,7 +424,8 @@
                 let data = {
                     chart_title: value.option.title.text || '',
                     creator: this.creator,
-                    operate_type: 2
+                    operate_type: 2,
+                    chart_id: this.chartmenber[value.index]
                 }
                 let response2 = await this.$axios.post('chart/add_operate', data)
                 if(res.code === 0 && response2.code === 0) {

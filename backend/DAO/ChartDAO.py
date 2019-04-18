@@ -53,15 +53,15 @@ class ChartDAO(object):
         return data
 
     @classmethod
-    def addOperateRecord(cls,chart_title, creator, operate_type):
+    def addOperateRecord(cls,chart_title, creator, operate_type, chart_id):
         db = dbutils.get_connect()
         cursor = db.cursor()
         insert_sql2 = '''
-                        INSERT INTO `dada_operate` (`creater`, `operate_type`, `chart_title`)
+                        INSERT INTO `dada_operate` (`creater`, `operate_type`, `chart_title`, `chart_id`)
                         VALUES
-                        (%s, %s, %s);
+                        (%s, %s, %s, %s);
                         '''
-        cursor.execute(insert_sql2, (creator, operate_type, chart_title))
+        cursor.execute(insert_sql2, (creator, operate_type, chart_title, chart_id))
         db.commit()
         dbutils.close(db)
         return True
@@ -79,6 +79,32 @@ class ChartDAO(object):
                         id = %s
                     '''
         cursor.execute(delSql, (str(del_time), str(chart_id)))
+        db.commit()
+        dbutils.close(db)
+        return True
+
+    @classmethod
+    def revokeOperate(cls,chart_id):
+        db = dbutils.get_connect()
+        cursor1 = db.cursor()
+        sql = '''
+                update `dada_chart_new` 
+                set 
+                    date_delete = null
+                where 
+                    id = %s
+                '''
+        cursor1.execute(sql, (str(chart_id)))
+
+        cursor2 = db.cursor()
+        sql2 = '''
+                    insert into `dada_operate` 
+                    set 
+                        is_revort = 1
+                    where 
+                        chart_id = %s
+                    '''
+        cursor2.execute(sql2, (str(chart_id)))
         db.commit()
         dbutils.close(db)
         return True
@@ -111,6 +137,8 @@ class ChartDAO(object):
                 "creater":d[1],
                 "operate_type":d[2],
                 "date":d[3],
+                "chartId":d[5],
+                "is_revort":d[6]
             }
             operateList.append(r)
         dbutils.close(db)

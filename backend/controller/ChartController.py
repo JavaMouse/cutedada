@@ -14,6 +14,14 @@ def get_chart_list(dashboard_id):
     result_json = ChartService.get_chart_list(dashboard_id)
     return jsonify(result_json)
 
+#撤销删除
+@chart.route('/revoke_operate', methods=['POST'])
+def revoke_operate():
+    data = json.loads(str(request.data, encoding="utf-8"))
+    chart_id = data['chart_id']
+    result = ChartService.revoke_operate(chart_id)
+    return jsonify(result)
+
 # 查询操作集合
 @chart.route('/query_operate_list', methods=['POST'])
 def query_operate_list():
@@ -47,7 +55,8 @@ def add_operate():
     chart_title = data['chart_title']
     creator = data['creator']
     operate_type = data['operate_type']
-    result = ChartService.add_operate_record(chart_title, creator, operate_type)
+    chart_id = data['chart_id']
+    result = ChartService.add_operate_record(chart_title, creator, operate_type, chart_id)
     return jsonify(result)
 
 

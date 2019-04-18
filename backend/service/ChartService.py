@@ -426,6 +426,21 @@ def process_line_chart(chart_object,
 
     return json_value
 
+#撤销删除
+def revoke_operate(chart_id):
+    result = ChartDAO.revokeOperate(chart_id)
+    print(result)
+
+    return_json = {
+        'code': 0,
+        'data': {
+            'status': result
+        },
+        'message': None
+    }
+
+    return return_json
+
 #操作集合查询
 def query_operate(operator, actionType, actionTime, pageIndex, pageSize):
     result = ChartDAO.queryOperate(operator, actionType, actionTime, pageIndex, pageSize)
@@ -442,8 +457,8 @@ def query_operate(operator, actionType, actionTime, pageIndex, pageSize):
     return return_json
 
 # 操作记录
-def add_operate_record(chart_title, creator, operate_type):
-    result = ChartDAO.addOperateRecord(chart_title, creator, operate_type)
+def add_operate_record(chart_title, creator, operate_type, chart_id):
+    result = ChartDAO.addOperateRecord(chart_title, creator, operate_type, chart_id)
 
     return_json = {
         'code': 0,

@@ -316,15 +316,19 @@ let option = {
                 this.chartDisabled = true
                 let response = await this.$axios.post('chart/add_new_chart', this.chartObj)
                 console.log(response)
+                if(response){
+                    this.$message.success('保存成功！')
+                }
+                this.addOperate(response.chart_id)
+            },
+            async addOperate (val) {
                 let data = {
                     chart_title: this.chartObj.chart_title,
                     creator: this.chartObj.creator,
-                    operate_type: 1
+                    operate_type: 1,
+                    chart_id: val
                 }
                 let response2 = await this.$axios.post('chart/add_operate', data)
-                if(response.code === 0) {
-                    this.$message.success('保存成功！')
-                }
             },
             async drawChart () {
                 this.errSQL = ''
