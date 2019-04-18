@@ -61,7 +61,7 @@ class ChartDAO(object):
                         VALUES
                         (%s, %s, %s);
                         '''
-        cursor.execute(insert_sql2, (creator, 1, chart_title))
+        cursor.execute(insert_sql2, (creator, operate_type, chart_title))
         db.commit()
         dbutils.close(db)
         return True
