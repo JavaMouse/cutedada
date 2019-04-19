@@ -33,7 +33,7 @@
                         </el-option>
                     </el-select><br>
                     图表标题: <el-input size="mini" v-model="editForm.title" class="inputStyle2"></el-input><br>
-                    图表描述: <el-input size="mini" v-model="editForm.chartDesc" class="inputStyle2"></el-input>
+                    
                 </div>
                 <div class="contentDiv" v-if="activeNum===2">
                     <div class="sqlDiv">
@@ -69,7 +69,7 @@
                     </div>
                     <div style="width:100%;height:500px;margin-top:30px;" v-else>
                         <div v-bind:style="styleObj" ref="myChart"></div>
-                        <div>图表描述：{{editForm.chartDesc}}</div>
+                         图表描述: <el-input size="mini" v-model="editForm.chartDesc" class="inputStyle3"></el-input>
                     </div>
                 </div>
         </el-main>
@@ -609,5 +609,13 @@ let option = {
     .stepBtn {
         width: 100px;
         border-radius: 10px;
+    }
+    .inputStyle3 {
+        width: 275px;
+        margin-top: 20px;
+        /deep/ .el-input__inner {
+            border: 0;
+            border-bottom: 1px solid #ccc; 
+        }
     }
 </style>
