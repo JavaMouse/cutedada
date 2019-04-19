@@ -314,6 +314,7 @@ let option = {
             async saveChart () {
                 this.errSQL = ''
                 this.chartDisabled = true
+                this.chartObj.chart_desc = this.editForm.chartDesc || ''
                 let response = await this.$axios.post('chart/add_new_chart', this.chartObj)
                 console.log(response)
                 if(response){
@@ -350,7 +351,6 @@ let option = {
                     chart_type: this.editForm.chartType || '',
                     dashboard_id: 1,
                     chart_title: this.editForm.title || '',
-                    chart_desc: this.editForm.chartDesc || '',
                     creator: 'chennan',
                     chart_table: this.editForm.chartName || '',
                     main_dimension: {
