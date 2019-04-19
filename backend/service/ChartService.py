@@ -66,6 +66,8 @@ def get_sql_and_process_chart(main_dimension,
         %s
     group by 
         %s
+    order by 
+        %s
     '''
     # select
     select_word = "%s as %s," % (main_dimension.dimension_sql,"main_dimension"+str(main_dimension.id))
@@ -93,7 +95,7 @@ def get_sql_and_process_chart(main_dimension,
         group_word = group_word + tmp_word
     group_word = group_word[:-1]
 
-    result_sql = sql_template % (select_word,from_word,where_word,group_word)
+    result_sql = sql_template % (select_word,from_word,where_word,group_word,main_dimension.dimension_sql)
 
     print(result_sql)
 
