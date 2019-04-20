@@ -8,10 +8,10 @@ from backend.service import DimensionService, MeasuremenService, FilterService, 
     JurisdictionAndGroupService
 
 
-# 根据dashboard_id获取chart_id
-def get_chart_list(dashboard_id):
+# 根据 chart_id 获取chart_id
+def get_chart_list(chart_id):
 
-    chartList = ChartDAO.get_chart_list(dashboard_id)
+    chartList = ChartDAO.get_chart_list(chart_id)
 
     return_json = {
         'code': 0,

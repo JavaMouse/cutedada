@@ -2,6 +2,8 @@
 import datetime
 import time
 
+import re
+
 from backend.object.Chart import Chart
 from backend.utils.DBUtils import dbutils
 
@@ -31,7 +33,6 @@ class ChartDAO(object):
         ''' % (str(id))
         cursor.execute(sql)
         data = cursor.fetchone()
-        print(data)
         dbutils.close(db)
         return Chart(
             id=data[0],
@@ -145,23 +146,29 @@ class ChartDAO(object):
         return list(operateList)
 
     @classmethod
-    def get_chart_list(cls,dashboardId):
+    def get_chart_list(cls,group_id):
         db = dbutils.get_connect()
         cursor = db.cursor()
         query_sql = '''
-            select id 
-            from dada_chart_new 
-            where dashboard_id = %d
-            and date_delete is null 
-        '''% (int(dashboardId))
+            select 
+                jurisdiction_code 
+            from 
+                dada_jurisdiction_and_group
+            where 
+                group_id = %d 
+                and jurisdiction_code like 'READ_CHART_%%' 
+                and date_delete is null
+            order by 
+                jurisdiction_code
+        '''% (int(group_id))
         cursor.execute(query_sql)
         data = cursor.fetchall()
         chartIdList = []
         for item in data:
-            chartIdList.append(item[0])
-        print(chartIdList)
+            chart_id = int(re.match("^READ_CHART_(\d+)$", item[0], re.I | re.S).group(1))
+            chartIdList.append(chart_id)
         dbutils.close(db)
-        return chartIdList
+        return sorted(chartIdList)
 
     @classmethod
     def create_new_chart(cls,
@@ -186,7 +193,4 @@ class ChartDAO(object):
         return chart_id
 
 if __name__ == '__main__':
-    a = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-
-    print(a
-)
+    print(ChartDAO.get_chart_list(3))
