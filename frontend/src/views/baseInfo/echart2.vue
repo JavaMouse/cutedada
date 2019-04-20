@@ -259,7 +259,6 @@
             
         },
         created () {
-            this.getChart()
         },
         mounted () {
             window.onresize = () => {
@@ -337,7 +336,7 @@
                     this.change(item)  
             },
             async getChart () {
-                let response = await this.$axios.get('chart/get_chartId_list/'+'1')
+                let response = await this.$axios.get('chart/get_chartId_list/' + this.group_id)
                 this.chartmenber = response.data.chartList || []
                 this.chartmenber.forEach((item,index) => {
                     this.getcChartData(item,index)
@@ -455,6 +454,8 @@
                 let cookie_name = 'username'
                 let cookie_value = this.getCookie(cookie_name)
                 this.creator = cookie_value
+
+                this.getChart()
             },
         }
     }
