@@ -5,8 +5,8 @@
         </el-header>
         <el-main class="main">
             <el-form :label-position="labelPosition" label-width="0px" :model="authorityForm" class="authForm">
-                <h3 class="title">修改权限</h3>
-                <el-select v-model="authorityForm.authValue" @change="selectChanege" placeholder="请选择权限组" style="margin-bottom:40px;">
+                <h4 class="title">请选择需要修改权限的用户组：</h4>
+                <el-select v-model="authorityForm.authValue" @change="selectChanege" placeholder="请选择" style="margin-bottom:40px;">
                     <el-option
                         v-for="item in authOptions"
                         :key="item.id"
@@ -15,14 +15,23 @@
                     </el-option>
                 </el-select>
                 <template v-if="authorityForm.authValue !== ''">
-                    <el-form-item v-for="(item,index) in authorityForm.formList" :key="index">
-                        <div>{{ item.chart_title }}:</div>
-                        <el-checkbox label="查看" v-model="item.is_read" @change="changeCheck(index,0)"></el-checkbox>
-                        <el-checkbox label="编辑" v-model="item.is_modify" @change="changeCheck(index,1)"></el-checkbox>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button size="mini" @click="submit">确认修改</el-button>
-                    </el-form-item>
+                    <div class="formcontent">
+                        <!-- <img src="../../assets/backgroungBule.jpg" class="background"> -->
+                        <el-form-item v-for="(item,index) in authorityForm.formList" :key="index">
+                            <div style="font-size: 18px;font-weight:600;font-family: 'Courier New', Courier, monospace;">图表{{index+1}}: {{ item.chart_title }}</div>
+                            <el-checkbox label="查看" v-model="item.is_read" @change="changeCheck(index,0)"></el-checkbox>
+                            <el-checkbox label="编辑" v-model="item.is_modify" @change="changeCheck(index,1)"></el-checkbox>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button size="small" type="primary" @click="submit" class="submitBtn">确认修改</el-button>
+                        </el-form-item>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="nullContent">
+                        <img src="../../assets/nulldData.png" class="nullImg">
+                        <p class="none">暂无数据</p>
+                    </div>
                 </template>
             </el-form>
         </el-main>
@@ -40,7 +49,61 @@
                     formList: [
                     {
                         'chart_id':1,
-                        'chart_name': 'dadadadada',
+                        'chart_title': '陈',
+                        'group_id':1,
+                        'read': true,
+                        'modify': false
+                    },{
+                        'chart_id':1,
+                        'chart_title': 'dadadadada',
+                        'group_id':1,
+                        'read': true,
+                        'modify': false
+                    },{
+                        'chart_id':1,
+                        'chart_title': 'dadadadada',
+                        'group_id':1,
+                        'read': true,
+                        'modify': false
+                    },{
+                        'chart_id':1,
+                        'chart_title': 'dadadadada',
+                        'group_id':1,
+                        'read': true,
+                        'modify': false
+                    },{
+                        'chart_id':1,
+                        'chart_title': 'dadadadada',
+                        'group_id':1,
+                        'read': true,
+                        'modify': false
+                    },{
+                        'chart_id':1,
+                        'chart_title': 'dadadadada',
+                        'group_id':1,
+                        'read': true,
+                        'modify': false
+                    },{
+                        'chart_id':1,
+                        'chart_title': 'dadadadada',
+                        'group_id':1,
+                        'read': true,
+                        'modify': false
+                    },{
+                        'chart_id':1,
+                        'chart_title': 'dadadadada',
+                        'group_id':1,
+                        'read': true,
+                        'modify': false
+                    },{
+                        'chart_id':1,
+                        'chart_title': 'dadadadada',
+                        'group_id':1,
+                        'read': true,
+                        'modify': false
+                    },{
+                        'chart_id':1,
+                        'chart_title': 'dadadadada',
                         'group_id':1,
                         'read': true,
                         'modify': false
@@ -128,14 +191,17 @@
         height: 100%;
     }
     .authForm {
-        height: 100%;
-        width: calc(100%-20px);
+        height: calc(100% - 20px);
+        width: calc(100% - 40px);
         text-align: left;
-        padding-left: 20px;
+        padding-left: 40px;
+        padding-top: 20px;
         background-color: #ffffff;
+
         .title{
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 30px;
+            color: #626467;
         }
     }
     .page-topic {
@@ -146,5 +212,34 @@
             font-size: 16px;
             font-weight: bold;
         }
+    }
+    .none {
+        text-align: center;
+        font-weight: bold;
+        color: #626467;
+    }
+    .nullImg {
+        width: 150px;
+        height: 150px;
+        display: inline-block;
+    }
+    .nullContent {
+        text-align: center;
+        position: relative;
+        top: 20%;
+    }
+    .submitBtn {
+        width: 100px;
+        border-radius: 10px;
+        background-color: #efac48;
+        border: #efac48;
+    }
+    .formcontent {
+        margin-right: 10px;
+        padding: 20px;
+        height: calc(100% - 150px);
+        overflow: auto;
+        background: url(../../assets/bacBlue.jpg);
+        border-radius: 20px;
     }
 </style>
