@@ -167,8 +167,26 @@ class ChartDAO(object):
         for item in data:
             chart_id = int(re.match("^READ_CHART_(\d+)$", item[0], re.I | re.S).group(1))
             chartIdList.append(chart_id)
+        # dbutils.close(db)
+
+        query_sql = '''
+            select 
+                id
+            from 
+                dada_chart_new
+            where 
+                date_delete is null
+        '''
+        cursor.execute(query_sql)
+        data = cursor.fetchall()
+        enable_chart_id_list = []
+        for item in data:
+            chart_id = int(item[0])
+            enable_chart_id_list.append(chart_id)
         dbutils.close(db)
-        return sorted(chartIdList)
+
+        # 返回交集
+        return sorted([val for val in chartIdList if val in enable_chart_id_list])
 
     @classmethod
     def create_new_chart(cls,
@@ -193,4 +211,4 @@ class ChartDAO(object):
         return chart_id
 
 if __name__ == '__main__':
-    print(ChartDAO.get_chart_list(3))
+    print(ChartDAO.get_chart_list(1))

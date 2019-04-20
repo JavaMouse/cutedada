@@ -8,10 +8,10 @@ chart = Blueprint('chart', __name__,
                   template_folder="./dist")
 
 
-# 根据chart_id 返回chart_id
-@chart.route('/get_chartId_list/<chart_id>', methods=['GET'])
-def get_chart_list(chart_id):
-    result_json = ChartService.get_chart_list(chart_id)
+# 根据 group_id 返回chart_id
+@chart.route('/get_chartId_list/<group_id>', methods=['GET'])
+def get_chart_list(group_id):
+    result_json = ChartService.get_chart_list(group_id)
     return jsonify(result_json)
 
 #撤销删除
