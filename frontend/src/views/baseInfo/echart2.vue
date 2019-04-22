@@ -252,7 +252,8 @@
                 seriesData: {},
                 option: [],
                 chartmenber: [],
-                creator: ''
+                creator: '',
+                group_id: 1
             }
         },
         watch: {
@@ -270,70 +271,77 @@
         },
         methods: {
             async getcChartData (item,index) {
-                let res = await this.$axios.get('chart/get_chart_info/'+item)
-                    if(res.chart_type === 1) {
-                        // 柱状图
-                        this.option[index]={}
-                        this.option[index].title = { 
-                            text: res.title,
-                            x: 'center'
-                        }
-                        this.option[index].desc = res.desc
-                        this.option[index].xAxis = {
-                            data: res.x_data,
-                            type: 'category'
-                        }
-                        this.option[index].yAxis = { type: 'value' }
-                        this.option[index].legend = {
-                            bottom: 'bottom',
-                            data: res.legend,
-                            type: 'scroll'
-                        }
-                        this.option[index].tooltip = { trigger: 'axis' }
-                        this.option[index].series = res.series
-                        this.option[index].series.forEach(item2=>{
-                            item2.type = 'line',
-                            item2.smooth = true
-                        })
-                    } else if(res.chart_type === 2) {
-                        this.option[index]={}
-                        this.option[index].title = { 
-                            text: res.title,
-                            x: 'center'
-                        }
-                        this.option[index].desc = res.desc
-                        this.option[index].xAxis = {
-                            data: res.x_data,
-                            type: 'category'
-                        }
-                        this.option[index].yAxis = { type: 'value' }
-                        this.option[index].legend = {
-                            bottom: 'bottom',
-                            data: res.legend,
-                            type: 'scroll'
-                        }
-                        this.option[index].tooltip = { trigger: 'axis' }
-                        this.option[index].series = res.series
-                        this.option[index].series.forEach(item2=>{
-                            item2.type = 'bar',
-                            item2.smooth = true
-                        })
-                    } else {
-                        this.option[index]={}
-                        this.option[index].desc = res.desc
-                        this.option[index].title = { 
-                            text: res.title,
-                            x: 'center'
-                        }
-                        this.option[index].legend = {
-                            bottom: 'bottom',
-                            data: res.legend,
-                            type: 'scroll'
-                        }
-                        this.option[index].tooltip = { trigger: 'item' }
-                        this.option[index].series = res.series
+                let sessionObj = "info" + index
+                let res = {}
+                if (JSON.parse(sessionStorage.getItem(sessionObj))) {
+                    res = JSON.parse(sessionStorage.getItem(sessionObj))
+                } else {
+                    res = await this.$axios.get('chart/get_chart_info/' + item)
+                    sessionStorage.setItem(sessionObj, JSON.stringify(res))
+                }
+                if(res.chart_type === 1) {
+                    // 柱状图
+                    this.option[index]={}
+                    this.option[index].title = { 
+                        text: res.title,
+                        x: 'center'
                     }
-                    this.change(item)  
+                    this.option[index].desc = res.desc
+                    this.option[index].xAxis = {
+                        data: res.x_data,
+                        type: 'category'
+                    }
+                    this.option[index].yAxis = { type: 'value' }
+                    this.option[index].legend = {
+                        bottom: 'bottom',
+                        data: res.legend,
+                        type: 'scroll'
+                    }
+                    this.option[index].tooltip = { trigger: 'axis' }
+                    this.option[index].series = res.series
+                    this.option[index].series.forEach(item2=>{
+                        item2.type = 'line',
+                        item2.smooth = true
+                    })
+                } else if(res.chart_type === 2) {
+                    this.option[index]={}
+                    this.option[index].title = { 
+                        text: res.title,
+                        x: 'center'
+                    }
+                    this.option[index].desc = res.desc
+                    this.option[index].xAxis = {
+                        data: res.x_data,
+                        type: 'category'
+                    }
+                    this.option[index].yAxis = { type: 'value' }
+                    this.option[index].legend = {
+                        bottom: 'bottom',
+                        data: res.legend,
+                        type: 'scroll'
+                    }
+                    this.option[index].tooltip = { trigger: 'axis' }
+                    this.option[index].series = res.series
+                    this.option[index].series.forEach(item2=>{
+                        item2.type = 'bar',
+                        item2.smooth = true
+                    })
+                } else {
+                    this.option[index]={}
+                    this.option[index].desc = res.desc
+                    this.option[index].title = { 
+                        text: res.title,
+                        x: 'center'
+                    }
+                    this.option[index].legend = {
+                        bottom: 'bottom',
+                        data: res.legend,
+                        type: 'scroll'
+                    }
+                    this.option[index].tooltip = { trigger: 'item' }
+                    this.option[index].series = res.series
+                }
+                this.change(item)  
             },
             async getChart () {
                 let response = await this.$axios.get('chart/get_chartId_list/' + this.group_id)
@@ -454,6 +462,10 @@
                 let cookie_name = 'username'
                 let cookie_value = this.getCookie(cookie_name)
                 this.creator = cookie_value
+
+                let group_id = 'group_id'
+                let group_value = this.getCookie(group_id)
+                this.group_id = group_value
 
                 this.getChart()
             },

@@ -7,7 +7,7 @@
           <img src="../assets/userPic.png">
         </div>
         <p class="avatar_text">
-          <span v-text="appUserInfo"></span>
+          <span v-text="appUserInfo">{{creator}}</span>
         </p>
       </div>
       <el-menu
@@ -122,6 +122,7 @@ export default {
       }
     }
     return {
+      creator: '',
       menuActiveName: 'echarts2',
       menuOpenName: [],
       modalChangePassword: {},
@@ -159,7 +160,7 @@ export default {
   },
   computed: {
     appUserInfo () {
-      return '系统管理员'
+      return this.creator || '系统管理员'
     }
   },
   mounted () {
@@ -186,6 +187,11 @@ export default {
         let group_id = 'group_id'
         let group_value = this.getCookie(group_id)
         this.group_id = group_value
+
+        let cookie_name = 'username'
+        let cookie_value = this.getCookie(cookie_name)
+        this.creator = cookie_value
+
         if (this.group_id === '1') {
           this.menuList = [
           {
