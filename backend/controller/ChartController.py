@@ -32,7 +32,10 @@ def query_operate_list():
     pageIndex = data['pageIndex']
     pageSize = data['pageSize']
     result = ChartService.query_operate(operator, actionType, actionTime, pageIndex, pageSize)
-    return jsonify(result)
+    return jsonify({
+        "operateList": result.operateList,
+        "total": result.total
+    })
 
 # 删除chart
 @chart.route('/delete_chart', methods=['POST'])

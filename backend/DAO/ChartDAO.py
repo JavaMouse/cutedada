@@ -114,22 +114,24 @@ class ChartDAO(object):
     def queryOperate(cls,operator, actionType, actionTime, pageIndex, pageSize):
         db = dbutils.get_connect()
         cursor = db.cursor()
+        index = (pageIndex-1)*pageSize
         if operator == '' and actionType != '' and actionTime != '':
-            query_sql = "select * from dada_operate where operate_type = %s and date > %s" % (actionType, actionTime)
+            query_sql = "select * from dada_operate where operate_type = %s and date > %s limit %d,%d" % (actionType, actionTime,index,pageSize)
         elif operator != '' and actionType == '' and actionTime != '':
-            query_sql = "select * from dada_operate where creater = '%s' and date > %s" % (operator, actionTime)
+            query_sql = "select * from dada_operate where creater = '%s' and date > %s limit %d,%d" % (operator, actionTime, index,pageSize)
         elif operator != '' and actionType != '' and actionTime == '':
-            query_sql = "select * from dada_operate where creater = '%s' and operate_type = %s" % (operator, actionType)
+            query_sql = "select * from dada_operate where creater = '%s' and operate_type = %s limit %d,%d" % (operator, actionType, index,pageSize)
         elif operator == '' and actionType == '' and actionTime != '':
-            query_sql = "select * from dada_operate where date > %s" % (actionTime)
+            query_sql = "select * from dada_operate where date > %s limit %d,%d" % (actionTime, index,pageSize)
         elif operator != '' and actionType == '' and actionTime == '':
-            query_sql = "select * from dada_operate where creater = '%s'" % (operator)
+            query_sql = "select * from dada_operate where creater = '%s' limit %d,%d" % (operator, index,pageSize)
         elif operator == '' and actionType != '' and actionTime == '':
-            query_sql = "select * from dada_operate where operate_type = %s" % (actionType)
+            query_sql = "select * from dada_operate where operate_type = %s limit %d,%d" % (actionType, index,pageSize)
         elif operator == '' and actionType == '' and actionTime == '':
-            query_sql = "select * from dada_operate"
+            query_sql = "select * from dada_operate limit %d,%d" % (index,pageSize)
         elif operator != '' and actionType != '' and actionTime != '':
-            query_sql = "select * from dada_operate where operate_type = %s and date > %s and creater = '%s'" % (actionType, actionTime, operator)
+            query_sql = "select * from dada_operate where operate_type = %s and date > %s and creater = '%s' limit %d,%d" % (actionType, actionTime, operator, index,pageSize)
+        print(query_sql)
         cursor.execute(query_sql)
         data = cursor.fetchall()
         operateList = []
@@ -142,8 +144,16 @@ class ChartDAO(object):
                 "is_revort":d[6]
             }
             operateList.append(r)
+
+        cursor2 = db.cursor()
+        query_sql2 = "select count(1) from dada_operate"
+        cursor2.execute(query_sql2)
+        count = cursor2.fetchall()
+
+
+
         dbutils.close(db)
-        return list(operateList)
+        return (list(operateList),count)
 
     @classmethod
     def get_chart_list(cls,group_id):
@@ -211,4 +221,4 @@ class ChartDAO(object):
         return chart_id
 
 if __name__ == '__main__':
-    print(ChartDAO.get_chart_list(1))
+    print(ChartDAO.queryOperate('','','',1,20))
