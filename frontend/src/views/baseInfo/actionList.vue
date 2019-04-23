@@ -54,6 +54,7 @@ import { DatePicker } from 'element-ui'
 import SearchDrop from '@/components/SearchDrop'
 import SearchDropForm from '@/components/SearchDropForm'
 import BasePagination from '@/components/BasePagination'
+import { FChangeDate } from '@/util/common'
 
 
 export default {
@@ -152,6 +153,7 @@ export default {
           } else {
             item.operateType = '删除'
           }
+          item.date = FChangeDate(new Date(item.date))
           this.tableData.push(item)
           count ++
         })
