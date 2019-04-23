@@ -116,13 +116,13 @@ class ChartDAO(object):
         cursor = db.cursor()
         index = (pageIndex-1)*pageSize
         if operator == '' and actionType != '' and actionTime != '':
-            query_sql = "select * from dada_operate where operate_type = %s and date > %s limit %d,%d" % (actionType, actionTime,index,pageSize)
+            query_sql = "select * from dada_operate where operate_type = %s and date > '%s' limit %d,%d" % (actionType, actionTime,index,pageSize)
         elif operator != '' and actionType == '' and actionTime != '':
-            query_sql = "select * from dada_operate where creater = '%s' and date > %s limit %d,%d" % (operator, actionTime, index,pageSize)
+            query_sql = "select * from dada_operate where creater = '%s' and date > '%s' limit %d,%d" % (operator, actionTime, index,pageSize)
         elif operator != '' and actionType != '' and actionTime == '':
             query_sql = "select * from dada_operate where creater = '%s' and operate_type = %s limit %d,%d" % (operator, actionType, index,pageSize)
         elif operator == '' and actionType == '' and actionTime != '':
-            query_sql = "select * from dada_operate where date > %s limit %d,%d" % (actionTime, index,pageSize)
+            query_sql = "select * from dada_operate where date > '%s' limit %d,%d" % (actionTime, index,pageSize)
         elif operator != '' and actionType == '' and actionTime == '':
             query_sql = "select * from dada_operate where creater = '%s' limit %d,%d" % (operator, index,pageSize)
         elif operator == '' and actionType != '' and actionTime == '':
@@ -130,7 +130,7 @@ class ChartDAO(object):
         elif operator == '' and actionType == '' and actionTime == '':
             query_sql = "select * from dada_operate limit %d,%d" % (index,pageSize)
         elif operator != '' and actionType != '' and actionTime != '':
-            query_sql = "select * from dada_operate where operate_type = %s and date > %s and creater = '%s' limit %d,%d" % (actionType, actionTime, operator, index,pageSize)
+            query_sql = "select * from dada_operate where operate_type = %s and date > '%s' and creater = '%s' limit %d,%d" % (actionType, actionTime, operator, index, pageSize)
         print(query_sql)
         cursor.execute(query_sql)
         data = cursor.fetchall()
@@ -146,11 +146,25 @@ class ChartDAO(object):
             operateList.append(r)
 
         cursor2 = db.cursor()
-        query_sql2 = "select count(1) from dada_operate"
+        if operator == '' and actionType != '' and actionTime != '':
+            query_sql2 = "select * from dada_operate where operate_type = %s and date > '%s'" % (actionType, actionTime)
+        elif operator != '' and actionType == '' and actionTime != '':
+            query_sql2 = "select * from dada_operate where creater = '%s' and date > '%s'" % (operator, actionTime)
+        elif operator != '' and actionType != '' and actionTime == '':
+            query_sql2 = "select * from dada_operate where creater = '%s' and operate_type = %s" % (operator, actionType)
+        elif operator == '' and actionType == '' and actionTime != '':
+            query_sql2 = "select * from dada_operate where date > '%s'" % (actionTime)
+        elif operator != '' and actionType == '' and actionTime == '':
+            query_sql2 = "select * from dada_operate where creater = '%s'" % (operator)
+        elif operator == '' and actionType != '' and actionTime == '':
+            query_sql2 = "select * from dada_operate where operate_type = %s" % (actionType)
+        elif operator == '' and actionType == '' and actionTime == '':
+            query_sql2 = "select * from dada_operate"
+        elif operator != '' and actionType != '' and actionTime != '':
+            query_sql2 = "select * from dada_operate where operate_type = %s and date > '%s' and creater = '%s'" % (actionType, actionTime, operator)
         cursor2.execute(query_sql2)
-        count = cursor2.fetchall()
-
-
+        data2 = cursor2.fetchall()
+        count = len(data2)
 
         dbutils.close(db)
         return (list(operateList),count)
@@ -221,4 +235,4 @@ class ChartDAO(object):
         return chart_id
 
 if __name__ == '__main__':
-    print(ChartDAO.queryOperate('','','',1,20))
+    print(ChartDAO.queryOperate('chennan',1,'2019-04-01 22:17:12',1,20))

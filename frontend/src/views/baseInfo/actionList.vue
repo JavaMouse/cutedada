@@ -24,7 +24,7 @@
          <el-date-picker
             class="condition"
             v-model="condition.actionTime"
-            value-format="yyyy-MM-dd" 
+            value-format="yyyy-MM-dd hh:mm:ss" 
             type="datetime"
             placeholder="选择日操作时间">
             </el-date-picker>
@@ -155,12 +155,13 @@ export default {
           this.tableData.push(item)
           count ++
         })
-        this.pageInfo.total = count
+        this.pageInfo.total = res.data.total
       }
       this.loading = false
     },
     fChangePageSize (num) {
       this.pageInfo.size = num
+      this.pageInfo.current = 1
       this.getList()
     },
     fReset () {

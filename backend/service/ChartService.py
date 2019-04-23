@@ -451,8 +451,8 @@ def query_operate(operator, actionType, actionTime, pageIndex, pageSize):
     return_json = {
         'code': 0,
         'data': {
-            'operateList': result.operateList,
-            'total': result.total
+            'operateList': result[0],
+            'total': result[1]
         },
         'message': None
     }
