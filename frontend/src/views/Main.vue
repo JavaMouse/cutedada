@@ -57,6 +57,7 @@
     methods: {
       equit () {
         this.$router.push('/')
+        sessionStorage.clear()
       }
     },
   }
