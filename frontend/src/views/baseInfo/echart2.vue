@@ -7,7 +7,7 @@
             <div class="box" v-for="(item,index) in seriesData" :key="index">
                 <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;background-color:#fff;">
                 <div class="btnContain">
-                    <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button>
+                    <!-- <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button> -->
                     <el-button @click="deleteChart(item)" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
                     <el-button @click="toggle(item.index)" icon="el-icon-search" size="mini" circle></el-button>
                 </div>

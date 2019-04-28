@@ -53,60 +53,6 @@
                         'group_id':1,
                         'read': true,
                         'modify': false
-                    },{
-                        'chart_id':1,
-                        'chart_title': 'dadadadada',
-                        'group_id':1,
-                        'read': true,
-                        'modify': false
-                    },{
-                        'chart_id':1,
-                        'chart_title': 'dadadadada',
-                        'group_id':1,
-                        'read': true,
-                        'modify': false
-                    },{
-                        'chart_id':1,
-                        'chart_title': 'dadadadada',
-                        'group_id':1,
-                        'read': true,
-                        'modify': false
-                    },{
-                        'chart_id':1,
-                        'chart_title': 'dadadadada',
-                        'group_id':1,
-                        'read': true,
-                        'modify': false
-                    },{
-                        'chart_id':1,
-                        'chart_title': 'dadadadada',
-                        'group_id':1,
-                        'read': true,
-                        'modify': false
-                    },{
-                        'chart_id':1,
-                        'chart_title': 'dadadadada',
-                        'group_id':1,
-                        'read': true,
-                        'modify': false
-                    },{
-                        'chart_id':1,
-                        'chart_title': 'dadadadada',
-                        'group_id':1,
-                        'read': true,
-                        'modify': false
-                    },{
-                        'chart_id':1,
-                        'chart_title': 'dadadadada',
-                        'group_id':1,
-                        'read': true,
-                        'modify': false
-                    },{
-                        'chart_id':1,
-                        'chart_title': 'dadadadada',
-                        'group_id':1,
-                        'read': true,
-                        'modify': false
                     }
                 ],
                 },
