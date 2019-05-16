@@ -87,6 +87,7 @@
                 // console.log(index,checkNum)
             },
             async submit () {
+                sessionStorage.clear()
                 let changeArr = []
                 this.oldformList.forEach((el1, index1) => {
                     this.authorityForm.formList.forEach((el2, index2) => {

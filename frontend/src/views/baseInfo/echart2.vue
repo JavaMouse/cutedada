@@ -1,10 +1,10 @@
 <template>
     <el-container>
         <el-header class="page-topic">
-            <p>展示页面</p>
+            <p >展示页面</p>
         </el-header>
         <el-main class="main">
-            <div class="box" v-for="(item,index) in seriesData" :key="index">
+            <div class="box" v-for="(item,index) in seriesData" :key="index" v-loading="loading[item]">
                 <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;background-color:#fff;">
                 <div class="btnContain">
                     <!-- <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button> -->
@@ -106,41 +106,41 @@
         }]
     }
     let option3 = {
-    title: {
-        text: '柱状图'
-    },
-    tooltip : {
-        trigger: 'axis',
-        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-        }
-    },
-    legend: {
-        data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎','百度','谷歌','必应','其他']
-    },
-    xAxis : 
-        {
-            type : 'category',
-            data : ['周一','周二','周三','周四','周五','周六','周日']
+        title: {
+            text: '柱状图'
         },
-    yAxis : 
-        {
-            type : 'value'
+        tooltip : {
+            trigger: 'axis',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
         },
-    series : [
-        {
-            name:'直接访问',
-            type:'bar',
-            //折线图：line
-            data:[320, 332, 301, 334, 390, 330, 320]
+        legend: {
+            data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎','百度','谷歌','必应','其他']
         },
-        {
-            name:'百度',
-            type:'bar',
-            data:[620, 732, 701, 734, 1090, 1130, 1120]
-        }
-    ]
-};
+        xAxis : 
+            {
+                type : 'category',
+                data : ['周一','周二','周三','周四','周五','周六','周日']
+            },
+        yAxis : 
+            {
+                type : 'value'
+            },
+        series : [
+            {
+                name:'直接访问',
+                type:'bar',
+                //折线图：line
+                data:[320, 332, 301, 334, 390, 330, 320]
+            },
+            {
+                name:'百度',
+                type:'bar',
+                data:[620, 732, 701, 734, 1090, 1130, 1120]
+            }
+        ]
+    };
 
     let option2 = {
         title: {
@@ -253,7 +253,8 @@
                 option: [],
                 chartmenber: [],
                 creator: '',
-                group_id: 1
+                group_id: 1,
+                loading: {}
             }
         },
         watch: {
@@ -271,13 +272,16 @@
         },
         methods: {
             async getcChartData (item,index) {
+                console.log(item)
                 let sessionObj = "info" + index
                 let res = {}
                 if (JSON.parse(sessionStorage.getItem(sessionObj))) {
                     res = JSON.parse(sessionStorage.getItem(sessionObj))
                 } else {
+                    this.$set(this.loading, item, true)
                     res = await this.$axios.get('chart/get_chart_info/' + item)
                     sessionStorage.setItem(sessionObj, JSON.stringify(res))
+                    this.$set(this.loading, item, false)
                 }
                 if(res.chart_type === 1) {
                     // 柱状图
@@ -341,7 +345,7 @@
                     this.option[index].tooltip = { trigger: 'item' }
                     this.option[index].series = res.series
                 }
-                this.change(item)  
+                await this.change(item)  
             },
             async getChart () {
                 let response = await this.$axios.get('chart/get_chartId_list/' + this.group_id)
@@ -390,6 +394,7 @@
                     seriesData.push(outObj);
                 });
                 this.seriesData = getchartData
+                console.log(this.seriesData)
                 this.$nextTick(() => {
                     this.initChart(this.seriesData)
                     this.renderChart(this.seriesData)
@@ -426,6 +431,7 @@
                 });
             },
             async delete (value) {
+                sessionStorage.clear()
                 console.log("dele_id"+this.chartmenber[value.index])
                 let res = await this.$axios.post('chart/delete_chart', {chart_id: this.chartmenber[value.index]})
                 let data = {
