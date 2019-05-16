@@ -3,16 +3,17 @@
     <!-- <el-header class="page-topic">
     </el-header> -->
     <el-main style="height:100%;padding:0;">
-      <search-drop @on-search="getList" @on-reset="fReset" class="searchDrop">
+      <search-drop @on-search="fResearch" @on-reset="fReset" class="searchDrop">
         <!-- 操作人员: -->
         <el-input
             class="condition"
             placeholder="操作人员"
             suffix-icon="el-icon-edit"
+             @enter="fResearch"
             v-model="condition.operator">
         </el-input>
         <!-- 操作类型: -->
-        <el-select v-model="condition.actionType" placeholder="请选择操作类型" class="condition">
+        <el-select v-model="condition.actionType" @change="fResearch" placeholder="请选择操作类型" class="condition">
             <el-option
             v-for="item in options"
             :key="item.value"
@@ -26,6 +27,7 @@
             v-model="condition.actionTime"
             value-format="yyyy-MM-dd hh:mm:ss" 
             type="datetime"
+            @change="fResearch"
             placeholder="选择日操作时间">
             </el-date-picker>
       </search-drop>
@@ -92,6 +94,7 @@ export default {
         actionTime: ''
       },
       tableData: [],
+      searchCondition: {},
       pageInfo: {
         total: 0,
         size: 20,
@@ -135,7 +138,6 @@ export default {
         }
     },
     async getList () {
-      this.pageInfo.current = 1
       this.loading = true
       this.tableData = []
       let data = {
@@ -167,12 +169,19 @@ export default {
       this.pageInfo.current = 1
       this.getList()
     },
+    fResearch () {
+      this.searchCondition = {
+        ...this.condition
+      }
+      this.pageInfo.current = 1
+      this.getList()
+    },
     fReset () {
       for (let key in this.condition) {
         this.condition[key] = ''
       }
       this.pageInfo.current = 1
-      this.getList()
+      this.fResearch()
     }
   }
 

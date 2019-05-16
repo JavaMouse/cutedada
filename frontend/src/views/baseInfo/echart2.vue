@@ -3,8 +3,8 @@
         <el-header class="page-topic">
             <p >展示页面</p>
         </el-header>
-        <el-main class="main">
-            <div class="box" v-for="(item,index) in seriesData" :key="index" v-loading="loading[item]">
+        <el-main class="main" v-loading="loading2">
+            <div class="box" v-for="(item,index) in seriesData" :key="index" v-loading="loading[item.index]">
                 <fullscreen ref="fullscreen" :fullscreen.sync="fullscreen" @change="fullscreenChange" style="width:100%;height:100%;background-color:#fff;">
                 <div class="btnContain">
                     <!-- <el-button @click="chartCheck(item.index)" type="success" size="mini" icon="el-icon-edit" circle></el-button> -->
@@ -254,7 +254,8 @@
                 chartmenber: [],
                 creator: '',
                 group_id: 1,
-                loading: {}
+                loading: {},
+                loading2: false
             }
         },
         watch: {
@@ -272,16 +273,15 @@
         },
         methods: {
             async getcChartData (item,index) {
-                console.log(item)
                 let sessionObj = "info" + index
                 let res = {}
                 if (JSON.parse(sessionStorage.getItem(sessionObj))) {
                     res = JSON.parse(sessionStorage.getItem(sessionObj))
                 } else {
-                    this.$set(this.loading, item, true)
+                    this.$set(this.loading, index, true)
                     res = await this.$axios.get('chart/get_chart_info/' + item)
                     sessionStorage.setItem(sessionObj, JSON.stringify(res))
-                    this.$set(this.loading, item, false)
+                    this.$set(this.loading, index, false)
                 }
                 if(res.chart_type === 1) {
                     // 柱状图
@@ -348,11 +348,13 @@
                 await this.change(item)  
             },
             async getChart () {
+                this.loading2 = true
                 let response = await this.$axios.get('chart/get_chartId_list/' + this.group_id)
                 this.chartmenber = response.data.chartList || []
                 this.chartmenber.forEach((item,index) => {
                     this.getcChartData(item,index)
                 });
+                this.loading2 = false
             },
             toggle (value) {
                 this.$refs['fullscreen'][value].toggle() 
@@ -394,7 +396,6 @@
                     seriesData.push(outObj);
                 });
                 this.seriesData = getchartData
-                console.log(this.seriesData)
                 this.$nextTick(() => {
                     this.initChart(this.seriesData)
                     this.renderChart(this.seriesData)
