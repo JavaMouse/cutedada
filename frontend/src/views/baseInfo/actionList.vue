@@ -135,6 +135,7 @@ export default {
         }
     },
     async getList () {
+      this.pageInfo.current = 1
       this.loading = true
       this.tableData = []
       let data = {
